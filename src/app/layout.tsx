@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import StatusBar from '@/shared/ui/StatusBar';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,10 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-gray-50">
         <div className="min-h-screen w-full bg-gray-50">
-          <div className="mx-auto flex min-h-screen max-w-md flex-col bg-white">{children}</div>
+          <div className="mx-auto flex min-h-screen max-w-md flex-col bg-linear-to-b from-[#ecf2fb] to-[#f3f8ff]">
+            <StatusBar />
+            {children}
+          </div>
         </div>
       </body>
     </html>
