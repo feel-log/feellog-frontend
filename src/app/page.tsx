@@ -1,98 +1,77 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Header, BottomNavigation } from '@/shared/ui';
-import {
-  EmotionBanner,
-  SpendingSection,
-  InsightSection,
-} from '@/widgets';
+import React from 'react';
+import { ClientOnly } from '@/shared/ui';
+import { useIsMounted } from '@/shared/hooks/useIsMounted';
 
 export default function Home() {
-  const [selectedEmotion, setSelectedEmotion] = useState<string | null>(null);
-
-  const mockSpendingItems = [
-    {
-      id: '1',
-      category: '식비',
-      amount: 35000,
-      emotion: '행복',
-      date: '2024-01-15',
-    },
-    {
-      id: '2',
-      category: '쇼핑',
-      amount: 89000,
-      emotion: '슬픔',
-      date: '2024-01-14',
-    },
-    {
-      id: '3',
-      category: '여행',
-      amount: 150000,
-      emotion: '행복',
-      date: '2024-01-13',
-    },
-  ];
-
-  const mockInsights = [
-    {
-      id: '1',
-      title: '행복할 때 더 소비해요',
-      description: '행복한 상태에서의 소비가 평소보다 30% 높습니다',
-      icon: '📈',
-      color: 'border-yellow-400 bg-yellow-50',
-    },
-    {
-      id: '2',
-      title: '슬플 땐 음식을 찾으세요',
-      description: '슬픔을 느낄 때 식비 소비가 증가하는 패턴이 보입니다',
-      icon: '🍽️',
-      color: 'border-blue-400 bg-blue-50',
-    },
-    {
-      id: '3',
-      title: '이번 달 트렌드',
-      description: '여행 지출이 지난달 대비 2배 증가했습니다',
-      icon: '✈️',
-      color: 'border-purple-400 bg-purple-50',
-    },
-  ];
-
-  const navItems = [
-    { label: '홈', href: '/', icon: '🏠' },
-    { label: '기록', href: '/emotions', icon: '😊' },
-    { label: '분석', href: '/analysis', icon: '📊' },
-    { label: '설정', href: '/settings', icon: '⚙️' },
-  ];
+  const isMounted = useIsMounted();
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-      <Header title="Feel-Log" />
+    <div className="w-full min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-md h-full bg-white shadow-lg">
+        {/* 헤더 */}
+        <header className="sticky top-0 z-50 bg-white border-b border-gray-200 h-14 flex items-center justify-center">
+          <h1 className="text-lg font-bold">Feel-Log</h1>
+        </header>
 
-      <main className="flex-1 overflow-y-auto pb-20">
-        <EmotionBanner onEmotionSelect={setSelectedEmotion} />
+        {/* 메인 콘텐츠 */}
+        <main className="p-4 space-y-4 pb-20">
+          {/* 감정 선택 배너 */}
+          <ClientOnly
+            fallback={
+              <div className="bg-gray-200 rounded-lg h-40 animate-pulse" />
+            }
+          >
+            <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white p-6 rounded-lg">
+              <h2 className="text-2xl font-bold mb-4">오늘의 감정은?</h2>
+              <div className="text-center text-sm text-blue-100">
+                (클라이언트 전용 컴포넌트)
+              </div>
+            </div>
+          </ClientOnly>
 
-        {selectedEmotion && (
-          <div className="p-4 bg-blue-50 border-b border-blue-200">
-            <p className="text-sm text-blue-900">
-              선택된 감정: <span className="font-bold">{selectedEmotion}</span>
+          {/* 통계 섹션 - 서버에서도 렌더링 가능 */}
+          <div className="border border-gray-200 rounded-lg p-4">
+            <h3 className="text-lg font-bold mb-2">이번 달 소비</h3>
+            <p className="text-3xl font-bold text-blue-600">₩0</p>
+            <p className="text-sm text-gray-500 mt-2">아직 데이터가 없습니다</p>
+          </div>
+
+          {/* Hydration 상태 표시 (개발 확인용) */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm">
+            <p className="font-semibold text-blue-900">🤖 Hydration 상태</p>
+            <p className="text-blue-800 mt-1">
+              {isMounted ? '✓ 클라이언트 마운트됨' : '○ 서버 렌더링'}
+            </p>
+            <p className="text-xs text-blue-600 mt-2">
+              suppressHydrationWarning을 설정하여 SSR과 CSR 불일치를 안전하게 처리합니다.
             </p>
           </div>
-        )}
+        </main>
 
-        <SpendingSection items={mockSpendingItems} />
-
-        <InsightSection insights={mockInsights} />
-
-        <div className="p-4">
-          <div className="text-center text-gray-500 text-sm">
-            <p>더 자세한 분석을 위해 분석 페이지를 방문하세요</p>
-          </div>
-        </div>
-      </main>
-
-      <BottomNavigation items={navItems} />
+        {/* 하단 네비게이션 */}
+        <ClientOnly>
+          <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 h-16 flex justify-around">
+            <button className="flex flex-col items-center justify-center flex-1 text-blue-500 font-semibold">
+              <span className="text-xl">🏠</span>
+              <span className="text-xs">홈</span>
+            </button>
+            <button className="flex flex-col items-center justify-center flex-1 text-gray-600">
+              <span className="text-xl">😊</span>
+              <span className="text-xs">기록</span>
+            </button>
+            <button className="flex flex-col items-center justify-center flex-1 text-gray-600">
+              <span className="text-xl">📊</span>
+              <span className="text-xs">분석</span>
+            </button>
+            <button className="flex flex-col items-center justify-center flex-1 text-gray-600">
+              <span className="text-xl">⚙️</span>
+              <span className="text-xs">설정</span>
+            </button>
+          </nav>
+        </ClientOnly>
+      </div>
     </div>
   );
 }

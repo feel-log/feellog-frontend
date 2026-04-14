@@ -36,13 +36,6 @@ body {
   overflow-x: hidden;
 }
 
-/* 모바일 퍼스트 최적화 */
-@media (max-width: 640px) {
-  body {
-    font-size: 16px;
-  }
-}
-
 /* 모든 요소의 box-sizing을 border-box로 설정 */
 * {
   box-sizing: border-box;

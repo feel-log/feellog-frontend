@@ -33,12 +33,9 @@ export default function RootLayout({
     <html
       lang="ko"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <head>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-      </head>
-      <body className="min-h-screen flex flex-col bg-gray-50">
+      <body suppressHydrationWarning className="min-h-screen bg-gray-50">
         {children}
       </body>
     </html>
