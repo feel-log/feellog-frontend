@@ -36,7 +36,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-gray-50">
-        {children}
+        <div className="min-h-screen w-full bg-gray-50">
+          <div className="mx-auto flex min-h-screen max-w-md flex-col bg-white">{children}</div>
+        </div>
       </body>
     </html>
   );
