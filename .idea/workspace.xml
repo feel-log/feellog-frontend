@@ -5,25 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00c43e00-1a75-4cdd-a4da-2d06ee1541ea" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CLAUDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/CLAUDE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/file.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/globe.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/next.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/vercel.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/window.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shared/ui/BottomNavigation.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shared/ui/Button.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shared/ui/Card.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shared/ui/Header.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shared/ui/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/EmotionBanner.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/InsightSection.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/SpendingSection.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/index.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +94,7 @@
       <option name="presentableId" value="Default" />
       <updated>1775799457995</updated>
       <workItem from="1775799459636" duration="3227000" />
-      <workItem from="1776140240855" duration="3065000" />
+      <workItem from="1776140240855" duration="4019000" />
     </task>
     <servers />
   </component>
