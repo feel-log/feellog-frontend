@@ -48,7 +48,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "develop",
     "javascript.preferred.runtime.type.id": "node",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
@@ -92,7 +92,7 @@
       <option name="presentableId" value="Default" />
       <updated>1775799457995</updated>
       <workItem from="1775799459636" duration="3227000" />
-      <workItem from="1776140240855" duration="4368000" />
+      <workItem from="1776140240855" duration="4675000" />
     </task>
     <servers />
   </component>
