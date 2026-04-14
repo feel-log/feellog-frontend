@@ -3,11 +3,14 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #3B82F6;
+  --primary-dark: #1D4ED8;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -19,8 +22,44 @@
   }
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* 모바일 퍼스트 최적화 */
+@media (max-width: 640px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* 모든 요소의 box-sizing을 border-box로 설정 */
+* {
+  box-sizing: border-box;
+}
+
+/* 스크롤 동작 최적화 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 선택 텍스트 색상 */
+::selection {
+  background-color: var(--primary);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--primary);
+  color: white;
 }
