@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function Header() {
+export function Header() {
   return (
-    <div className={'flex items-center justify-between px-4 py-2.5 relative mb-10'}>
+    <div className={'flex items-center justify-between px-4 py-2.5 relative mb-3.75'}>
       <Link href="/" style={{ width: '71px', height: '20.59px', position: 'relative' }}>
         <Image src={'/svg/feel_log_logo.svg'} alt={'logo'} loading={'eager'} fill />
       </Link>
