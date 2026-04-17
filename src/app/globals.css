@@ -56,3 +56,13 @@ html {
   background-color: var(--primary);
   color: white;
 }
+
+/* 바텀시트 슬라이드업 애니메이션 */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
