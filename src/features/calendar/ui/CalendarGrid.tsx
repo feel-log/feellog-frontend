@@ -39,7 +39,7 @@ export default function CalendarGrid({ year, month, onDateClick }: CalendarGridP
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="grid grid-cols-7 bg-[#ECF2FB]">
+      <div className="grid grid-cols-7 bg-[#F7F8FA]">
         {DAYS.map((day) => (
           <div
             key={day}
@@ -55,8 +55,8 @@ export default function CalendarGrid({ year, month, onDateClick }: CalendarGridP
           <div
             key={index}
             onClick={() => date.isCurrentMonth && onDateClick?.(date.day)}
-            className={`flex flex-col overflow-hidden border-t border-[#CACDD2] px-1.25 py-2 ${
-              !date.isCurrentMonth ? 'bg-[#ECF2FB]' : 'cursor-pointer'
+            className={`flex flex-col overflow-hidden px-1.25 py-2 ${
+              date.isCurrentMonth ? 'cursor-pointer' : ''
             }`}
           >
 
@@ -66,7 +66,7 @@ export default function CalendarGrid({ year, month, onDateClick }: CalendarGridP
                   ? 'rounded-[25px] bg-[#13278A] text-white'
                   : date.isCurrentMonth
                     ? 'text-[#1C1D1F]'
-                    : 'text-[#73787E]'
+                    : 'text-[#9FA4A8]'
               }`}
             >
               {date.day}
