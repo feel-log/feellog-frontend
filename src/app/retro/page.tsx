@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import RetroEmpty from '@/features/retro/ui/RetroEmpty';
 import RetroMain from '@/features/retro/ui/RetroMain';
 import { retroMockData } from '@/features/retro/mock/retroMockData';
 
 export default function RetroPage() {
+  const router = useRouter();
   const { totalExpense } = retroMockData;
   const hasData = totalExpense > 0;
   const [showTooltip, setShowTooltip] = useState(true);
@@ -70,7 +72,10 @@ export default function RetroPage() {
       </div>
 
       <div className="flex w-full items-center justify-center bg-white pt-6 pb-12.75 pl-4.25 pr-3.75">
-        <button className="h-13.5 w-full rounded-[10px] bg-[#13278A] text-[20px] font-semibold text-white">
+        <button
+          onClick={() => router.push(hasData ? '/retro/survey' : '/calendar')}
+          className="h-13.5 w-full rounded-[10px] bg-[#13278A] text-[20px] font-semibold text-white"
+        >
           {hasData ? '소비 회고하기' : '소비 기록하러 가기'}
         </button>
       </div>
