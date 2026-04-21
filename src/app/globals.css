@@ -85,9 +85,6 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  --spacing-4.25: 1.0625rem;
-  --spacing-12.5: 3.125rem;
-  --spacing-22.5: 5.625rem;
 }
 
 html {

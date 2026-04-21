@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { getDailyExpense } from '@/shared/constants/dailyExpense';
+import { dailyExpenses, getDailyExpense } from '@/shared/constants/dailyExpense';
+import { cn } from '@/lib/utils';
 
 type SortType = 'latest' | 'expensive' | 'cheap';
 
@@ -16,6 +17,7 @@ interface ExpenseItem {
   emotions: Array<{ emoji: string; label: string }>;
   description?: string;
   paymentMethod: string;
+  tag: string[];
 }
 
 export default function ExportContent() {
@@ -36,6 +38,7 @@ export default function ExportContent() {
       category: category.name,
       amount: category.amount,
       emotions: category.emotions,
+      tag: category.tag,
       paymentMethod: idx % 2 === 0 ? '카드' : '현금',
     }));
 
@@ -55,14 +58,20 @@ export default function ExportContent() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 relative">
+      <div className="relative flex items-center justify-between px-6 py-4">
         <button
           onClick={() => router.back()}
           className="cursor-pointer text-gray-700 hover:text-black"
         >
-          <Image src={'/svg/icon_arrow_right.svg'} alt="back" width={24} height={24} className={"rotate-180"} />
+          <Image
+            src={'/svg/icon_arrow_right.svg'}
+            alt="back"
+            width={24}
+            height={24}
+            className={'rotate-180'}
+          />
         </button>
-        <h1 className="text-lg font-bold absolute left-1/2 -translate-x-1/2">오늘의 지출 비용</h1>
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-lg font-bold">오늘의 지출 비용</h1>
       </div>
 
       {/* Content */}
@@ -70,64 +79,77 @@ export default function ExportContent() {
         {/* Amount Section */}
         <div className="mb-8 border-b border-gray-200">
           <p className="mb-2 text-sm text-gray-600">지출</p>
-          <h2 className={`text-2xl font-bold pb-4 ${totalAmount > 0 ? 'text-red-600' : 'text-gray-800'}`}>
+          <h2
+            className={`pb-4 text-2xl font-bold ${totalAmount > 0 ? 'text-red-600' : 'text-gray-800'}`}
+          >
             {totalAmount.toLocaleString()}원
           </h2>
         </div>
 
         {/* Sort Button */}
         <div className="relative mb-8 flex justify-end">
-          <button
-            onClick={() => setShowSortMenu(!showSortMenu)}
-            className="flex justify-center items-center w-25 gap-2 rounded-lg border border-gray-200 px-2 py-1 text-[13px] font-medium text-gray-500 hover:bg-gray-50"
+          <div
+            className={cn(
+              'button__wrapper w-33 relative',
+              showSortMenu
+                ? 'rounded-[8px] border border-gray-200'
+                : ''
+            )}
           >
-            전체
-            <Image src={"/svg/icon_arrow_bottom.svg"} alt={"icon__bottom"} width={14} height={14} />
-          </button>
+            <button
+              onClick={() => setShowSortMenu(!showSortMenu)}
+              className={cn(
+                'flex w-full items-center justify-between px-2 py-2 text-[14px] bg-white',
+                showSortMenu ? 'border-b border-gray-200' : 'rounded-[8px] border border-gray-200'
+              )}
+            >
+              {sortType === 'latest' ? '최신순' : sortType === 'expensive' ? '금액 높은 순' : '금액 낮은 순'}
+              <Image
+                src={'/svg/icon_arrow_bottom.svg'}
+                alt={'icon__bottom'}
+                width={14}
+                height={14}
+              />
+            </button>
 
-          {showSortMenu && (
-            <div className="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg">
-              <button
-                onClick={() => {
-                  setSortType('latest');
-                  setShowSortMenu(false);
-                }}
-                className={`block w-full px-4 py-3 text-left text-sm ${
-                  sortType === 'latest'
-                    ? 'bg-blue-50 text-blue-600 font-medium'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                최신순
-              </button>
-              <button
-                onClick={() => {
-                  setSortType('expensive');
-                  setShowSortMenu(false);
-                }}
-                className={`block w-full px-4 py-3 text-left text-sm ${
-                  sortType === 'expensive'
-                    ? 'bg-blue-50 text-blue-600 font-medium'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                금액 높은순
-              </button>
-              <button
-                onClick={() => {
-                  setSortType('cheap');
-                  setShowSortMenu(false);
-                }}
-                className={`block w-full px-4 py-3 text-left text-sm ${
-                  sortType === 'cheap'
-                    ? 'bg-blue-50 text-blue-600 font-medium'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                금액 낮은순
-              </button>
-            </div>
-          )}
+            {showSortMenu && (
+              <div className={'show__sort__menu flex flex-col absolute left-0 right-0 top-full bg-white'}>
+                <button
+                  onClick={() => {
+                    setSortType('latest');
+                    setShowSortMenu(false);
+                  }}
+                  className={cn('text-[14px] py-2 px-5 border-b border-gray-200 text-left', {
+                    'text-blue-600 font-semibold': sortType === 'latest',
+                  })}
+                >
+                  최신순
+                </button>
+                <button
+                  onClick={() => {
+                    setSortType('expensive');
+                    setShowSortMenu(false);
+                  }}
+                  className={cn('text-[14px] py-2 px-5 border-b border-gray-200 text-left', {
+                    'text-blue-600 font-semibold': sortType === 'expensive',
+                  })}
+                >
+                  금액 높은 순
+                </button>
+                <button
+                  onClick={() => {
+                    setSortType('cheap');
+                    setShowSortMenu(false);
+                  }}
+                  className={cn('text-[14px] py-2 px-5 text-left', {
+                    'text-blue-600 font-semibold': sortType === 'cheap',
+                  })}
+                >
+                  금액 낮은 순
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Expense List or Empty State */}
@@ -144,13 +166,12 @@ export default function ExportContent() {
                   <div>
                     <h4 className="font-medium text-gray-900">{expense.name}</h4>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {expense.emotions.map((emotion, emoIdx) => (
+                      {expense.tag?.map((tag, tagIdx) => (
                         <span
-                          key={emoIdx}
-                          className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs"
+                          key={tagIdx}
+                          className="inline-flex items-center px-3 py-1 text-[16px] text-[#13278a]"
                         >
-                          <span>{emotion.emoji}</span>
-                          <span className="text-gray-700">{emotion.label}</span>
+                          {tag}
                         </span>
                       ))}
                     </div>
