@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 /**
  * 타임존 안전한 날짜 포맷팅
@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
  *
  * 사용 예:
  * ```tsx
- * const formatted = useFormattedDate(new Date(), {
+ * const formatted = useFormattedDate('2026-04-21', {
  *   year: 'numeric',
  *   month: 'long',
  *   day: 'numeric',
@@ -16,24 +16,38 @@ import { useState, useEffect } from 'react';
  * ```
  */
 export function useFormattedDate(
-  date: Date | string,
+  date?: Date | string,
   options?: Intl.DateTimeFormatOptions
 ) {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  const isoString = dateObj.toISOString();
+  const isoString = dateObj ? dateObj.toISOString() : new Date().toISOString();
 
-  const [formatted, setFormatted] = useState(isoString);
+  const [formatted, setFormatted] = useState(() => {
+    // 서버에서도 사용자 친화적인 기본값 제공
+    if (!dateObj) return '';
+    return new Date(isoString).toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      weekday: 'short',
+      ...options,
+    });
+  });
+
+  const optionsKey = useMemo(() => JSON.stringify(options), [options]);
 
   useEffect(() => {
+    const dateToFormat = new Date(isoString);
     setFormatted(
-      dateObj.toLocaleString('ko-KR', {
+      dateToFormat.toLocaleDateString('ko-KR', {
         year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
+        month: 'numeric',
+        day: 'numeric',
+        weekday: 'short',
         ...options,
       })
     );
-  }, [isoString, options]);
+  }, [isoString, optionsKey]);
 
   return formatted;
 }
