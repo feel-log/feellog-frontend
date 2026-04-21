@@ -16,9 +16,9 @@ export default function CalendarPage() {
     income: 50000,
     expense: 50000,
     expenseItems: [
-      { category: '카페', tags: ['기분전환', '보상심리'], amount: 12000 },
-      { category: '취미', tags: ['기분전환', '할인'], amount: 12000 },
-      { category: '식비', tags: ['약속'], amount: 12000 },
+      { category: '카페', tags: ['기분전환', '보상심리'], amount: 12000, paymentMethod: '현금' },
+      { category: '생필품', tags: ['필요'], amount: 24000, paymentMethod: '체크카드' },
+      { category: '식비', tags: ['약속'], amount: 16000, paymentMethod: '체크카드' },
     ],
   };
 
@@ -73,6 +73,13 @@ export default function CalendarPage() {
           month={month}
           onDateClick={(day) => setSelectedDay(day)}
         />
+      </div>
+
+      {/* 지출 추가 플로팅 버튼 */}
+      <div className="fixed bottom-0 left-1/2 flex w-full max-w-md -translate-x-1/2 justify-end">
+        <button className="mb-[187px] mr-[30px] z-40 flex size-[58px] items-center justify-center rounded-full bg-[#13278A] p-[11px] shadow-[2px_3px_7px_0px_rgba(49,49,49,0.3)]">
+          <img src="/icons/icon_plus.svg" alt="지출 추가" width={36} height={36} />
+        </button>
       </div>
 
       {/* 바텀시트 */}

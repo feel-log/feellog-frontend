@@ -6,6 +6,7 @@ interface ExpenseItem {
   category: string;
   tags: string[];
   amount: number;
+  paymentMethod: string;
 }
 
 interface DayDetailSheetProps {
@@ -19,6 +20,9 @@ interface DayDetailSheetProps {
 }
 
 export default function DateBottomSheet({
+  date,
+  month,
+  year,
   income,
   expense,
   expenseItems,
@@ -42,71 +46,87 @@ export default function DateBottomSheet({
     }, 300);
   };
 
+  const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][
+    new Date(year, month, date).getDay()
+  ];
+  const dateLabel = `${month + 1}월 ${date}일 (${dayOfWeek})`;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={handleClose}>
-      <div className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`} />
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center"
+      onClick={handleClose}
+    >
+      <div
+        className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}
+      />
 
       <div
-        className={`relative flex w-full max-w-md h-[594px] flex-col rounded-t-[20px] bg-white px-4 pb-8 pt-5 transition-transform duration-300 ease-out ${isOpen && !isClosing ? 'translate-y-0' : 'translate-y-full'}`}
+        className={`relative flex w-full max-w-md h-[calc(100dvh-89px)] flex-col rounded-t-[20px] bg-white px-4 py-10 transition-transform duration-300 ease-out ${isOpen && !isClosing ? 'translate-y-0' : 'translate-y-full'}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex shrink-0 justify-end">
-          <button onClick={handleClose}>
-            <img src="/icons/icon_X.svg" alt="닫기" width={30} height={30} />
+        {/* 날짜 + 닫기 버튼 */}
+        <div className="flex items-center justify-between">
+          <p className="text-[18px] font-medium leading-[1.5] tracking-[-0.45px] text-[#27282C]">
+            {dateLabel}
+          </p>
+          <button onClick={handleClose} className="size-7" aria-label="닫기">
+            <img src="/icons/icon_X.svg" alt="" width={28} height={28} />
           </button>
         </div>
 
-        <div className="overflow-y-auto">
+        <div className="mt-5 flex flex-col gap-5 overflow-y-auto">
+          {/* 수입 */}
+          <div className="flex flex-col gap-[5px]">
+            <p className="text-[18px] font-semibold leading-[1.5] tracking-[-0.45px] text-[#27282C]">
+              수입
+            </p>
+            <p className="text-[24px] font-semibold leading-[1.5] tracking-[-0.6px] text-[#030303]">
+              {income.toLocaleString()}원
+            </p>
+          </div>
 
-        {/* 수입/지출 금액 (임시 값 출력) */}
-        <div className="mb-4">
-          <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#27282C]">
-            수입
-          </p>
-          <p className="text-[22px] font-bold leading-normal tracking-[-0.55px] text-[#030303]">
-            {income.toLocaleString()}원
-          </p>
-        </div>
-
-        <div className="mb-4">
-          <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#27282C]">
-            지출
-          </p>
-          <p className="text-[22px] font-bold leading-normal tracking-[-0.55px] text-[#EB1C1C]">
-            {expense.toLocaleString()}원
-          </p>
-        </div>
-
-        <div className="mb-2 border-t border-[#E5E5E5]" />
-
-        {/* 지출 항목 리스트 (임시 데이터 출력) */}
-        <div className="flex flex-col">
-          {expenseItems.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-start justify-between py-3"
-            >
-              <div>
-                <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#1C1D1F]">
-                  {item.category}
-                </p>
-                <div className="mt-1 flex items-center gap-1.5">
-                  {item.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[12px] font-medium leading-normal tracking-[-0.3px] text-[#73787E]"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#1C1D1F]">
-                {item.amount.toLocaleString()}원
+          {/* 지출 */}
+          <div className="flex flex-col gap-[5px]">
+            <p className="text-[18px] font-semibold leading-[1.5] tracking-[-0.45px] text-[#27282C]">
+              지출
+            </p>
+            <div className="flex items-center border-b border-[#E5E5E5] pb-[15px]">
+              <p className="text-[24px] font-semibold leading-[1.5] tracking-[-0.6px] text-[#EB1C1C]">
+                {expense.toLocaleString()}원
               </p>
             </div>
-          ))}
-        </div>
+          </div>
+
+          {/* 지출 항목 리스트 */}
+          <div className="flex flex-col gap-5">
+            {expenseItems.map((item, index) => (
+              <div key={index} className="flex flex-col gap-[5px]">
+                <div className="flex items-center justify-between">
+                  <p className="text-[18px] font-semibold leading-[1.5] tracking-[-0.45px] text-[#27282C]">
+                    {item.category}
+                  </p>
+                  <p className="text-[20px] font-semibold leading-[1.5] tracking-[-0.5px] text-[#030303]">
+                    {item.amount.toLocaleString()}원
+                  </p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    {item.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[16px] font-medium leading-[1.5] tracking-[-0.4px] text-[#13278A]"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-[12px] font-medium leading-[1.5] tracking-[-0.3px] text-[#9FA4A8]">
+                    {item.paymentMethod}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
