@@ -40,7 +40,7 @@ export default function RetroMain({
 
         {/* 막대 차트 */}
         <div className="mt-6 flex items-end gap-6.5">
-          {categories.map((cat) => (
+          {categories.slice(0, 2).map((cat) => (
             <div key={cat.name} className="flex flex-col items-center gap-0.5">
               <p className="text-[14px] font-semibold text-[#1C1D1F]">
                 {cat.name}
