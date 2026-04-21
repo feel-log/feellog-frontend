@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import StatusBar from '@/shared/ui/StatusBar';
+import Footer from '@/shared/ui/Footer';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -88,12 +89,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${pretendard.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-gray-50">
-        <div className="min-h-screen w-full bg-gray-50">
-          <div className="mx-auto flex min-h-screen max-w-md flex-col bg-linear-to-b from-[#ecf2fb] to-[#f3f8ff]">
-            <StatusBar />
-            {children}
-          </div>
+      <body className="bg-gray-50">
+        <div className="mx-auto flex min-h-screen max-w-md flex-col bg-gradient-to-b from-[#ecf2fb] to-[#f3f8ff]">
+          <StatusBar />
+          {children}
+          <Footer />
         </div>
       </body>
     </html>
