@@ -11,7 +11,6 @@ export default function CalendarPage() {
   const [month, setMonth] = useState(today.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
-  // 바텀시트 임시 더미 데이터
   const dummyData = {
     income: 50000,
     expense: 50000,
@@ -56,7 +55,6 @@ export default function CalendarPage() {
         <div className="w-6" />
       </header>
 
-      {/* 월 이동 + 수입/지출/합계 출력 */}
       <div className="mt-5">
         <CalendarHeader
           year={year}
@@ -66,7 +64,6 @@ export default function CalendarPage() {
         />
       </div>
 
-      {/* 캘린더 그리드 */}
       <div className="mt-2.5 flex flex-1 flex-col">
         <CalendarGrid
           year={year}
@@ -75,14 +72,12 @@ export default function CalendarPage() {
         />
       </div>
 
-      {/* 지출 추가 플로팅 버튼 */}
       <div className="fixed bottom-0 left-1/2 flex w-full max-w-md -translate-x-1/2 justify-end">
-        <button className="mb-[187px] mr-[30px] z-40 flex size-[58px] items-center justify-center rounded-full bg-[#13278A] p-[11px] shadow-[2px_3px_7px_0px_rgba(49,49,49,0.3)]">
+        <button className="mb-46.75 mr-7.5 z-40 flex size-14.5 items-center justify-center rounded-full bg-[#13278A] p-2.75 shadow-[2px_3px_7px_0px_rgba(49,49,49,0.3)]">
           <img src="/icons/icon_plus.svg" alt="지출 추가" width={36} height={36} />
         </button>
       </div>
 
-      {/* 바텀시트 */}
       {selectedDay !== null && (
         <DateBottomSheet
           date={selectedDay}
