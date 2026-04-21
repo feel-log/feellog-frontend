@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useFormattedDate } from '@/shared/hooks';
 import { getDailyExpense, dailyExpenses } from '@/shared/constants/dailyExpense';
 import Image from 'next/image';
@@ -9,6 +10,7 @@ const TODAY = new Date('2026-04-21');
 const MIN_DATE = new Date('2026-04-08');
 
 export default function TodayExpenseBox() {
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
 
   const canGoPrev = selectedDate > MIN_DATE;
@@ -42,11 +44,15 @@ export default function TodayExpenseBox() {
   const totalAmount = expenseData?.totalAmount ?? 0;
 
   return (
-    <div className="mb-4 w-full rounded-[8px] bg-gradient-to-r from-white to-[#eaf5ff] px-8 py-4 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)]">
+    <div className="mb-4 w-full relative rounded-[8px] bg-gradient-to-r from-white to-[#eaf5ff] px-8 py-4 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)]">
       <div className="mb-5 flex flex-col">
         <span className="text-[14px] text-gray-500">오늘의 지출 비용</span>
         <span className="text-[18px] font-bold">{totalAmount.toLocaleString()}원</span>
       </div>
+
+      <button className={"absolute top-5 right-5 cursor-pointer"} onClick={() => router.push(`/export?date=${dateString}`)}>
+        <Image src={"/svg/icon_arrow_right.svg"} alt={"right-arrow"} width={20} height={20} />
+      </button>
 
       <div className="mb-6 flex items-center gap-4">
         <button
