@@ -63,3 +63,99 @@ src/
   - Prettier
   - ESLint
   - Tailwind CSS IntelliSense
+
+### Next.js 폰트 설정
+
+현재 프로젝트에서 사용 중인 폰트 설정:
+
+#### 주요 폰트
+- **Geist Sans**: 기본 텍스트 폰트 (영문 기반)
+  - CSS 변수: `--font-geist-sans`
+  - 사용처: 본문, UI 컴포넌트
+
+- **Geist Mono**: 모노스페이스 폰트 (코드 표시용)
+  - CSS 변수: `--font-geist-mono`
+  - 사용처: 코드, 기술 정보 표시
+
+#### 폰트 적용 방식
+1. **Next.js `next/font/google`** 사용
+   - `src/app/layout.tsx`에서 폰트 로드
+   - CSS 변수로 변환하여 TailwindCSS와 연동
+
+2. **globals.css 설정**
+   ```css
+   body {
+     font-family: var(--font-geist-sans);
+   }
+   ```
+
+3. **TailwindCSS 통합**
+   - `--font-sans`: Geist Sans (기본 폰트)
+   - `--font-mono`: Geist Mono (모노스페이스)
+   - `--font-heading`: Geist Sans (제목 폰트)
+
+#### Pretendard 폰트 설정 (한글 지원)
+
+**설치 및 적용:**
+1. 로컬 폰트 파일 준비
+   - `public/fonts/Pretendard-1.3.9/web/static/woff2/` 디렉토리에 폰트 파일 보관
+
+2. **layout.tsx에서 localFont로 폰트 로드**
+   ```typescript
+   import localFont from "next/font/local";
+
+   const pretendard = localFont({
+     src: [
+       {
+         path: "../../public/fonts/Pretendard-1.3.9/web/static/woff2/Pretendard-Thin.woff2",
+         weight: "100",
+         style: "normal",
+       },
+       {
+         path: "../../public/fonts/Pretendard-1.3.9/web/static/woff2/Pretendard-ExtraLight.woff2",
+         weight: "200",
+         style: "normal",
+       },
+       // ... 나머지 weight 설정
+       {
+         path: "../../public/fonts/Pretendard-1.3.9/web/static/woff2/Pretendard-Black.woff2",
+         weight: "900",
+         style: "normal",
+       },
+     ],
+     variable: "--font-pretendard",
+   });
+   ```
+
+3. **HTML 클래스에 CSS 변수 추가**
+   ```typescript
+   <html className={`${pretendard.variable} ...`}>
+   ```
+
+4. **globals.css에서 폰트 적용**
+   ```css
+   body {
+     font-family: var(--font-pretendard), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+   }
+
+   @theme inline {
+     --font-sans: var(--font-pretendard), var(--font-geist-sans);
+     --font-heading: var(--font-pretendard), var(--font-geist-sans);
+   }
+   ```
+
+**폰트 우선순위:**
+- 1순위: Pretendard (한글 + 영문 지원)
+- 2순위: Geist Sans (영문 폴백)
+- 3순위: 시스템 기본 폰트
+
+**지원 Weight:**
+- 100 (Thin)
+- 200 (ExtraLight)
+- 300 (Light)
+- 400 (Regular)
+- 500 (Medium)
+- 600 (SemiBold)
+- 700 (Bold)
+- 800 (ExtraBold)
+- 900 (Black)
