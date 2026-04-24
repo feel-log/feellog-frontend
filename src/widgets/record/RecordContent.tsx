@@ -103,6 +103,7 @@ export default function RecordContent() {
 
   const today = '2026-04-22';
   const selectedDate = searchParams?.get('date') || today;
+  const isAssetMode = searchParams?.get('type') === 'asset';
 
   const [record, setRecord] = useState<RecordState>({
     amount: 0,
@@ -266,7 +267,7 @@ export default function RecordContent() {
 
   return (
     <div className="min-h-screen bg-white">
-      <PageHeader title="가계부" />
+      <PageHeader title={isAssetMode ? "자산" : "가계부"} />
 
       <div className="px-6 py-6 pb-40">
         {/* Amount Section */}
@@ -303,62 +304,66 @@ export default function RecordContent() {
           </div>
         </div>
 
-        {/* Type Selection */}
-        <div className="mb-8 flex gap-3">
-          <Button
-            variant="secondary"
-            size="sm"
-            isActive={record.type === 'income'}
-            onClick={() =>
-              setRecord((prev) => ({
-                ...prev,
-                type: 'income',
-                category: '',
-                paymentMethod: '',
-                emotion: '',
-                situationTags: [],
-                memo: '',
-              }))
-            }
-            className="cursor-pointer rounded-full"
-          >
-            수입
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            isActive={record.type === 'expense'}
-            onClick={() =>
-              setRecord((prev) => ({
-                ...prev,
-                type: 'expense',
-                category: '',
-                paymentMethod: '',
-                emotion: '',
-                situationTags: [],
-                memo: '',
-              }))
-            }
-            className="cursor-pointer rounded-full"
-          >
-            지출
-          </Button>
-        </div>
+        {/* Type Selection (Hidden in Asset Mode) */}
+        {!isAssetMode && (
+          <div className="mb-8 flex gap-3">
+            <Button
+              variant="secondary"
+              size="sm"
+              isActive={record.type === 'income'}
+              onClick={() =>
+                setRecord((prev) => ({
+                  ...prev,
+                  type: 'income',
+                  category: '',
+                  paymentMethod: '',
+                  emotion: '',
+                  situationTags: [],
+                  memo: '',
+                }))
+              }
+              className="cursor-pointer rounded-full"
+            >
+              수입
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              isActive={record.type === 'expense'}
+              onClick={() =>
+                setRecord((prev) => ({
+                  ...prev,
+                  type: 'expense',
+                  category: '',
+                  paymentMethod: '',
+                  emotion: '',
+                  situationTags: [],
+                  memo: '',
+                }))
+              }
+              className="cursor-pointer rounded-full"
+            >
+              지출
+            </Button>
+          </div>
+        )}
 
-        {/* Date Section */}
-        <SelectField
-          label="날짜"
-          value={formatDateDisplay(record.date)}
-          placeholder="날짜를 선택하세요"
-          onClick={() => {
-            setTempDate(record.date);
-            setCalendarMonth(() => {
-              const [year, month] = record.date.split('-').map(Number);
-              return { year, month };
-            });
-            setIsDateOpen(true);
-          }}
-        />
+        {/* Date Section (Hidden in Asset Mode) */}
+        {!isAssetMode && (
+          <SelectField
+            label="날짜"
+            value={formatDateDisplay(record.date)}
+            placeholder="날짜를 선택하세요"
+            onClick={() => {
+              setTempDate(record.date);
+              setCalendarMonth(() => {
+                const [year, month] = record.date.split('-').map(Number);
+                return { year, month };
+              });
+              setIsDateOpen(true);
+            }}
+          />
+        )}
 
         {/* Category Section */}
         <SelectField
@@ -679,9 +684,17 @@ export default function RecordContent() {
       {/* Save Button */}
       <div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md border-t border-gray-200 bg-white px-6 py-4">
         <Button
-          onClick={() => console.log('Record saved:', record)}
+          onClick={() => {
+            if (isAssetMode) {
+              console.log('Asset saved:', record);
+            } else {
+              console.log('Record saved:', record);
+            }
+          }}
           disabled={
-            record.category === '' || (record.type === 'expense' && record.paymentMethod === '')
+            isAssetMode
+              ? record.category === ''
+              : record.category === '' || (record.type === 'expense' && record.paymentMethod === '')
           }
           size="lg"
         >

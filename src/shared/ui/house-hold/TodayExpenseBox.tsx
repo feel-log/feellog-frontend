@@ -119,7 +119,7 @@ export default function TodayExpenseBox() {
                       key={emoIdx}
                       className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm"
                     >
-                      <Image src={emotion.emoji} alt={String(emoIdx)} width={14} height={14} />
+                      <span className="text-sm">{emotion.emoji}</span>
                       <span className="text-gray-700">{emotion.label}</span>
                     </span>
                   ))}
