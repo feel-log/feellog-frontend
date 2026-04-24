@@ -119,3 +119,31 @@
   
 - 상황 태그 / 메모의 경우 다음과 같은 UI로 구현해야 한다.
 ![](/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/public/implements/스크린샷 2026-04-24 오후 4.09.27.png)
+
+### 8. 자산 페이지 퍼블리싱
+
+- 기본적으로 이 페이지 같은 경우 Footer가 포함되어야 한다.  
+
+
+- 초기에 자산은 0원이고, 자산이 0원 일 때 UI는 다음과 같다.
+![](/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/public/implements/스크린샷 2026-04-24 오후 5.33.21.png)
+
+  
+- 자산이 없거나 있을 때는 상단 + 버튼을 이용하여 자산을 추가할 수 있다.
+  
+
+- 그러면 자산 추가 페이지로 이동하게 되고, UI는 가계부 기록 페이지와 똑같음.
+  - 카테고리는 급여, 용돈, 부수입, 상여금, 금융수입, 기타가 있다.
+  - 메모는 가계부 기록 페이지의 메모와 동일
+    
+
+- 저장하면, 자산이 추가되고 다음과 같은 UI로 표현된다.
+![](/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/public/implements/스크린샷 2026-04-24 오후 5.45.31.png) 
+  
+  
+- 저축, 투자, 보험, 기타를 각각 누르면, 상세 페이지로 이동하는데 UI는 다음과 같다.
+![](/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/public/implements/스크린샷 2026-04-24 오후 5.47.04.png)
+  
+  
+  
+- 정렬 셀렉터는 오늘의 지출 비용 상세페이지에서 구현했던 것을 똑같이 가져와야 할 것.
