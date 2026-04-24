@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { EmotionItem } from '@/features/report/mock/reportMockData';
 
 interface EmotionListProps {
@@ -25,7 +26,11 @@ export default function EmotionList({ summary, emotions }: EmotionListProps) {
 
       <div className="flex flex-col gap-3.75">
         {visibleEmotions.map((item, index) => (
-          <div key={`${item.rank}-${item.name}-${index}`} className="flex items-center justify-between">
+          <Link
+            key={`${item.rank}-${item.name}-${index}`}
+            href={`/report/emotion/${encodeURIComponent(item.name)}`}
+            className="flex items-center justify-between"
+          >
             <div className="flex items-center gap-3.75">
               <span className="w-4.5 text-center text-[18px] font-medium tracking-[-0.45px] text-[#1C1D1F]">
                 {item.rank}
@@ -51,7 +56,7 @@ export default function EmotionList({ summary, emotions }: EmotionListProps) {
                 />
               </svg>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
