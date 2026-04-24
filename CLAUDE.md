@@ -85,3 +85,37 @@
 - 다음 첨부된 이미지와 같은 UI로 구현하자.
 
 ![](/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/public/implements/스크린샷 2026-04-21 오후 7.51.06.png)
+
+### 7. 가계부 기록 지출 페이지
+
+- 기본적으로, 가계부 수입 페이지와 똑같은 UI로 진행할 것.  
+  
+  
+- 다만, 선택 사항 중 결제 수단, 감정, 상황 태그 / 메모 항목이 추가됨.
+  
+
+- 지출에서는 날짜 선택이 가능해야 하며, 날짜 선택 바텀시트는 다음과 같은 UI로 구현해야 함.
+![](/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/public/implements/스크린샷 2026-04-24 오후 4.01.30.png)
+    - 오늘의 날짜가 기본적으로 active
+    - 사용자가 날짜를 변경하면 변경한 날짜로 남색 원형이 이동한다.
+    - 현재 날짜는 회색 원형으로 표시가 된다.
+    - 바텀 시트 외의 화면을 클릭하거나 X를 클릭하면 바텀시트가 내려감 (이 부분은 추가해야 할 기능)  
+  
+  
+- 결제 수단의 경우 카드, 현금, 계좌, 기타를 선택 가능. 기본 로직은 카테고리 선택 바텀 시트와 똑같음.  
+  
+  
+- 지출에서의 카테고리 선택 로직은 비슷하되 UI가 조금 다르다.
+![](/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/public/implements/스크린샷 2026-04-24 오후 4.06.47.png)
+  
+  
+  
+- 지출에서의 감정 선택은 카테고리 선택과 비슷하다.
+  - 긍정 : 기쁨, 설렘, 뿌듯함, 고마움
+  - 부정 : 짜증, 화남, 불안함, 슬픔, 스트레스, 우울함
+  - 기타 : 심심함, 피곤함, 공허함, 외로움, 충동
+  
+  
+  
+- 상황 태그 / 메모의 경우 다음과 같은 UI로 구현해야 한다.
+![](/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/public/implements/스크린샷 2026-04-24 오후 4.09.27.png)
