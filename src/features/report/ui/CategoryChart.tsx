@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { CategoryItem } from '@/features/report/mock/reportMockData';
 
 interface CategoryChartProps {
@@ -81,7 +82,11 @@ export default function CategoryChart({ summary, categories }: CategoryChartProp
 
       <div className="flex flex-col gap-3.75">
         {visibleCategories.map((cat) => (
-          <div key={cat.name} className="flex items-center justify-between">
+          <Link
+            key={cat.name}
+            href={`/report/category/${encodeURIComponent(cat.name)}`}
+            className="flex items-center justify-between"
+          >
             <div className="flex items-center gap-2.5">
               <span
                 className="block size-2 rounded-full"
@@ -113,7 +118,7 @@ export default function CategoryChart({ summary, categories }: CategoryChartProp
                 />
               </svg>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
