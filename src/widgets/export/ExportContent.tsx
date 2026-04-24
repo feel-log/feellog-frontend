@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { dailyExpenses, getDailyExpense } from '@/shared/constants/dailyExpense';
 import { cn } from '@/lib/utils';
+import PageHeader from '@/shared/ui/PageHeader';
 
 type SortType = 'latest' | 'expensive' | 'cheap';
 
@@ -58,21 +59,7 @@ export default function ExportContent() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="relative flex items-center justify-between px-6 py-4">
-        <button
-          onClick={() => router.back()}
-          className="cursor-pointer text-gray-700 hover:text-black"
-        >
-          <Image
-            src={'/svg/icon_arrow_right.svg'}
-            alt="back"
-            width={24}
-            height={24}
-            className={'rotate-180'}
-          />
-        </button>
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-lg font-bold">오늘의 지출 비용</h1>
-      </div>
+      <PageHeader title="오늘의 지출 비용" />
 
       {/* Content */}
       <div className="px-6 py-6">
@@ -156,7 +143,13 @@ export default function ExportContent() {
         {totalAmount === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <h3 className="mb-2 text-lg font-medium text-gray-800">지출 기록이 아직 없어요</h3>
-            <p className="text-sm text-gray-500">오늘의 소비와 감정을 함께 기록해보세요</p>
+            <p className="mb-6 text-sm text-gray-500">오늘의 소비와 감정을 함께 기록해보세요</p>
+            <button
+              onClick={() => router.push(`/record?date=${selectedDate}`)}
+              className="rounded-lg bg-gray-900 px-6 py-2 text-white font-medium hover:bg-gray-800 transition-colors"
+            >
+              오늘의 지출 기록하러가기
+            </button>
           </div>
         ) : (
           <div className="space-y-6">

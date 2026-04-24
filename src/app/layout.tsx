@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import StatusBar from '@/shared/ui/StatusBar';
 import Footer from '@/shared/ui/Footer';
+import BackgroundProvider from './BackgroundProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -90,11 +91,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="bg-gray-50">
-        <div className="mx-auto flex min-h-screen max-w-md flex-col bg-gradient-to-b from-[#ecf2fb] to-[#f3f8ff]">
+        <BackgroundProvider>
           <StatusBar />
           {children}
-          <Footer />
-        </div>
+        </BackgroundProvider>
       </body>
     </html>
   );

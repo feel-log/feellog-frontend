@@ -152,7 +152,7 @@ export default function Footer() {
         </div>
 
         <button
-          onClick={() => router.push('/add')}
+          onClick={() => router.push('/record')}
           className="absolute cursor-pointer -top-7 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-blue-900 text-white flex items-center justify-center shadow-lg hover:bg-blue-800 transition-colors"
         >
           <Image src={"/svg/icon_plus.svg"} alt={"plus"} width={26} height={26} />

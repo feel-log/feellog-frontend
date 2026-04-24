@@ -95,7 +95,10 @@ export default function TodayExpenseBox() {
           <p className="mb-4 self-start text-[14px] font-medium text-gray-500">
             아직 지출이 없어요
           </p>
-          <button className="w-full rounded-lg border border-gray-300 py-3 text-center font-medium text-gray-700 transition-colors hover:bg-gray-50">
+          <button
+            onClick={() => router.push(`/record?date=${dateString}`)}
+            className="w-full rounded-lg border border-gray-300 py-3 text-center font-medium text-gray-700 transition-colors hover:bg-gray-50"
+          >
             오늘의 지출 기록하러가기
           </button>
         </div>
