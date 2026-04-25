@@ -23,13 +23,26 @@ function getCalendarDates(year: number, month: number) {
   return dates;
 }
 
+export interface DailyAmount {
+  income?: number;
+  expense?: number;
+}
+
 interface CalendarGridProps {
   year: number;
   month: number;
   onDateClick?: (day: number) => void;
+  dailyAmounts?: Record<number, DailyAmount>;
+  selectedDay?: number | null;
 }
 
-export default function CalendarGrid({ year, month, onDateClick }: CalendarGridProps) {
+export default function CalendarGrid({
+  year,
+  month,
+  onDateClick,
+  dailyAmounts = {},
+  selectedDay = null,
+}: CalendarGridProps) {
   const today = new Date();
   const isCurrentMonth =
     year === today.getFullYear() && month === today.getMonth();
@@ -51,28 +64,56 @@ export default function CalendarGrid({ year, month, onDateClick }: CalendarGridP
       </div>
 
       <div className="grid flex-1 auto-rows-fr grid-cols-7">
-        {dates.map((date, index) => (
-          <div
-            key={index}
-            onClick={() => date.isCurrentMonth && onDateClick?.(date.day)}
-            className={`flex flex-col overflow-hidden px-1.25 py-2 ${
-              date.isCurrentMonth ? 'cursor-pointer' : ''
-            }`}
-          >
+        {dates.map((date, index) => {
+          const amounts = date.isCurrentMonth ? dailyAmounts[date.day] : undefined;
+          const isSelected = date.isCurrentMonth && date.day === selectedDay;
+          const isToday = date.isCurrentMonth && date.day === todayDate;
+          const otherDateSelected =
+            selectedDay !== null && selectedDay !== todayDate;
 
+          let dayClass = '';
+          if (isSelected) {
+            dayClass = 'rounded-[25px] bg-[#13278A] text-white';
+          } else if (isToday && otherDateSelected) {
+            dayClass = 'rounded-[25px] bg-[#E5E5E5] text-[#1C1D1F]';
+          } else if (isToday) {
+            dayClass = 'rounded-[25px] bg-[#13278A] text-white';
+          } else if (date.isCurrentMonth) {
+            dayClass = 'text-[#1C1D1F]';
+          } else {
+            dayClass = 'text-[#9FA4A8]';
+          }
+
+          return (
             <div
-              className={`flex w-5.25 items-center justify-center text-[14px] font-medium leading-normal tracking-[-0.35px] ${
-                date.isCurrentMonth && date.day === todayDate
-                  ? 'rounded-[25px] bg-[#13278A] text-white'
-                  : date.isCurrentMonth
-                    ? 'text-[#1C1D1F]'
-                    : 'text-[#9FA4A8]'
+              key={index}
+              onClick={() => date.isCurrentMonth && onDateClick?.(date.day)}
+              className={`flex flex-col gap-1.25 overflow-hidden px-1.25 py-2 ${
+                date.isCurrentMonth ? 'cursor-pointer' : ''
               }`}
             >
-              {date.day}
+              <div
+                className={`flex w-5.25 items-center justify-center text-[14px] font-medium leading-normal tracking-[-0.35px] ${dayClass}`}
+              >
+                {date.day}
+              </div>
+              {amounts && (
+                <div className="flex flex-col gap-1.25 text-[12px] font-medium leading-normal tracking-[-0.3px]">
+                  {amounts.income ? (
+                    <span className="text-[#030303]">
+                      +{amounts.income.toLocaleString()}
+                    </span>
+                  ) : null}
+                  {amounts.expense ? (
+                    <span className="text-[#EB1C1C]">
+                      -{amounts.expense.toLocaleString()}
+                    </span>
+                  ) : null}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

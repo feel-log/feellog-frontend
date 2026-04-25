@@ -3,6 +3,9 @@ interface CalendarHeaderProps {
   month: number;
   onPrevMonth: () => void;
   onNextMonth: () => void;
+  income: number;
+  expense: number;
+  balance: number;
 }
 
 export default function CalendarHeader({
@@ -10,6 +13,9 @@ export default function CalendarHeader({
   month,
   onPrevMonth,
   onNextMonth,
+  income,
+  expense,
+  balance,
 }: CalendarHeaderProps) {
   const today = new Date();
   const isCurrentMonth =
@@ -55,8 +61,8 @@ export default function CalendarHeader({
             <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
               수입
             </p>
-            <p className="whitespace-nowrap text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#13278A]">
-              300,000원
+            <p className="whitespace-nowrap text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#030303]">
+              {income.toLocaleString()}원
             </p>
           </div>
           <div className="flex w-29 flex-col items-center px-2.5 py-0.75 pb-1.5">
@@ -64,7 +70,7 @@ export default function CalendarHeader({
               지출
             </p>
             <p className="whitespace-nowrap text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#EB1C1C]">
-              200,000원
+              {expense.toLocaleString()}원
             </p>
           </div>
           <div className="flex w-29.25 flex-col items-center px-2.5 py-0.75 pb-1.5">
@@ -72,7 +78,7 @@ export default function CalendarHeader({
               합계
             </p>
             <p className="whitespace-nowrap text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#030303]">
-              100,000원
+              {balance.toLocaleString()}원
             </p>
           </div>
         </div>

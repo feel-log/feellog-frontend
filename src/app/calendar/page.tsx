@@ -1,25 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import CalendarHeader from '@/features/calendar/ui/CalendarHeader';
 import CalendarGrid from '@/features/calendar/ui/CalendarGrid';
 import DateBottomSheet from '@/features/calendar/ui/DateBottomSheet';
+import {
+  getCalendarDailyData,
+  getDailyAmounts,
+  getMonthlyTotals,
+} from '@/features/calendar/mock/calendarMockData';
 
 export default function CalendarPage() {
+  const router = useRouter();
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
-  const dummyData = {
-    income: 50000,
-    expense: 50000,
-    expenseItems: [
-      { category: '카페', tags: ['기분전환', '보상심리'], amount: 12000, paymentMethod: '현금' },
-      { category: '생필품', tags: ['필요'], amount: 24000, paymentMethod: '체크카드' },
-      { category: '식비', tags: ['약속'], amount: 16000, paymentMethod: '체크카드' },
-    ],
-  };
+  const dailyAmounts = getDailyAmounts();
+  const dayData = getCalendarDailyData(selectedDay);
+  const monthlyTotals = getMonthlyTotals();
 
   const handlePrevMonth = () => {
     if (month === 0) {
@@ -43,15 +44,17 @@ export default function CalendarPage() {
     <div className="flex flex-1 flex-col">
       {/* 상단 헤더 (공용 컴포넌트로 변경예정) */}
       <header className="flex h-14 items-center justify-between px-4">
-        <button>
+        <button onClick={() => router.push('/')} aria-label="메인으로 이동">
           <img
             src="/icons/icon_arrow_left.svg"
-            alt="뒤로가기"
+            alt=""
             width={28}
             height={28}
           />
         </button>
-        <h1 className="text-base font-bold">캘린더</h1>
+        <h1 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+          캘린더
+        </h1>
         <div className="w-6" />
       </header>
 
@@ -61,6 +64,9 @@ export default function CalendarPage() {
           month={month}
           onPrevMonth={handlePrevMonth}
           onNextMonth={handleNextMonth}
+          income={monthlyTotals.income}
+          expense={monthlyTotals.expense}
+          balance={monthlyTotals.balance}
         />
       </div>
 
@@ -69,12 +75,18 @@ export default function CalendarPage() {
           year={year}
           month={month}
           onDateClick={(day) => setSelectedDay(day)}
+          dailyAmounts={dailyAmounts}
+          selectedDay={selectedDay}
         />
       </div>
 
       <div className="fixed bottom-0 left-1/2 flex w-full max-w-md -translate-x-1/2 justify-end">
-        <button className="mb-46.75 mr-7.5 z-40 flex size-14.5 items-center justify-center rounded-full bg-[#13278A] p-2.75 shadow-[2px_3px_7px_0px_rgba(49,49,49,0.3)]">
-          <img src="/icons/icon_plus.svg" alt="지출 추가" width={36} height={36} />
+        <button
+          onClick={() => router.push('/record?type=expense')}
+          aria-label="지출 추가"
+          className="z-40 mb-32.5 mr-4 flex size-14.5 items-center justify-center rounded-full bg-[#13278A] p-2.75 shadow-[2px_3px_7px_0px_rgba(49,49,49,0.3)]"
+        >
+          <img src="/icons/icon_plus.svg" alt="" width={36} height={36} />
         </button>
       </div>
 
@@ -83,9 +95,9 @@ export default function CalendarPage() {
           date={selectedDay}
           month={month}
           year={year}
-          income={dummyData.income}
-          expense={dummyData.expense}
-          expenseItems={dummyData.expenseItems}
+          income={dayData.income}
+          expense={dayData.expense}
+          expenseItems={dayData.expenseItems}
           onClose={() => setSelectedDay(null)}
         />
       )}
