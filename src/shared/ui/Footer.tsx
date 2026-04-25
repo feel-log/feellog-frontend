@@ -119,9 +119,32 @@ function FooterIcon({ icon }: { icon: string }) {
       );
     case 'user':
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
+        <svg
+          width="30"
+          height="30"
+          viewBox="0 0 30 30"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M14.5003 13.2964C16.7913 13.2964 18.6485 11.4392 18.6485 9.14821C18.6485 6.85722 16.7913 5 14.5003 5C12.2093 5 10.3521 6.85722 10.3521 9.14821C10.3521 11.4392 12.2093 13.2964 14.5003 13.2964Z"
+            fill="#000"
+            stroke="#000"
+            stroke-width="1.9"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M24 24.0004V21.708C24 20.492 23.4996 19.3258 22.6088 18.4659C21.718 17.6061 20.5098 17.123 19.25 17.123H9.75C8.49022 17.123 7.28204 17.6061 6.39124 18.4659C5.50044 19.3258 5 20.492 5 21.708V24.0004"
+            fill="#000"
+          />
+          <path
+            d="M24 24.0004V21.708C24 20.492 23.4996 19.3258 22.6088 18.4659C21.718 17.6061 20.5098 17.123 19.25 17.123H9.75C8.49022 17.123 7.28204 17.6061 6.39124 18.4659C5.50044 19.3258 5 20.492 5 21.708V24.0004H24Z"
+            stroke="#000"
+            stroke-width="1.9"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       );
     default:
@@ -135,18 +158,24 @@ export default function Footer() {
 
   return (
     <div className="fixed right-0 bottom-0 left-0 z-20 mx-auto w-full max-w-md bg-[url('/svg/subtract.png')] bg-center">
-      <div className="relative h-22.5 px-6 flex items-center justify-between">
-        <div className="flex w-full justify-between items-center">
+      <div className="relative h-22.5 flex justify-between">
+        <div className="flex w-full">
           {navItems.map((item, index) => (
             <button
               key={item.id}
               onClick={() => router.push(item.path)}
-              className={`flex flex-col items-center gap-2 text-black font-bold cursor-pointer ${
+              className={`flex flex-col items-center gap-1 text-black font-bold cursor-pointer px-6.5 mt-2 ${
                 pathname === item.path ? 'opacity-100' : 'opacity-50'
+              }
+              ${
+                index === 1 ? 'mr-7.75' : ''
+              }
+              ${
+                index === 2 ? 'ml-7.75' : ''
               }`}
             >
               <FooterIcon icon={item.icon} />
-              <span className="text-lg font-medium whitespace-nowrap">{item.label}</span>
+              <span className="text-[16px] font-medium whitespace-nowrap">{item.label}</span>
             </button>
           ))}
         </div>
