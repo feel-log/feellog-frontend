@@ -40,6 +40,7 @@ export default function RetroSurveyPage() {
   const [selectedSatisfaction, setSelectedSatisfaction] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [shakeKey, setShakeKey] = useState(0);
 
   const isAllSelected =
     selectedEmotion && selectedSituation && selectedSatisfaction && selectedPlan;
@@ -47,6 +48,7 @@ export default function RetroSurveyPage() {
   const handleSubmit = () => {
     if (!isAllSelected) {
       setSubmitted(true);
+      setShakeKey((prev) => prev + 1);
       return;
     }
     router.push('/retro/result');
@@ -77,7 +79,10 @@ export default function RetroSurveyPage() {
               오늘 소비를 이끈 감정은 무엇이였나요?
             </p>
             {submitted && !selectedEmotion && (
-              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#EB1C1C]">
+              <p
+                key={shakeKey}
+                className="animate-shake text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#EB1C1C]"
+              >
                 항목을 선택해주세요
               </p>
             )}
@@ -96,7 +101,10 @@ export default function RetroSurveyPage() {
               어떤 상황에서 소비하게 됐나요?
             </p>
             {submitted && !selectedSituation && (
-              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#EB1C1C]">
+              <p
+                key={shakeKey}
+                className="animate-shake text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#EB1C1C]"
+              >
                 항목을 선택해주세요
               </p>
             )}
@@ -115,7 +123,10 @@ export default function RetroSurveyPage() {
               소비가 전반적으로 만족스러웠나요?
             </p>
             {submitted && !selectedSatisfaction && (
-              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#EB1C1C]">
+              <p
+                key={shakeKey}
+                className="animate-shake text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#EB1C1C]"
+              >
                 항목을 선택해주세요
               </p>
             )}
@@ -134,7 +145,10 @@ export default function RetroSurveyPage() {
               내일은 어떻게 소비하고 싶나요?
             </p>
             {submitted && !selectedPlan && (
-              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#EB1C1C]">
+              <p
+                key={shakeKey}
+                className="animate-shake text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#EB1C1C]"
+              >
                 항목을 선택해주세요
               </p>
             )}
