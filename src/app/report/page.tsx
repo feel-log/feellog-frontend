@@ -7,6 +7,7 @@ import ReportInsights from '@/features/report/ui/ReportInsights';
 import CategoryChart from '@/features/report/ui/CategoryChart';
 import EmotionList from '@/features/report/ui/EmotionList';
 import SituationTags from '@/features/report/ui/SituationTags';
+import Footer from '@/shared/ui/Footer';
 import { reportMockData } from '@/features/report/mock/reportMockData';
 
 export default function ReportPage() {
@@ -44,6 +45,8 @@ export default function ReportPage() {
           <ReportEmpty />
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }

@@ -38,7 +38,7 @@ export default function ReportMonthCard({
   const hasExpense = expense > 0;
 
   return (
-    <div className="flex h-22 w-full items-center gap-3.75 rounded-xl border border-[#F0F0F0] bg-[#F7F8FA] px-4 py-3.5">
+    <div className="flex h-22 w-full items-center gap-3.75 rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] px-4 py-3.5">
 
       <div ref={dropdownRef} className="relative">
         <button
@@ -86,9 +86,10 @@ export default function ReportMonthCard({
         )}
       </div>
 
-      <div className="h-11.25 w-0.5 bg-[#E5E5E5]" />
+      <div className="flex flex-1 items-center gap-5">
+        <div className="h-11.25 w-0.5 bg-[#E5E5E5]" />
 
-      <div className="flex flex-1 flex-col justify-between gap-0">
+        <div className="flex flex-1 flex-col justify-between gap-0">
         <div className="flex items-center gap-3.75">
           <span className="w-7 text-center text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
             수입
@@ -109,6 +110,7 @@ export default function ReportMonthCard({
             {expense.toLocaleString()}원
           </span>
         </div>
+      </div>
       </div>
     </div>
   );

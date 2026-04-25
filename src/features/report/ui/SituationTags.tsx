@@ -75,7 +75,7 @@ const BUBBLE_CONFIGS: Record<
 
 export default function SituationTags({ summary, situations }: SituationTagsProps) {
   return (
-    <div className="flex flex-col gap-7.5 rounded-xl border border-[#F0F0F0] bg-[#F7F8FA] py-5">
+    <div className="flex flex-col gap-2.5 rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] py-5">
       <div className="flex flex-col gap-0.5 px-4">
         <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
           자주 선택한 상황 태그

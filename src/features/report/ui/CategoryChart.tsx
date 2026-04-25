@@ -9,13 +9,7 @@ interface CategoryChartProps {
   categories: CategoryItem[];
 }
 
-function DonutChart({
-  categories,
-  topCategory,
-}: {
-  categories: CategoryItem[];
-  topCategory: CategoryItem;
-}) {
+function DonutChart({ categories }: { categories: CategoryItem[] }) {
   const radius = 70;
   const strokeWidth = 30;
   const circumference = 2 * Math.PI * radius;
@@ -25,7 +19,7 @@ function DonutChart({
   let accumulatedDeg = 0;
 
   return (
-    <div className="relative mx-auto flex h-42.5 w-42.5 items-center justify-center">
+    <div className="relative mx-auto h-42.5 w-42.5">
       <svg
         width="170"
         height="170"
@@ -66,18 +60,30 @@ export default function CategoryChart({ summary, categories }: CategoryChartProp
   const visibleCategories = expanded ? categories : categories.slice(0, 3);
 
   return (
-    <div className="flex flex-col gap-5 rounded-xl bg-[#F7F8FA] p-5">
+    <div className="flex flex-col gap-5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
       <div className="flex flex-col gap-0.5">
         <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
           카테고리별 주요 지출 항목
         </h2>
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#73787E]">
-          {summary}
+          {(() => {
+            const parts = summary.split(topCategory.name);
+            return parts.map((part, i) => (
+              <span key={i}>
+                {part}
+                {i < parts.length - 1 && (
+                  <span className="font-semibold text-[#474C52]">
+                    {topCategory.name}
+                  </span>
+                )}
+              </span>
+            ));
+          })()}
         </p>
       </div>
 
 
-      <DonutChart categories={categories} topCategory={topCategory} />
+      <DonutChart categories={categories} />
 
 
       <div className="flex flex-col gap-3.75">
