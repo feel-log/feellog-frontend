@@ -14,7 +14,7 @@ export default function EmotionList({ summary, emotions }: EmotionListProps) {
   const visibleEmotions = expanded ? emotions : emotions.slice(0, 3);
 
   return (
-    <div className="flex flex-col gap-7.5 rounded-xl bg-[#F7F8FA] p-5">
+    <div className="flex flex-col gap-7.5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
       <div className="flex flex-col gap-0.5">
         <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
           감정별 주요 지출 항목
