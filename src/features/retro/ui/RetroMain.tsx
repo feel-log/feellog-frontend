@@ -1,3 +1,7 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+
 interface ExpenseCategory {
   name: string;
   amount: number;
@@ -23,12 +27,19 @@ export default function RetroMain({
   categories,
   emotions,
 }: RetroMainProps) {
+  const router = useRouter();
   const maxAmount = Math.max(...categories.map((c) => c.amount));
+
+  const handleDetailClick = () => {
+    const today = new Date();
+    const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    router.push(`/export?date=${dateString}`);
+  };
 
   return (
     <div className="flex w-full flex-col gap-4">
 
-      <div className="relative flex h-90 w-89.5 flex-col items-center rounded-[10px] bg-[#F7F8FA]">
+      <div className="relative flex h-90 w-89.5 flex-col items-center rounded-[12px] bg-[#F7F8FA]">
         <div className="mt-7.5 flex flex-col items-center gap-0.5">
           <p className="text-[18px] font-bold text-[#1C1D1F]">
             오늘은 {topCategory}에 가장 많이 지출했어요
@@ -50,25 +61,28 @@ export default function RetroMain({
                   cat.name === topCategory ? 'bg-[#6B9CE5]' : 'bg-[#CACDD2]'
                 }`}
                 style={{
-                  height: `${Math.max((cat.amount / maxAmount) * 140, 20)}px`,
+                  height: `${Math.max((cat.amount / maxAmount) * 140, 40)}px`,
                 }}
               />
             </div>
           ))}
         </div>
 
-        <button className="absolute bottom-4 mx-auto w-78.5 rounded-lg bg-[#DEE8F7] px-14 py-2.5">
+        <button
+          onClick={handleDetailClick}
+          className="absolute bottom-4 mx-auto w-78.5 rounded-lg bg-[#DEE8F7] px-14 py-2.5"
+        >
           <p className="text-center text-[16px] font-semibold text-[#13278A]">
             지출 상세 내역
           </p>
         </button>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto">
+      <div className="flex gap-1.5 overflow-x-auto">
         {emotions.map((emotion) => (
           <div
             key={emotion.name}
-            className="flex h-21.25 w-37 shrink-0 flex-col items-center justify-center rounded-[10px] bg-[#F7F8FA] px-4 py-3.5"
+            className="flex h-21.25 w-37 shrink-0 flex-col items-center justify-center rounded-[12px] bg-[#F7F8FA] px-4 py-3.5"
           >
             <p className="text-[14px] font-medium text-[#73787E]">
               오늘의 소비 감정

@@ -147,6 +147,17 @@ html {
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out;
 }
+
+/* 입력 검증 실패 시 쉐이크 애니메이션 */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%, 45%, 75% { transform: translateX(-4px); }
+  30%, 60%, 90% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
