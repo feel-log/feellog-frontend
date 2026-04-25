@@ -103,11 +103,13 @@ export default function RecordContent() {
 
   const today = '2026-04-22';
   const selectedDate = searchParams?.get('date') || today;
-  const isAssetMode = searchParams?.get('type') === 'asset';
+  const typeParam = searchParams?.get('type');
+  const isAssetMode = typeParam === 'asset';
+  const initialType: 'income' | 'expense' = typeParam === 'expense' ? 'expense' : 'income';
 
   const [record, setRecord] = useState<RecordState>({
     amount: 0,
-    type: 'income',
+    type: initialType,
     date: selectedDate,
     category: '',
     paymentMethod: '',
