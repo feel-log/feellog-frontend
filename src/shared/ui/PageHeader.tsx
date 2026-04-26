@@ -20,7 +20,7 @@ export default function PageHeader({ title, onBack }: PageHeaderProps) {
   };
 
   return (
-    <div className="relative flex items-center justify-between border-b border-gray-200 px-6 py-4">
+    <div className="relative flex items-center justify-between px-6 py-4">
       <button
         onClick={handleBack}
         className="cursor-pointer text-gray-700 hover:text-black"

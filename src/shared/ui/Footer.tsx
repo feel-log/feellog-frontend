@@ -84,7 +84,7 @@ function FooterIcon({ icon }: { icon: string }) {
           />
           <path
             d="M9.73193 17.6201L14.5401 12.4646L17.8105 15.7154L23.7319 9.62012"
-            stroke="#9FA4A8"
+            stroke="black"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -130,9 +130,9 @@ function FooterIcon({ icon }: { icon: string }) {
             d="M14.5003 13.2964C16.7913 13.2964 18.6485 11.4392 18.6485 9.14821C18.6485 6.85722 16.7913 5 14.5003 5C12.2093 5 10.3521 6.85722 10.3521 9.14821C10.3521 11.4392 12.2093 13.2964 14.5003 13.2964Z"
             fill="#000"
             stroke="#000"
-            stroke-width="1.9"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="1.9"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
           <path
             d="M24 24.0004V21.708C24 20.492 23.4996 19.3258 22.6088 18.4659C21.718 17.6061 20.5098 17.123 19.25 17.123H9.75C8.49022 17.123 7.28204 17.6061 6.39124 18.4659C5.50044 19.3258 5 20.492 5 21.708V24.0004"
@@ -141,9 +141,9 @@ function FooterIcon({ icon }: { icon: string }) {
           <path
             d="M24 24.0004V21.708C24 20.492 23.4996 19.3258 22.6088 18.4659C21.718 17.6061 20.5098 17.123 19.25 17.123H9.75C8.49022 17.123 7.28204 17.6061 6.39124 18.4659C5.50044 19.3258 5 20.492 5 21.708V24.0004H24Z"
             stroke="#000"
-            stroke-width="1.9"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="1.9"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       );
