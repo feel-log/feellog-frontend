@@ -147,11 +147,3 @@
   
   
 - 정렬 셀렉터는 오늘의 지출 비용 상세페이지에서 구현했던 것을 똑같이 가져와야 할 것.
-
-## 자동 CI/CD 파이프라인 구축
-
-- 사용 기술 스택 (Next.js)
-- 배포 환경 (AWS 희망)
-- CI/CD 도구 (Github Actions)
-- 배포 방식 (Docker)
-- 브랜치 전략 (main - develop - feature)
