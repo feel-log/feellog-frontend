@@ -77,7 +77,7 @@ function formatDateDisplay(dateString: string): string {
   const [year, month, day] = dateString.split('-').map(Number);
   const date = new Date(year, month - 1, day);
   const dayOfWeek = DAY_OF_WEEK[date.getDay()];
-  return `${year}년 ${month}월 ${day}일 (${dayOfWeek})`;
+  return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
 }
 
 function getCategoryDisplay(category: string, type: 'income' | 'expense'): string {
