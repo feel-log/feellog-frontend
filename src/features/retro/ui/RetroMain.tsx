@@ -39,7 +39,7 @@ export default function RetroMain({
   };
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full flex-col gap-5">
 
       <div className="relative flex h-90 w-89.5 flex-col items-center rounded-[12px] bg-[#F7F8FA]">
         <div className="mt-7.5 flex flex-col items-center gap-0.5">

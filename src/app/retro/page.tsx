@@ -28,7 +28,7 @@ export default function RetroPage() {
         </p>
       </div>
 
-      <div className="flex flex-1 items-start justify-center px-4 pt-7">
+      <div className="flex flex-1 items-start justify-center px-4 pt-5">
         {hasData ? (
           <RetroMain
             totalExpense={totalExpense}
