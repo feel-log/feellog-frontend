@@ -67,11 +67,11 @@ export default function CalendarPage() {
         />
       </div>
 
-      <div className="fixed bottom-0 left-1/2 flex w-full max-w-md -translate-x-1/2 justify-end">
+      <div className="pointer-events-none fixed bottom-0 left-1/2 flex w-full max-w-md -translate-x-1/2 justify-end">
         <button
           onClick={() => router.push('/record?type=expense')}
           aria-label="지출 추가"
-          className="z-40 mb-32.5 mr-4 flex size-14.5 items-center justify-center rounded-full bg-[#13278A] p-2.75 shadow-[2px_3px_7px_0px_rgba(49,49,49,0.3)]"
+          className="pointer-events-auto z-40 mb-32.5 mr-4 flex size-14.5 items-center justify-center rounded-full bg-[#13278A] p-2.75 shadow-[2px_3px_7px_0px_rgba(49,49,49,0.3)]"
         >
           <img src="/icons/icon_plus.svg" alt="" width={36} height={36} />
         </button>
