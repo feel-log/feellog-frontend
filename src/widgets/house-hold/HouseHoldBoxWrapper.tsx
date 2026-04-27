@@ -15,7 +15,7 @@ export default function HouseHoldBoxWrapper() {
           }
         ></div>
       </HouseHoldBox>
-      <HouseHoldBox isAnchor anchor={'/export'}>
+      <HouseHoldBox isAnchor anchor={'/calendar'}>
         <div className={'export_money mb-5 flex flex-col'}>
           <span className={'text-[15px] text-gray-500'}>이번 주 지출 비용</span>
           <span className={'text-[18px] font-bold'}>120,000원</span>
