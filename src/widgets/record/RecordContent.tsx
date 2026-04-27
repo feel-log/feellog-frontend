@@ -64,9 +64,36 @@ const EXPENSE_CATEGORIES = [
 const PAYMENT_METHODS = ['카드', '현금', '계좌', '기타'];
 
 const EMOTIONS = [
-  { group: '긍정', items: ['기쁨', '설렘', '뿌듯함', '고마움'] },
-  { group: '부정', items: ['짜증', '화남', '불안함', '슬픔', '스트레스', '우울함'] },
-  { group: '기타', items: ['심심함', '피곤함', '공허함', '외로움', '충동'] },
+  {
+    group: '긍정',
+    items: [
+      { label: '기쁨', emoji: '/svg/emo/happy.svg' },
+      { label: '설렘', emoji: '/svg/emo/flut.svg' },
+      { label: '뿌듯함', emoji: '/svg/emo/proud.svg' },
+      { label: '고마움', emoji: '/svg/emo/thanks.svg' },
+    ],
+  },
+  {
+    group: '부정',
+    items: [
+      { label: '짜증', emoji: '/svg/emo/annoy.svg' },
+      { label: '화남', emoji: '/svg/emo/angry.svg' },
+      { label: '불안함', emoji: '/svg/emo/anxios.svg' },
+      { label: '슬픔', emoji: '/svg/emo/sad.svg' },
+      { label: '스트레스', emoji: '/svg/emo/stress.svg' },
+      { label: '우울함', emoji: '/svg/emo/depressed.svg' },
+    ],
+  },
+  {
+    group: '기타',
+    items: [
+      { label: '심심함', emoji: '/svg/emo/boring.svg' },
+      { label: '피곤함', emoji: '/svg/emo/tired.svg' },
+      { label: '공허함', emoji: '/svg/emo/emptiness.svg' },
+      { label: '외로움', emoji: '/svg/emo/lonely.svg' },
+      { label: '충동', emoji: '/svg/emo/impulse.svg' },
+    ],
+  },
 ];
 
 const SITUATION_TAGS = ['#피로회복', '#기분전환', '#보상심리', '#할인', '#충동소비', '#필요', '#약속', '#지각', '#기타'];
@@ -640,19 +667,20 @@ export default function RecordContent() {
             {EMOTIONS.map((group) => (
               <div key={group.group}>
                 <h3 className="mb-3 text-sm font-semibold text-gray-700">{group.group}</h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {group.items.map((item) => (
                     <button
-                      key={item}
-                      onClick={() => setSelectedEmotion(item)}
+                      key={item.label}
+                      onClick={() => setSelectedEmotion(item.label)}
                       className={cn(
-                        'rounded-full border px-3 py-2 text-sm transition-colors',
-                        selectedEmotion === item
+                        'rounded-full border px-3 py-2 text-sm transition-colors flex justify-center items-center gap-3',
+                        selectedEmotion === item.label
                           ? 'border-[#13278a] bg-[#ecf2fb] font-medium text-[#13278a]'
                           : 'border-gray-200 text-gray-900 hover:border-gray-300'
                       )}
                     >
-                      {item}
+                      <Image src={item.emoji} alt={item.label} width={14} height={14} />
+                      <span>{item.label}</span>
                     </button>
                   ))}
                 </div>
@@ -694,7 +722,7 @@ export default function RecordContent() {
           <div className="space-y-6">
             <div>
               <p className="mb-3 text-sm text-gray-600">상황 태그는 두 가지만 선택할 수 있어요</p>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {SITUATION_TAGS.map((tag) => (
                   <button
                     key={tag}
