@@ -8,6 +8,7 @@ import CategoryChart from '@/features/report/ui/CategoryChart';
 import EmotionList from '@/features/report/ui/EmotionList';
 import SituationTags from '@/features/report/ui/SituationTags';
 import Footer from '@/shared/ui/Footer';
+import PageHeader from '@/shared/ui/PageHeader';
 import { reportMockData } from '@/features/report/mock/reportMockData';
 
 export default function ReportPage() {
@@ -19,12 +20,7 @@ export default function ReportPage() {
 
   return (
     <div className="flex flex-1 flex-col bg-white">
-      {/* 헤더 */}
-      <header className="flex h-14 items-center justify-center px-4 py-3.25">
-        <h1 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-          리포트
-        </h1>
-      </header>
+      <PageHeader title="리포트" showBack={false} />
 
       <div className="flex flex-col gap-6.25 px-4 pt-5 pb-30">
         <ReportMonthCard

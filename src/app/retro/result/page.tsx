@@ -1,9 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import PageHeader from '@/shared/ui/PageHeader';
 
 export default function RetroResultPage() {
-  const router = useRouter();
   // 임시 더미 데이터 (추후 설문 응답에서 전달)
   const resultData = {
     title: '나를 위한 보상보다 아쉬움이 더 컸던 오늘',
@@ -24,14 +23,12 @@ export default function RetroResultPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* 상단 헤더 */}
-      <header className="flex h-14 items-center justify-between px-4">
-        <div className="w-7" />
-        <h1 className="text-[20px] font-semibold text-[#030303]">회고 결과</h1>
-        <button onClick={() => router.push('/retro')}>
-          <img src="/icons/icon_X.svg" alt="닫기" width={28} height={28} />
-        </button>
-      </header>
+      <PageHeader
+        title="회고 결과"
+        showBack={false}
+        showClose
+        closeHref="/retro"
+      />
 
       <div className="flex flex-col gap-10 pb-25 pl-3.75 pr-4 pt-5">
         {/* 섹션 1: 타이틀 + 결과 카드 */}

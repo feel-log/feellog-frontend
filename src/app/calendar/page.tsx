@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import CalendarHeader from '@/features/calendar/ui/CalendarHeader';
 import CalendarGrid from '@/features/calendar/ui/CalendarGrid';
 import DateBottomSheet from '@/features/calendar/ui/DateBottomSheet';
+import PageHeader from '@/shared/ui/PageHeader';
 import {
   getCalendarDailyData,
   getDailyAmounts,
@@ -42,21 +43,7 @@ export default function CalendarPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* 상단 헤더 (공용 컴포넌트로 변경예정) */}
-      <header className="flex h-14 items-center justify-between px-4">
-        <button onClick={() => router.push('/')} aria-label="메인으로 이동">
-          <img
-            src="/icons/icon_arrow_left.svg"
-            alt=""
-            width={28}
-            height={28}
-          />
-        </button>
-        <h1 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-          캘린더
-        </h1>
-        <div className="w-6" />
-      </header>
+      <PageHeader title="캘린더" backHref="/" />
 
       <div className="mt-5">
         <CalendarHeader
