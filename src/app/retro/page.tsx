@@ -1,9 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import RetroEmpty from '@/features/retro/ui/RetroEmpty';
 import RetroMain from '@/features/retro/ui/RetroMain';
+import PageHeader from '@/shared/ui/PageHeader';
 import { retroMockData } from '@/features/retro/mock/retroMockData';
 
 const TODAY = new Date();
@@ -17,16 +17,7 @@ export default function RetroPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* 헤더 */}
-      <header className="flex h-14 items-center justify-between px-4">
-        <button onClick={() => router.push('/')} aria-label="메인으로 이동">
-          <Image src="/icons/icon_arrow_left.svg" alt="" width={28} height={28} />
-        </button>
-        <h1 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-          회고하기
-        </h1>
-        <div className="w-7" />
-      </header>
+      <PageHeader title="회고하기" backHref="/" />
 
       <div className="px-4 pt-5">
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#73787E]">
@@ -37,7 +28,7 @@ export default function RetroPage() {
         </p>
       </div>
 
-      <div className="flex flex-1 items-start justify-center px-4 pt-7">
+      <div className="flex flex-1 items-start justify-center px-4 pt-5">
         {hasData ? (
           <RetroMain
             totalExpense={totalExpense}

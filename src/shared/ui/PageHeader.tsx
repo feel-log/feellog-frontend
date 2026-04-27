@@ -5,35 +5,73 @@ import Image from 'next/image';
 
 interface PageHeaderProps {
   title: string;
+  showBack?: boolean;
   onBack?: () => void;
+  backHref?: string;
+  showClose?: boolean;
+  onClose?: () => void;
+  closeHref?: string;
 }
 
-export default function PageHeader({ title, onBack }: PageHeaderProps) {
+export default function PageHeader({
+  title,
+  showBack = true,
+  onBack,
+  backHref,
+  showClose = false,
+  onClose,
+  closeHref,
+}: PageHeaderProps) {
   const router = useRouter();
 
   const handleBack = () => {
     if (onBack) {
       onBack();
+    } else if (backHref) {
+      router.push(backHref);
+    } else {
+      router.back();
+    }
+  };
+
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    } else if (closeHref) {
+      router.push(closeHref);
     } else {
       router.back();
     }
   };
 
   return (
-    <div className="relative flex items-center justify-between px-6 py-4">
-      <button
-        onClick={handleBack}
-        className="cursor-pointer text-gray-700 hover:text-black"
-      >
-        <Image
-          src={'/svg/icon_arrow_right.svg'}
-          alt="back"
-          width={24}
-          height={24}
-          className="rotate-180"
-        />
-      </button>
-      <h1 className="absolute left-1/2 -translate-x-1/2 text-lg font-bold">{title}</h1>
-    </div>
+    <header className="relative flex h-14 items-center px-4">
+      {showBack && !showClose && (
+        <button
+          onClick={handleBack}
+          aria-label="뒤로가기"
+          className="cursor-pointer"
+        >
+          <Image
+            src="/icons/icon_arrow_left.svg"
+            alt=""
+            width={28}
+            height={28}
+          />
+        </button>
+      )}
+      <h1 className="absolute left-1/2 -translate-x-1/2 text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+        {title}
+      </h1>
+      {showClose && (
+        <button
+          onClick={handleClose}
+          aria-label="닫기"
+          className="ml-auto cursor-pointer"
+        >
+          <Image src="/icons/icon_X.svg" alt="" width={28} height={28} />
+        </button>
+      )}
+    </header>
   );
 }

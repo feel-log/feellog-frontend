@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ChipSelect from '@/features/retro/ui/ChipSelect';
 import ListSelect from '@/features/retro/ui/ListSelect';
+import PageHeader from '@/shared/ui/PageHeader';
 
 const EMOTIONS = [
   '기쁨', '설렘', '뿌듯함', '고마움',
@@ -56,19 +57,7 @@ export default function RetroSurveyPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* 상단 헤더 (공용 컴포넌트로 변경 예정) */}
-      <header className="flex h-14 items-center justify-between px-4">
-        <button onClick={() => router.push('/retro')}>
-          <img
-            src="/icons/icon_arrow_left.svg"
-            alt="뒤로가기"
-            width={28}
-            height={28}
-          />
-        </button>
-        <h1 className="text-[20px] font-semibold text-[#030303]">회고하기</h1>
-        <div className="w-7" />
-      </header>
+      <PageHeader title="회고하기" backHref="/retro" />
 
       {/* 설문 영역 */}
       <div className="flex flex-1 flex-col gap-12.5 overflow-y-auto pb-36 pt-5">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import useEmblaCarousel from 'embla-carousel-react';
 
 interface ExpenseCategory {
   name: string;
@@ -29,6 +30,7 @@ export default function RetroMain({
 }: RetroMainProps) {
   const router = useRouter();
   const maxAmount = Math.max(...categories.map((c) => c.amount));
+  const [emblaRef] = useEmblaCarousel({ align: 'start', dragFree: true });
 
   const handleDetailClick = () => {
     const today = new Date();
@@ -37,7 +39,7 @@ export default function RetroMain({
   };
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full flex-col gap-5">
 
       <div className="relative flex h-90 w-89.5 flex-col items-center rounded-[12px] bg-[#F7F8FA]">
         <div className="mt-7.5 flex flex-col items-center gap-0.5">
@@ -78,23 +80,25 @@ export default function RetroMain({
         </button>
       </div>
 
-      <div className="flex gap-1.5 overflow-x-auto">
-        {emotions.map((emotion) => (
-          <div
-            key={emotion.name}
-            className="flex h-21.25 w-37 shrink-0 flex-col items-center justify-center rounded-[12px] bg-[#F7F8FA] px-4 py-3.5"
-          >
-            <p className="text-[14px] font-medium text-[#73787E]">
-              오늘의 소비 감정
-            </p>
-            <div className="mt-1.5 flex items-center gap-1.5">
-              <span className="text-[25px]">{emotion.emoji}</span>
-              <p className="text-[20px] font-semibold text-[#1C1D1F]">
-                {emotion.name}
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex gap-1.5">
+          {emotions.map((emotion) => (
+            <div
+              key={emotion.name}
+              className="flex h-21.25 w-37 shrink-0 flex-col items-center justify-center rounded-[12px] bg-[#F7F8FA] px-4 py-3.5"
+            >
+              <p className="text-[14px] font-medium text-[#73787E]">
+                오늘의 소비 감정
               </p>
+              <div className="mt-1.5 flex items-center gap-1.5">
+                <span className="text-[25px]">{emotion.emoji}</span>
+                <p className="text-[20px] font-semibold text-[#1C1D1F]">
+                  {emotion.name}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
