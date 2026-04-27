@@ -50,7 +50,7 @@ export default function DateBottomSheet({
   const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][
     new Date(year, month, date).getDay()
   ];
-  const dateLabel = `${month + 1}월 ${date}일 (${dayOfWeek})`;
+  const dateLabel = `${month + 1}월 ${date}일 ${dayOfWeek}요일`;
   const isEmpty = expenseItems.length === 0 && income === 0 && expense === 0;
 
   return (

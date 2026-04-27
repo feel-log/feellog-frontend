@@ -26,7 +26,7 @@ export default function SelectField({
         <span
           className={cn(
             'transition-colors',
-            'text-gray-400 font-semilight',
+            value ? 'text-[#13278A] font-semilight' : 'text-gray-400 font-semilight',
           )}
         >
           {value || placeholder}

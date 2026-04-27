@@ -8,6 +8,7 @@ import BottomSheet from '@/shared/ui/BottomSheet';
 import Button from '@/shared/ui/Button';
 import SelectField from '@/shared/ui/SelectField';
 import { cn } from '@/lib/utils';
+import KeyBoardUserExperience from '@/shared/ui/record/KeyBoardUserExperience';
 
 interface RecordState {
   amount: number;
@@ -63,9 +64,36 @@ const EXPENSE_CATEGORIES = [
 const PAYMENT_METHODS = ['카드', '현금', '계좌', '기타'];
 
 const EMOTIONS = [
-  { group: '긍정', items: ['기쁨', '설렘', '뿌듯함', '고마움'] },
-  { group: '부정', items: ['짜증', '화남', '불안함', '슬픔', '스트레스', '우울함'] },
-  { group: '기타', items: ['심심함', '피곤함', '공허함', '외로움', '충동'] },
+  {
+    group: '긍정',
+    items: [
+      { label: '기쁨', emoji: '/svg/emo/happy.svg' },
+      { label: '설렘', emoji: '/svg/emo/flut.svg' },
+      { label: '뿌듯함', emoji: '/svg/emo/proud.svg' },
+      { label: '고마움', emoji: '/svg/emo/thanks.svg' },
+    ],
+  },
+  {
+    group: '부정',
+    items: [
+      { label: '짜증', emoji: '/svg/emo/annoy.svg' },
+      { label: '화남', emoji: '/svg/emo/angry.svg' },
+      { label: '불안함', emoji: '/svg/emo/anxios.svg' },
+      { label: '슬픔', emoji: '/svg/emo/sad.svg' },
+      { label: '스트레스', emoji: '/svg/emo/stress.svg' },
+      { label: '우울함', emoji: '/svg/emo/depressed.svg' },
+    ],
+  },
+  {
+    group: '기타',
+    items: [
+      { label: '심심함', emoji: '/svg/emo/boring.svg' },
+      { label: '피곤함', emoji: '/svg/emo/tired.svg' },
+      { label: '공허함', emoji: '/svg/emo/emptiness.svg' },
+      { label: '외로움', emoji: '/svg/emo/lonely.svg' },
+      { label: '충동', emoji: '/svg/emo/impulse.svg' },
+    ],
+  },
 ];
 
 const SITUATION_TAGS = ['#피로회복', '#기분전환', '#보상심리', '#할인', '#충동소비', '#필요', '#약속', '#지각', '#기타'];
@@ -76,7 +104,7 @@ function formatDateDisplay(dateString: string): string {
   const [year, month, day] = dateString.split('-').map(Number);
   const date = new Date(year, month - 1, day);
   const dayOfWeek = DAY_OF_WEEK[date.getDay()];
-  return `${year}년 ${month}월 ${day}일 (${dayOfWeek})`;
+  return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
 }
 
 function getCategoryDisplay(category: string, type: 'income' | 'expense'): string {
@@ -140,17 +168,69 @@ export default function RecordContent() {
   });
   const [tempDate, setTempDate] = useState(selectedDate);
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, '');
-    setAmountInput(value);
+  const calculateExpression = (expression: string): number => {
+    try {
+      if (!expression || expression.trim() === '') {
+        return 0;
+      }
+      const normalized = expression.replace(/,00/g, '.00').replace(/,000/g, '.000');
+      // eslint-disable-next-line no-eval
+      const result = eval(normalized);
+      return Math.round((result || 0) * 100) / 100;
+    } catch {
+      // eval 에러 시 마지막 숫자만 추출
+      const numbers = expression.match(/\d+/g);
+      return numbers ? parseInt(numbers[numbers.length - 1]) : 0;
+    }
   };
 
-  const handleAmountSave = () => {
-    setRecord((prev) => ({
-      ...prev,
-      amount: parseInt(amountInput) || 0,
-    }));
-    setIsAmountEditing(false);
+  const getDisplayAmount = (): number => {
+    if (!amountInput) return 0;
+    try {
+      // 전체 식을 계산
+      // eslint-disable-next-line no-eval
+      const result = eval(amountInput);
+      return Math.round((result || 0) * 100) / 100;
+    } catch {
+      // 에러 시 마지막 숫자 반환
+      const numbers = amountInput.match(/\d+/g);
+      return numbers ? parseInt(numbers[numbers.length - 1]) : 0;
+    }
+  };
+
+  const handleAmountChange = (value: string) => {
+    if (value === 'equals') {
+      const calculated = calculateExpression(amountInput);
+      setAmountInput(calculated.toString());
+      setRecord((rec) => ({
+        ...rec,
+        amount: calculated,
+      }));
+      setIsAmountEditing(false);
+    } else {
+      setAmountInput((prev) => {
+        let result = prev;
+
+        if (value === 'backspace') {
+          result = prev.slice(0, -1);
+        } else if (value === '+' || value === '-' || value === '*' || value === '/') {
+          if (!/[+\-*/]$/.test(result)) {
+            result = prev + value;
+          }
+        } else if (value === ',00' || value === ',000') {
+          const zeros = value === ',00' ? '00' : '000';
+          if (!/[+\-*/]$/.test(result)) {
+            result = prev + zeros;
+          }
+        } else {
+          if (result.length < 15) {
+            result = prev + value;
+          }
+        }
+
+        return result;
+      });
+    }
   };
 
   const handleCategorySelect = (category: string) => {
@@ -263,46 +343,29 @@ export default function RecordContent() {
     return days;
   };
 
-  useEffect(() => {
-    setAmountInput(record.amount.toString());
-  }, [record]);
 
   return (
     <div className="min-h-screen bg-white">
-      <PageHeader title={isAssetMode ? "자산" : "가계부"} />
+      <PageHeader title={isAssetMode ? '자산' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">
         {/* Amount Section */}
         <div className="mb-1">
           <div className="flex items-center gap-2">
-            {isAmountEditing ? (
-              <div className="flex items-center gap-2 pb-4">
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={amountInput}
-                  onChange={handleAmountChange}
-                  autoFocus
-                  className="w-32 border-b-2 border-blue-600 text-2xl font-bold outline-none"
-                />
-                <span className="text-2xl font-bold text-gray-800">원</span>
-                <button
-                  onClick={handleAmountSave}
-                  className="ml-2 cursor-pointer font-semibold text-blue-600"
-                >
-                  완료
-                </button>
-              </div>
-            ) : (
-              <>
-                <h2 className="pb-4 text-2xl font-bold text-gray-800">
-                  {record.amount.toLocaleString()}원
-                </h2>
-                <button onClick={() => setIsAmountEditing(true)} className="cursor-pointer pb-4">
-                  <Image src="/svg/icon_pencil.svg" alt="edit" width={20} height={20} />
-                </button>
-              </>
-            )}
+            <>
+              <h2 className="pb-4 text-2xl font-bold text-gray-800">
+                {isAmountEditing ? getDisplayAmount().toLocaleString() : record.amount.toLocaleString()}원
+              </h2>
+              <button
+                onClick={() => {
+                  setAmountInput(record.amount.toString());
+                  setIsAmountEditing(true);
+                }}
+                className="cursor-pointer pb-4"
+              >
+                <Image src="/svg/icon_pencil.svg" alt="edit" width={20} height={20} />
+              </button>
+            </>
           </div>
         </div>
 
@@ -441,7 +504,7 @@ export default function RecordContent() {
             >
               <Image src={'/svg/icon_arrow_left_fill.svg'} alt={'left'} width={20} height={20} />
             </button>
-            <h3 className="text-lg font-semibold px-3">
+            <h3 className="px-3 text-lg font-semibold">
               {calendarMonth.year}년 {calendarMonth.month}월
             </h3>
             <button
@@ -454,7 +517,13 @@ export default function RecordContent() {
               }}
               className="cursor-pointer text-gray-500 hover:text-gray-700"
             >
-              <Image src={'/svg/icon_arrow_left_fill.svg'} alt={'left'} width={20} height={20} className={"rotate-180"} />
+              <Image
+                src={'/svg/icon_arrow_left_fill.svg'}
+                alt={'left'}
+                width={20}
+                height={20}
+                className={'rotate-180'}
+              />
             </button>
           </div>
 
@@ -534,7 +603,7 @@ export default function RecordContent() {
                       key={item.label}
                       onClick={() => handleCategorySelect(item.label)}
                       className={cn(
-                        'flex justify-center items-center gap-1 rounded-full border px-3 py-2 text-sm transition-colors',
+                        'flex items-center justify-center gap-1 rounded-full border px-3 py-2 text-sm transition-colors',
                         selectedCategory === item.label
                           ? 'border-[#13278a] bg-[#ecf2fb] font-medium text-[#13278a]'
                           : 'border-gray-200 text-gray-900 hover:border-gray-300'
@@ -598,19 +667,20 @@ export default function RecordContent() {
             {EMOTIONS.map((group) => (
               <div key={group.group}>
                 <h3 className="mb-3 text-sm font-semibold text-gray-700">{group.group}</h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {group.items.map((item) => (
                     <button
-                      key={item}
-                      onClick={() => setSelectedEmotion(item)}
+                      key={item.label}
+                      onClick={() => setSelectedEmotion(item.label)}
                       className={cn(
-                        'rounded-full border px-3 py-2 text-sm transition-colors',
-                        selectedEmotion === item
+                        'rounded-full border px-3 py-2 text-sm transition-colors flex justify-center items-center gap-3',
+                        selectedEmotion === item.label
                           ? 'border-[#13278a] bg-[#ecf2fb] font-medium text-[#13278a]'
                           : 'border-gray-200 text-gray-900 hover:border-gray-300'
                       )}
                     >
-                      {item}
+                      <Image src={item.emoji} alt={item.label} width={14} height={14} />
+                      <span>{item.label}</span>
                     </button>
                   ))}
                 </div>
@@ -652,7 +722,7 @@ export default function RecordContent() {
           <div className="space-y-6">
             <div>
               <p className="mb-3 text-sm text-gray-600">상황 태그는 두 가지만 선택할 수 있어요</p>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {SITUATION_TAGS.map((tag) => (
                   <button
                     key={tag}
@@ -702,6 +772,7 @@ export default function RecordContent() {
         >
           저장
         </Button>
+        {isAmountEditing && <KeyBoardUserExperience changeAmount={handleAmountChange} />}
       </div>
     </div>
   );

@@ -160,12 +160,16 @@ export default function Footer() {
     <div className="fixed right-0 bottom-0 left-0 z-20 mx-auto w-full max-w-md bg-[url('/svg/subtract.png')] bg-center">
       <div className="relative h-22.5 flex justify-between">
         <div className="flex w-full">
-          {navItems.map((item, index) => (
+          {navItems.map((item, index) => {
+            const isActive = item.path === '/'
+              ? pathname === '/'
+              : pathname === item.path || pathname.startsWith(item.path + '/');
+            return (
             <button
               key={item.id}
               onClick={() => router.push(item.path)}
               className={`flex flex-col items-center gap-1 text-black font-bold cursor-pointer px-6.5 mt-2 ${
-                pathname === item.path ? 'opacity-100' : 'opacity-50'
+                isActive ? 'opacity-100' : 'opacity-50'
               }
               ${
                 index === 1 ? 'mr-7.75' : ''
@@ -177,7 +181,8 @@ export default function Footer() {
               <FooterIcon icon={item.icon} />
               <span className="text-[16px] font-medium whitespace-nowrap">{item.label}</span>
             </button>
-          ))}
+            );
+          })}
         </div>
 
         <button
