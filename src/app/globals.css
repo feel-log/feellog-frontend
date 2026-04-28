@@ -204,6 +204,13 @@ html {
   }
 }
 
+/* 이미지 드래그 방지 */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+
 /* Swiper Custom Styles for Daily Spending Carousel */
 .spending-swiper {
   padding: 4px 0;

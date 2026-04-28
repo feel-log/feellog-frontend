@@ -11,7 +11,7 @@ export default function HouseHoldBoxWrapper() {
         <h3 className={'pb-1 text-[13px] text-gray-600'}>공원을 산책하며 여유를 가져볼까요?</h3>
         <div
           className={
-            "clover absolute top-0 right-10 bottom-0 my-auto h-14 w-14 bg-[url('/svg/icon_fourLeafLover.png')] bg-cover bg-center"
+            "clover absolute top-0 right-0 bottom-0 my-auto h-14 w-14 bg-[url('/svg/icon_fourLeafLover.png')] bg-cover bg-center"
           }
         ></div>
       </HouseHoldBox>
@@ -26,7 +26,7 @@ export default function HouseHoldBoxWrapper() {
         <ThisWeekBox />
       </HouseHoldBox>
       <TodayExpenseBox />
-      <HouseHoldBox className={"mb-36"}>
+      <HouseHoldBox className={"mb-36"} isAnchor anchor={'/retro'}>
         <h2 className={'py-1 text-[17px] font-medium'}>오늘의 지출 회고하기</h2>
         <h3 className={'pb-1 text-[13px] text-gray-600'}>지출 속에 담긴 오늘의 마음을 살펴봐요</h3>
         <div
