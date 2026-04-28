@@ -26,7 +26,7 @@ export default function HouseHoldBoxWrapper() {
         <ThisWeekBox />
       </HouseHoldBox>
       <TodayExpenseBox />
-      <HouseHoldBox className={"mb-36"}>
+      <HouseHoldBox className={"mb-36"} isAnchor anchor={'/retro'}>
         <h2 className={'py-1 text-[17px] font-medium'}>오늘의 지출 회고하기</h2>
         <h3 className={'pb-1 text-[13px] text-gray-600'}>지출 속에 담긴 오늘의 마음을 살펴봐요</h3>
         <div
