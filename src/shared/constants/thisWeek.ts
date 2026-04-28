@@ -1,44 +1,33 @@
-export const thisWeek = [
-  {
-    id: 0,
-    day: 12,
-    week: '일',
-    changed: false
-  },
-  {
-    id: 1,
-    day: 13,
-    week: '월',
-    changed: false
-  },
-  {
-    id: 2,
-    day: 14,
-    week: '화',
-    changed: -12000
-  },
-  {
-    id: 3,
-    day: 15,
-    week: '수',
-    changed: false
-  },
-  {
-    id: 4,
-    day: 16,
-    week: '목',
-    changed: -75000
-  },
-  {
-    id: 5,
-    day: 17,
-    week: '금',
-    changed: false
-  },
-  {
-    id: 6,
-    day: 18,
-    week: '토',
-    changed: false
+export interface ThisWeekData {
+  id: number;
+  day: number;
+  week: string;
+  changed: number | false;
+}
+
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+
+export function generateThisWeek(): ThisWeekData[] {
+  const today = new Date();
+  const currentDay = today.getDay();
+
+  // 이번주 시작 (일요일)을 구함
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - currentDay);
+
+  const week: ThisWeekData[] = [];
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(startOfWeek);
+    date.setDate(startOfWeek.getDate() + i);
+
+    week.push({
+      id: i,
+      day: date.getDate(),
+      week: WEEKDAYS[i],
+      changed: false
+    });
   }
-]
+
+  return week;
+}
