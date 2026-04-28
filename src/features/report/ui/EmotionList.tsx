@@ -1,32 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import EmotionIcon from '@/shared/ui/EmotionIcon';
 import type { EmotionItem } from '@/features/report/mock/reportMockData';
 
 interface EmotionListProps {
   summary: string;
   emotions: EmotionItem[];
 }
-
-const EMOTION_NAME_TO_SVG: Record<string, string> = {
-  심심함: 'boring',
-  공허함: 'emptiness',
-  피곤함: 'tired',
-  기쁨: 'happy',
-  설렘: 'flut',
-  뿌듯함: 'proud',
-  고마움: 'thanks',
-  짜증: 'annoy',
-  화남: 'angry',
-  충동: 'impulse',
-  불안함: 'anxios',
-  우울함: 'depressed',
-  슬픔: 'sad',
-  스트레스: 'stress',
-  외로움: 'lonely',
-};
 
 export default function EmotionList({ summary, emotions }: EmotionListProps) {
   const [expanded, setExpanded] = useState(false);
@@ -55,16 +37,7 @@ export default function EmotionList({ summary, emotions }: EmotionListProps) {
                 {item.rank}
               </span>
               <div className="flex items-center gap-2">
-                {EMOTION_NAME_TO_SVG[item.name] ? (
-                  <Image
-                    src={`/svg/emo/${EMOTION_NAME_TO_SVG[item.name]}.svg`}
-                    alt={item.name}
-                    width={24}
-                    height={24}
-                  />
-                ) : (
-                  <span className="text-[20px] leading-none">{item.emoji}</span>
-                )}
+                <EmotionIcon name={item.name} size={24} />
                 <span className="text-[18px] font-medium tracking-[-0.45px] text-[#1C1D1F]">
                   {item.name}
                 </span>

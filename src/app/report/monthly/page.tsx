@@ -1,9 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Image from 'next/image';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton, { type SortType } from '@/shared/ui/SortButton';
+import EmotionIcon from '@/shared/ui/EmotionIcon';
 import {
   monthlyExpenseMock,
   getMonthlyExpenseTotal,
@@ -73,13 +73,7 @@ function ExpenseItemRow({ item, showDate }: { item: MonthlyExpenseItem; showDate
               <span className="h-3.5 w-px bg-[#D9D9D9]" />
               <div className="flex items-center gap-1.5">
                 {item.emotions.map((emotion) => (
-                  <Image
-                    key={emotion}
-                    src={`/svg/emo/${emotion}.svg`}
-                    alt={emotion}
-                    width={20}
-                    height={20}
-                  />
+                  <EmotionIcon key={emotion} name={emotion} size={20} />
                 ))}
               </div>
             </>

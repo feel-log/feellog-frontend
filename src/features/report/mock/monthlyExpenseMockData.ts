@@ -5,7 +5,7 @@ export interface MonthlyExpenseItem {
   name?: string;
   amount: number;
   paymentMethod: string;
-  tags: string[]; 
+  tags: string[];
   emotions: string[];
 }
 
@@ -18,7 +18,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 68000,
     paymentMethod: '카드',
     tags: ['기분전환', '보상심리'],
-    emotions: ['boring', 'emptiness'],
+    emotions: ['심심함', '공허함'],
   },
   {
     id: '2',
@@ -27,7 +27,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 42000,
     paymentMethod: '현금',
     tags: ['피로회복', '기타'],
-    emotions: ['tired', 'happy'],
+    emotions: ['피곤함', '기쁨'],
   },
   {
     id: '3',
@@ -37,7 +37,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 55000,
     paymentMethod: '카드',
     tags: ['기분전환'],
-    emotions: ['flut', 'happy'],
+    emotions: ['설렘', '기쁨'],
   },
   {
     id: '4',
@@ -46,7 +46,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 28000,
     paymentMethod: '카드',
     tags: ['기분전환'],
-    emotions: ['flut', 'happy'],
+    emotions: ['설렘', '기쁨'],
   },
   {
     id: '5',
@@ -55,7 +55,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 74000,
     paymentMethod: '카드',
     tags: ['약속'],
-    emotions: ['thanks'],
+    emotions: ['고마움'],
   },
   {
     id: '6',
@@ -64,7 +64,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 63000,
     paymentMethod: '카드',
     tags: ['충동소비', '기분전환'],
-    emotions: ['impulse', 'anxios'],
+    emotions: ['충동', '불안함'],
   },
   {
     id: '7',
@@ -73,7 +73,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 48000,
     paymentMethod: '현금',
     tags: ['필요'],
-    emotions: ['proud'],
+    emotions: ['뿌듯함'],
   },
   {
     id: '8',
@@ -83,7 +83,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 86000,
     paymentMethod: '카드',
     tags: ['충동소비', '기분전환'],
-    emotions: ['impulse', 'depressed'],
+    emotions: ['충동', '우울함'],
   },
   {
     id: '9',
@@ -92,7 +92,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 23000,
     paymentMethod: '현금',
     tags: ['피로회복'],
-    emotions: ['tired', 'sad'],
+    emotions: ['피곤함', '슬픔'],
   },
   {
     id: '10',
@@ -101,7 +101,7 @@ export const monthlyExpenseMock: MonthlyExpenseItem[] = [
     amount: 105000,
     paymentMethod: '카드',
     tags: ['피로회복'],
-    emotions: ['tired'],
+    emotions: ['피곤함'],
   },
 ];
 

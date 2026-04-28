@@ -1,9 +1,9 @@
 'use client';
 
 import { use, useMemo, useState } from 'react';
-import Image from 'next/image';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton, { type SortType } from '@/shared/ui/SortButton';
+import EmotionIcon from '@/shared/ui/EmotionIcon';
 import {
   getEmotionDetail,
   type EmotionExpenseItem,
@@ -13,22 +13,6 @@ import {
 interface PageProps {
   params: Promise<{ emotionId: string }>;
 }
-
-const EMOTION_NAME_TO_SVG: Record<string, string> = {
-  심심함: 'boring',
-  공허함: 'emptiness',
-  피곤함: 'tired',
-  기쁨: 'happy',
-  설렘: 'flut',
-  고마움: 'thanks',
-  충동: 'impulse',
-  불안함: 'anxios',
-  뿌듯함: 'proud',
-  우울함: 'depressed',
-  슬픔: 'sad',
-  스트레스: 'stress',
-  외로움: 'lonely',
-};
 
 interface FlatItem extends EmotionExpenseItem {
   dateLabel: string;
@@ -131,7 +115,6 @@ export default function EmotionDetailPage({ params }: PageProps) {
   const groupedItems = useMemo(() => regroupByDate(sortedItems), [sortedItems]);
 
   const isDateSort = sortType === 'latest' || sortType === 'oldest';
-  const svgKey = EMOTION_NAME_TO_SVG[detail.name];
 
   return (
     <div className="flex flex-1 flex-col bg-white">
@@ -139,18 +122,7 @@ export default function EmotionDetailPage({ params }: PageProps) {
 
       <div className="border-b-[5px] border-[#F7F8FA] px-4 pt-3 pb-5">
         <div className="flex items-center gap-4">
-          {svgKey ? (
-            <Image
-              src={`/svg/emo/${svgKey}.svg`}
-              alt={detail.name}
-              width={48}
-              height={48}
-            />
-          ) : (
-            <span className="flex size-12 items-center justify-center text-[40px] leading-none">
-              {detail.emoji}
-            </span>
-          )}
+          <EmotionIcon name={detail.name} size={48} />
           <div className="flex flex-col gap-0.5">
             <span className="text-[18px] font-medium leading-normal tracking-[-0.45px] text-[#474C52]">
               {detail.name}

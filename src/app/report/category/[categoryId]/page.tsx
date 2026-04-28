@@ -1,9 +1,9 @@
 'use client';
 
 import { use, useMemo, useState } from 'react';
-import Image from 'next/image';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton, { type SortType } from '@/shared/ui/SortButton';
+import EmotionIcon from '@/shared/ui/EmotionIcon';
 import {
   getCategoryDetail,
   type ExpenseItem,
@@ -14,20 +14,6 @@ import {
 interface PageProps {
   params: Promise<{ categoryId: string }>;
 }
-
-const EMOTION_NAME_TO_SVG: Record<string, string> = {
-  심심함: 'boring',
-  공허함: 'emptiness',
-  피곤함: 'tired',
-  기쁨: 'happy',
-  설렘: 'flut',
-  고마움: 'thanks',
-  충동: 'impulse',
-  불안함: 'anxios',
-  뿌듯함: 'proud',
-  우울함: 'depressed',
-  슬픔: 'sad',
-};
 
 interface FlatItem extends ExpenseItem {
   dateLabel: string;
@@ -100,25 +86,9 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
             <>
               <span className="h-3.5 w-px bg-[#D9D9D9]" />
               <div className="flex items-center gap-1.5">
-                {item.emotions.map((emo: EmotionBadge) => {
-                  const svgKey = EMOTION_NAME_TO_SVG[emo.name];
-                  if (!svgKey) {
-                    return (
-                      <span key={emo.name} className="text-[18px] leading-none">
-                        {emo.emoji}
-                      </span>
-                    );
-                  }
-                  return (
-                    <Image
-                      key={emo.name}
-                      src={`/svg/emo/${svgKey}.svg`}
-                      alt={emo.name}
-                      width={20}
-                      height={20}
-                    />
-                  );
-                })}
+                {item.emotions.map((emo: EmotionBadge) => (
+                  <EmotionIcon key={emo.name} name={emo.name} size={20} />
+                ))}
               </div>
             </>
           )}
