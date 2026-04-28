@@ -45,7 +45,7 @@ export default function TodayExpenseBox() {
   const totalAmount = expenseData?.totalAmount ?? 0;
 
   return (
-    <div className="relative mb-4 w-full rounded-[8px] bg-linear-to-r from-white to-[#eaf5ff] px-8 py-4 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)]">
+    <div className="relative mb-4 w-full rounded-[8px] bg-linear-to-r from-white to-[#eaf5ff] px-4 py-4 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)]">
       <div className="mb-5 flex flex-col">
         <span className="text-[14px] text-gray-500">오늘의 지출 비용</span>
         <span className="text-[18px] font-bold">{totalAmount.toLocaleString()}원</span>
