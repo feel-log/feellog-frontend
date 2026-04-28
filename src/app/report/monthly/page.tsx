@@ -1,42 +1,43 @@
 'use client';
 
-import { use, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton, { type SortType } from '@/shared/ui/SortButton';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
 import {
-  getCategoryDetail,
-  type ExpenseItem,
-  type ExpenseDateGroup,
-  type EmotionBadge,
-} from '@/features/report/mock/categoryDetailMockData';
+  monthlyExpenseMock,
+  getMonthlyExpenseTotal,
+  type MonthlyExpenseItem,
+} from '@/features/report/mock/monthlyExpenseMockData';
 
-interface PageProps {
-  params: Promise<{ categoryId: string }>;
-}
-
-interface FlatItem extends ExpenseItem {
+interface DayGroup {
+  date: string;
   dateLabel: string;
-  dateOrder: number;
+  items: MonthlyExpenseItem[];
 }
 
-function flattenGroups(month: number, groups: ExpenseDateGroup[]): FlatItem[] {
-  return groups.flatMap((g) =>
-    g.items.map((item) => ({
-      ...item,
-      dateLabel: `${month}월 ${g.date}`,
-      dateOrder: parseInt(g.date.replace(/[^0-9]/g, ''), 10),
-    })),
-  );
+function groupByDate(items: MonthlyExpenseItem[]): DayGroup[] {
+  const map = new Map<string, DayGroup>();
+  items.forEach((item) => {
+    if (!map.has(item.date)) {
+      map.set(item.date, {
+        date: item.date,
+        dateLabel: item.dateLabel,
+        items: [],
+      });
+    }
+    map.get(item.date)!.items.push(item);
+  });
+  return Array.from(map.values());
 }
 
-function sortFlatItems(items: FlatItem[], sortType: SortType): FlatItem[] {
+function sortItems(items: MonthlyExpenseItem[], sortType: SortType): MonthlyExpenseItem[] {
   const sorted = [...items];
   switch (sortType) {
     case 'latest':
-      return sorted.sort((a, b) => b.dateOrder - a.dateOrder);
+      return sorted.sort((a, b) => b.date.localeCompare(a.date));
     case 'oldest':
-      return sorted.sort((a, b) => a.dateOrder - b.dateOrder);
+      return sorted.sort((a, b) => a.date.localeCompare(b.date));
     case 'expensive':
       return sorted.sort((a, b) => b.amount - a.amount);
     case 'cheap':
@@ -46,23 +47,7 @@ function sortFlatItems(items: FlatItem[], sortType: SortType): FlatItem[] {
   }
 }
 
-interface DayGroup {
-  dateLabel: string;
-  items: FlatItem[];
-}
-
-function regroupByDate(items: FlatItem[]): DayGroup[] {
-  const map = new Map<string, DayGroup>();
-  items.forEach((item) => {
-    if (!map.has(item.dateLabel)) {
-      map.set(item.dateLabel, { dateLabel: item.dateLabel, items: [] });
-    }
-    map.get(item.dateLabel)!.items.push(item);
-  });
-  return Array.from(map.values());
-}
-
-function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean }) {
+function ExpenseItemRow({ item, showDate }: { item: MonthlyExpenseItem; showDate: boolean }) {
   return (
     <div className="flex flex-col gap-1.25">
       {showDate && (
@@ -70,6 +55,7 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
           {item.dateLabel}
         </p>
       )}
+
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
@@ -86,8 +72,8 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
             <>
               <span className="h-3.5 w-px bg-[#D9D9D9]" />
               <div className="flex items-center gap-1.5">
-                {item.emotions.map((emo: EmotionBadge) => (
-                  <EmotionIcon key={emo.name} name={emo.name} size={20} />
+                {item.emotions.map((emotion) => (
+                  <EmotionIcon key={emotion} name={emotion} size={20} />
                 ))}
               </div>
             </>
@@ -97,51 +83,39 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
           {item.amount.toLocaleString()}원
         </p>
       </div>
+
       <div className="flex items-center justify-between">
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
-          {item.memo ?? ''}
+          {item.name ?? ''}
         </p>
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
-          {item.payment}
+          {item.paymentMethod}
         </p>
       </div>
     </div>
   );
 }
 
-export default function CategoryDetailPage({ params }: PageProps) {
-  const { categoryId } = use(params);
-  const decodedId = decodeURIComponent(categoryId);
-  const detail = getCategoryDetail(decodedId)!;
+export default function MonthlyExpensePage() {
   const [sortType, setSortType] = useState<SortType>('latest');
-
-  const flatItems = useMemo(
-    () => flattenGroups(detail.month, detail.groups),
-    [detail],
-  );
-  const sortedItems = useMemo(() => sortFlatItems(flatItems, sortType), [flatItems, sortType]);
-  const groupedItems = useMemo(() => regroupByDate(sortedItems), [sortedItems]);
+  const totalAmount = getMonthlyExpenseTotal();
 
   const isDateSort = sortType === 'latest' || sortType === 'oldest';
 
+  const sortedItems = useMemo(
+    () => sortItems(monthlyExpenseMock, sortType),
+    [sortType],
+  );
+  const groupedItems = useMemo(() => groupByDate(sortedItems), [sortedItems]);
+
   return (
     <div className="flex flex-1 flex-col bg-white">
-      <PageHeader title="카테고리별 지출 항목" />
+      <PageHeader title="이번 달 지출" />
 
       <div className="border-b-[5px] border-[#F7F8FA] px-4 pt-3 pb-5">
-        <div className="flex items-center gap-4">
-          <span className="flex h-18 w-12 items-center justify-center text-[48px] leading-[150%]">
-            {detail.emoji}
-          </span>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[18px] font-medium leading-normal tracking-[-0.45px] text-[#474C52]">
-              {detail.name}
-            </span>
-            <span className="text-[24px] font-semibold leading-normal tracking-[-0.6px] text-[#030303]">
-              {detail.totalAmount.toLocaleString()}원
-            </span>
-          </div>
-        </div>
+        <p className="text-[24px] font-semibold leading-normal tracking-[-0.6px] text-[#030303]">
+          {totalAmount.toLocaleString()}원
+        </p>
       </div>
 
       <div className="flex justify-end px-4 pt-4">
@@ -152,7 +126,7 @@ export default function CategoryDetailPage({ params }: PageProps) {
         <div className="flex flex-col">
           {groupedItems.map((group) => (
             <div
-              key={group.dateLabel}
+              key={group.date}
               className="flex flex-col gap-3.75 border-b border-[#E5E5E5] px-4 py-7.5 last:border-b-0"
             >
               <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">

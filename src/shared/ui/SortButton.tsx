@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { useClickOutside } from '@/shared/hooks';
 
-type SortType = 'latest' | 'expensive' | 'cheap';
+export type SortType = 'latest' | 'oldest' | 'expensive' | 'cheap';
 
 interface SortButtonProps {
   sortType: SortType;
@@ -18,6 +18,7 @@ export default function SortButton({ sortType, onSortChange }: SortButtonProps) 
 
   const sortOptions: Array<{ value: SortType; label: string }> = [
     { value: 'latest', label: '최신순' },
+    { value: 'oldest', label: '오래된 순' },
     { value: 'expensive', label: '금액 높은 순' },
     { value: 'cheap', label: '금액 낮은 순' },
   ];

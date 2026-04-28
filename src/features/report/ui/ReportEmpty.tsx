@@ -1,6 +1,6 @@
 const SECTIONS = [
-  { id: 'category', title: '카테고리별 주요 지출 항목', height: 'h-58.25', titleColor: 'text-[#030303]' },
-  { id: 'emotion', title: '감정별 주요 지출 항목', height: 'h-58.25', titleColor: 'text-[#030303]' },
+  { id: 'category', title: '카테고리별 지출 항목', height: 'h-58.25', titleColor: 'text-[#030303]' },
+  { id: 'emotion', title: '감정별 지출 항목', height: 'h-58.25', titleColor: 'text-[#030303]' },
   { id: 'situation', title: '자주 선택한 상황 태그', height: 'h-70', titleColor: 'text-[#1C1D1F]' },
 ];
 

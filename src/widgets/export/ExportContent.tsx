@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton from '@/shared/ui/SortButton';
 
-type SortType = 'latest' | 'expensive' | 'cheap';
+type SortType = 'latest' | 'oldest' | 'expensive' | 'cheap';
 
 const TODAY = '2026-04-21';
 
@@ -47,6 +47,8 @@ export default function ExportContent() {
         return [...items].sort((a, b) => b.amount - a.amount);
       case 'cheap':
         return [...items].sort((a, b) => a.amount - b.amount);
+      case 'oldest':
+        return [...items].reverse();
       case 'latest':
       default:
         return items;

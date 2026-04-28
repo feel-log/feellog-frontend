@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import ReportMonthCard from '@/features/report/ui/ReportMonthCard';
 import ReportEmpty from '@/features/report/ui/ReportEmpty';
 import ReportInsights from '@/features/report/ui/ReportInsights';
@@ -12,7 +13,10 @@ import PageHeader from '@/shared/ui/PageHeader';
 import { reportMockData } from '@/features/report/mock/reportMockData';
 
 export default function ReportPage() {
-  const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const router = useRouter();
+  const today = new Date();
+  const [year, setYear] = useState(today.getFullYear());
+  const [month, setMonth] = useState(today.getMonth() + 1);
 
   const { income, expense, insights, categorySummary, categories, emotionSummary, emotions, situationSummary, situations } = reportMockData;
   const hasData = income > 0 || expense > 0;
@@ -24,10 +28,17 @@ export default function ReportPage() {
 
       <div className="flex flex-col gap-6.25 px-4 pt-5 pb-30">
         <ReportMonthCard
+          year={year}
           month={month}
           income={income}
           expense={expense}
-          onMonthChange={setMonth}
+          onYearMonthChange={(ym) => {
+            setYear(ym.year);
+            setMonth(ym.month);
+          }}
+          onExpenseDetailClick={() =>
+            router.push(hasData ? '/report/monthly' : '/record?type=expense')
+          }
         />
 
         {hasData ? (

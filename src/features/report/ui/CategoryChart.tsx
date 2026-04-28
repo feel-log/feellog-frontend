@@ -63,7 +63,7 @@ export default function CategoryChart({ summary, categories }: CategoryChartProp
     <div className="flex flex-col gap-5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
       <div className="flex flex-col gap-0.5">
         <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-          카테고리별 주요 지출 항목
+          카테고리별 지출 항목
         </h2>
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#73787E]">
           {(() => {

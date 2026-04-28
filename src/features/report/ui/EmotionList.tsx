@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import EmotionIcon from '@/shared/ui/EmotionIcon';
 import type { EmotionItem } from '@/features/report/mock/reportMockData';
 
 interface EmotionListProps {
@@ -17,7 +18,7 @@ export default function EmotionList({ summary, emotions }: EmotionListProps) {
     <div className="flex flex-col gap-7.5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
       <div className="flex flex-col gap-0.5">
         <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
-          감정별 주요 지출 항목
+          감정별 지출 항목
         </h2>
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#73787E]">
           {summary}
@@ -36,7 +37,7 @@ export default function EmotionList({ summary, emotions }: EmotionListProps) {
                 {item.rank}
               </span>
               <div className="flex items-center gap-2">
-                <span className="text-[20px] leading-none">{item.emoji}</span>
+                <EmotionIcon name={item.name} size={24} />
                 <span className="text-[18px] font-medium tracking-[-0.45px] text-[#1C1D1F]">
                   {item.name}
                 </span>
