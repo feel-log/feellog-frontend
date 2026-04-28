@@ -49,7 +49,6 @@ export default function ReportMonthCard({
   return (
     <>
       <div className="flex flex-col gap-3">
-        {/* 월 표시 (카드 외부) */}
         <button
           onClick={handleOpenPicker}
           className="flex w-fit items-center gap-0.5"
