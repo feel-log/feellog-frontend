@@ -22,12 +22,12 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
   };
 
   return (
-    <div className={'flex'}>
+    <div className={'flex pt-13.5'}>
       <div className={'key__pad grid grid-cols-3'}>
         <button
           onClick={() => handleNumberClick('1')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           1
@@ -35,7 +35,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleNumberClick('2')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           2
@@ -43,7 +43,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleNumberClick('3')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           3
@@ -51,7 +51,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleNumberClick('4')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           4
@@ -59,7 +59,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleNumberClick('5')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           5
@@ -67,7 +67,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleNumberClick('6')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           6
@@ -75,7 +75,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleNumberClick('7')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           7
@@ -83,7 +83,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleNumberClick('8')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           8
@@ -91,7 +91,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleNumberClick('9')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           9
@@ -99,7 +99,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleNumberClick('0')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           0
@@ -107,7 +107,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleDecimalClick(',00')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           ,00
@@ -115,7 +115,7 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
         <button
           onClick={() => handleDecimalClick(',000')}
           className={
-            'flex h-25 w-25 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
+            'flex h-23.75 w-24.5 cursor-pointer items-center justify-center hover:bg-[#13278a] hover:text-white'
           }
         >
           ,000
@@ -147,12 +147,13 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
           <Image src={'/svg/multiply.svg'} alt={'multiply'} width={24} height={24} />
         </button>
         <button
-          onClick={handleEquals}
-          className={'flex w-full flex-1 items-center justify-center bg-[#13278a] font-bold text-white hover:bg-[#0f1e5f]'}
+          onClick={() => handleOperation('/')}
+          className={'flex w-full flex-1 items-center justify-center hover:bg-gray-100'}
         >
-          =
+          <Image src={'/svg/division.svg'} alt={'division'} width={24} height={24} />
         </button>
       </div>
+      <button onClick={handleEquals} className={"absolute top-0 left-0 right-0 h-13.5 bg-[#13278a] text-white cursor-pointer"}>확인</button>
     </div>
   );
 }
