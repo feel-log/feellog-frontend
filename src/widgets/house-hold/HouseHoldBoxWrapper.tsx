@@ -11,7 +11,7 @@ export default function HouseHoldBoxWrapper() {
         <h3 className={'pb-1 text-[13px] text-gray-600'}>공원을 산책하며 여유를 가져볼까요?</h3>
         <div
           className={
-            "clover absolute top-0 right-10 bottom-0 my-auto h-14 w-14 bg-[url('/svg/icon_fourLeafLover.png')] bg-cover bg-center"
+            "clover absolute top-0 right-0 bottom-0 my-auto h-14 w-14 bg-[url('/svg/icon_fourLeafLover.png')] bg-cover bg-center"
           }
         ></div>
       </HouseHoldBox>
