@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { EmotionItem } from '@/features/report/mock/reportMockData';
 
@@ -8,6 +9,24 @@ interface EmotionListProps {
   summary: string;
   emotions: EmotionItem[];
 }
+
+const EMOTION_NAME_TO_SVG: Record<string, string> = {
+  심심함: 'boring',
+  공허함: 'emptiness',
+  피곤함: 'tired',
+  기쁨: 'happy',
+  설렘: 'flut',
+  뿌듯함: 'proud',
+  고마움: 'thanks',
+  짜증: 'annoy',
+  화남: 'angry',
+  충동: 'impulse',
+  불안함: 'anxios',
+  우울함: 'depressed',
+  슬픔: 'sad',
+  스트레스: 'stress',
+  외로움: 'lonely',
+};
 
 export default function EmotionList({ summary, emotions }: EmotionListProps) {
   const [expanded, setExpanded] = useState(false);
@@ -17,7 +36,7 @@ export default function EmotionList({ summary, emotions }: EmotionListProps) {
     <div className="flex flex-col gap-7.5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
       <div className="flex flex-col gap-0.5">
         <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
-          감정별 주요 지출 항목
+          감정별 지출 항목
         </h2>
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#73787E]">
           {summary}
@@ -36,7 +55,16 @@ export default function EmotionList({ summary, emotions }: EmotionListProps) {
                 {item.rank}
               </span>
               <div className="flex items-center gap-2">
-                <span className="text-[20px] leading-none">{item.emoji}</span>
+                {EMOTION_NAME_TO_SVG[item.name] ? (
+                  <Image
+                    src={`/svg/emo/${EMOTION_NAME_TO_SVG[item.name]}.svg`}
+                    alt={item.name}
+                    width={24}
+                    height={24}
+                  />
+                ) : (
+                  <span className="text-[20px] leading-none">{item.emoji}</span>
+                )}
                 <span className="text-[18px] font-medium tracking-[-0.45px] text-[#1C1D1F]">
                   {item.name}
                 </span>

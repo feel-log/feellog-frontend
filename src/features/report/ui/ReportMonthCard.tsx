@@ -1,60 +1,69 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+import MonthPickerBottomSheet, { type YearMonth } from './MonthPickerBottomSheet';
 
 interface ReportMonthCardProps {
+  year: number;
   month: number;
   income: number;
   expense: number;
-  onMonthChange: (month: number) => void;
+  onYearMonthChange: (yearMonth: YearMonth) => void;
+  onExpenseDetailClick?: () => void;
 }
 
-const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
-
 export default function ReportMonthCard({
+  year,
   month,
   income,
   expense,
-  onMonthChange,
+  onYearMonthChange,
+  onExpenseDetailClick,
 }: ReportMonthCardProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleSelect = (m: number) => {
-    onMonthChange(m);
-    setIsOpen(false);
-  };
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [pendingYear, setPendingYear] = useState(year);
+  const [pendingMonth, setPendingMonth] = useState(month);
 
   const hasExpense = expense > 0;
+  const isEmpty = income === 0 && expense === 0;
+  const currentSystemYear = new Date().getFullYear();
+  const monthLabel =
+    year === currentSystemYear ? `${month}월` : `${year}년 ${month}월`;
+
+  const handleOpenPicker = () => {
+    setPendingYear(year);
+    setPendingMonth(month);
+    setIsPickerOpen(true);
+  };
+
+  const handleChange = (ym: YearMonth) => {
+    setPendingYear(ym.year);
+    setPendingMonth(ym.month);
+  };
+
+  const handleConfirm = () => {
+    onYearMonthChange({ year: pendingYear, month: pendingMonth });
+    setIsPickerOpen(false);
+  };
 
   return (
-    <div className="flex h-22 w-full items-center gap-3.75 rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] px-4 py-3.5">
-
-      <div ref={dropdownRef} className="relative">
+    <>
+      <div className="flex flex-col gap-3">
+        {/* 월 표시 (카드 외부) */}
         <button
-          onClick={() => setIsOpen((prev) => !prev)}
-          className="flex items-center gap-1.25"
-          aria-expanded={isOpen}
+          onClick={handleOpenPicker}
+          className="flex w-fit items-center gap-0.5"
+          aria-expanded={isPickerOpen}
         >
-          <span className="text-[28px] font-semibold leading-normal tracking-[-0.7px] text-[#030303]">
-            {month}월
+          <span className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+            {monthLabel}
           </span>
           <svg
             width="20"
             height="20"
             viewBox="0 0 20 20"
             fill="none"
-            className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            className={`transition-transform ${isPickerOpen ? 'rotate-180' : ''}`}
           >
             <path
               d="M5 7.5L10 12.5L15 7.5"
@@ -66,52 +75,49 @@ export default function ReportMonthCard({
           </svg>
         </button>
 
-        {isOpen && (
-          <ul className="absolute left-0 top-full z-20 mt-1 max-h-60 w-25 overflow-y-auto rounded-lg border border-[#E5E5E5] bg-white py-1 shadow-lg">
-            {MONTHS.map((m) => (
-              <li key={m}>
-                <button
-                  onClick={() => handleSelect(m)}
-                  className={`w-full px-4 py-2 text-left text-[16px] font-medium tracking-[-0.4px] hover:bg-[#F7F8FA] ${
-                    m === month
-                      ? 'text-[#13278A] font-semibold'
-                      : 'text-[#474C52]'
-                  }`}
-                >
-                  {m}월
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+        <div className="flex flex-col gap-4.5 rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] p-4">
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between">
+              <span className="text-[18px] font-medium leading-normal tracking-[-0.45px] text-[#474C52]">
+                수입
+              </span>
+              <span className="text-[24px] font-semibold leading-normal tracking-[-0.6px] text-[#030303]">
+                {income.toLocaleString()}원
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[18px] font-medium leading-normal tracking-[-0.45px] text-[#474C52]">
+                지출
+              </span>
+              <span
+                className={`text-[24px] font-semibold leading-normal tracking-[-0.6px] ${
+                  hasExpense ? 'text-[#EB1C1C]' : 'text-[#030303]'
+                }`}
+              >
+                {expense.toLocaleString()}원
+              </span>
+            </div>
+          </div>
 
-      <div className="flex flex-1 items-center gap-5">
-        <div className="h-11.25 w-0.5 bg-[#E5E5E5]" />
-
-        <div className="flex flex-1 flex-col justify-between gap-0">
-        <div className="flex items-center gap-3.75">
-          <span className="w-7 text-center text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
-            수입
-          </span>
-          <span className="flex-1 text-right text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-            {income.toLocaleString()}원
-          </span>
-        </div>
-        <div className="flex items-center gap-3.75">
-          <span className="w-7 text-center text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
-            지출
-          </span>
-          <span
-            className={`flex-1 text-right text-[20px] font-semibold leading-normal tracking-[-0.5px] ${
-              hasExpense ? 'text-[#EB1C1C]' : 'text-[#030303]'
-            }`}
+          <button
+            onClick={onExpenseDetailClick}
+            className="flex h-11 w-full items-center justify-center rounded-[8px] bg-white shadow-[0px_0px_4px_rgba(19,39,138,0.08)]"
           >
-            {expense.toLocaleString()}원
-          </span>
+            <span className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#27282C]">
+              {isEmpty ? '지출 기록하기' : '이번 달 지출 확인하기'}
+            </span>
+          </button>
         </div>
       </div>
-      </div>
-    </div>
+
+      <MonthPickerBottomSheet
+        isOpen={isPickerOpen}
+        selectedYear={pendingYear}
+        selectedMonth={pendingMonth}
+        onChange={handleChange}
+        onConfirm={handleConfirm}
+        onClose={() => setIsPickerOpen(false)}
+      />
+    </>
   );
 }
