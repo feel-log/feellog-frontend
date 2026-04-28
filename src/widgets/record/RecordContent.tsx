@@ -133,7 +133,7 @@ export default function RecordContent() {
   const selectedDate = searchParams?.get('date') || today;
   const typeParam = searchParams?.get('type');
   const isAssetMode = typeParam === 'asset';
-  const initialType: 'income' | 'expense' = typeParam === 'expense' ? 'expense' : 'income';
+  const initialType: 'income' | 'expense' = typeParam === 'income' ? 'income' : 'expense';
 
   const [record, setRecord] = useState<RecordState>({
     amount: 0,
@@ -159,6 +159,7 @@ export default function RecordContent() {
   const [memoInput, setMemoInput] = useState('');
   const [tempTags, setTempTags] = useState<string[]>([]);
   const [tempMemo, setTempMemo] = useState('');
+  const [isDateSelected, setIsDateSelected] = useState(false);
 
   const [amountInput, setAmountInput] = useState('');
   const [isAmountEditing, setIsAmountEditing] = useState(false);
@@ -281,6 +282,7 @@ export default function RecordContent() {
       date: tempDate,
     }));
     setIsDateOpen(false);
+    setIsDateSelected(true);
   };
 
   const handleSituationSave = () => {
@@ -334,15 +336,6 @@ export default function RecordContent() {
       });
     }
 
-    const remainingDays = 42 - days.length;
-    for (let i = 1; i <= remainingDays; i++) {
-      days.push({
-        day: i,
-        isCurrentMonth: false,
-        date: `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
-      });
-    }
-
     return days;
   };
 
@@ -356,7 +349,7 @@ export default function RecordContent() {
         <div className="mb-1">
           <div className="flex items-center gap-2">
             <>
-              <h2 className="pb-4 text-2xl font-bold text-gray-800">
+              <h2 className={cn('pb-4 text-2xl font-bold', record.type === 'expense' && (isAmountEditing ? getDisplayAmount() : record.amount) !== 0 ? 'text-red-600' : 'text-gray-800')}>
                 {isAmountEditing ? getDisplayAmount().toLocaleString() : record.amount.toLocaleString()}원
               </h2>
               <button
@@ -420,7 +413,7 @@ export default function RecordContent() {
         {!isAssetMode && (
           <SelectField
             label="날짜"
-            value={formatDateDisplay(record.date)}
+            value={isDateSelected ? formatDateDisplay(record.date) : ''}
             placeholder="날짜를 선택하세요"
             onClick={() => {
               setTempDate(record.date);
@@ -508,7 +501,7 @@ export default function RecordContent() {
               <Image src={'/svg/icon_arrow_left_fill.svg'} alt={'left'} width={20} height={20} />
             </button>
             <h3 className="px-3 text-lg font-semibold">
-              {calendarMonth.year}년 {calendarMonth.month}월
+              {calendarMonth.year === 2026 ? `${calendarMonth.month}월` : `${calendarMonth.year}년 ${calendarMonth.month}월`}
             </h3>
             <button
               onClick={() => {
@@ -518,11 +511,20 @@ export default function RecordContent() {
                   setCalendarMonth({ ...calendarMonth, month: calendarMonth.month + 1 });
                 }
               }}
-              className="cursor-pointer text-gray-500 hover:text-gray-700"
+              disabled={
+                calendarMonth.year === new Date(today).getFullYear() &&
+                calendarMonth.month === new Date(today).getMonth() + 1
+              }
+              className={cn(
+                calendarMonth.year === new Date(today).getFullYear() &&
+                calendarMonth.month === new Date(today).getMonth() + 1
+                  ? 'cursor-not-allowed text-gray-300 opacity-45'
+                  : 'cursor-pointer text-gray-500 hover:text-gray-700'
+              )}
             >
               <Image
                 src={'/svg/icon_arrow_left_fill.svg'}
-                alt={'left'}
+                alt={'right'}
                 width={20}
                 height={20}
                 className={'rotate-180'}
@@ -664,7 +666,7 @@ export default function RecordContent() {
             setSelectedEmotion('');
           }}
           onSave={handleEmotionSave}
-          isSaveDisabled={selectedEmotion === ''}
+          isSaveDisabled={false}
         >
           <div className="space-y-6">
             {EMOTIONS.map((group) => (
@@ -720,7 +722,7 @@ export default function RecordContent() {
           title="상황 태그 · 메모를 입력해주세요"
           onClose={() => setIsSituationOpen(false)}
           onSave={handleSituationSave}
-          isSaveDisabled={tempTags.length === 0 && tempMemo.trim() === ''}
+          isSaveDisabled={false}
         >
           <div className="space-y-6">
             <div>
