@@ -40,7 +40,7 @@ export default function CalendarHeader({
             className={isCurrentMonth ? '' : 'opacity-100'}
           />
         </button>
-        <span className={`text-center text-[18px] font-bold leading-normal tracking-[-0.45px] text-[#27282C] ${year === currentYear ? 'w-[54px]' : ''}`}>
+        <span className={`text-center text-[18px] font-bold leading-normal tracking-[-0.45px] text-[#27282C] ${year === currentYear ? 'w-13.5' : ''}`}>
           {label}
         </span>
         <button onClick={onNextMonth} disabled={isNextDisabled}>
@@ -54,7 +54,6 @@ export default function CalendarHeader({
         </button>
       </div>
 
-      {/* 수입 / 지출 / 합계 (임시 값 출력) */}
       <div className="flex w-full justify-center">
         <div className="flex">
           <div className="flex w-29.25 flex-col items-center px-2.5 py-0.75 pb-1.5">
