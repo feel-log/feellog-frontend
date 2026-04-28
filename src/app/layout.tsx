@@ -90,7 +90,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${pretendard.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="bg-gray-50" suppressHydrationWarning>
+      <body className="bg-gray-50 select-none" suppressHydrationWarning>
         <BackgroundProvider>
           <StatusBar />
           {children}
