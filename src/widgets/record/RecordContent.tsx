@@ -187,9 +187,9 @@ export default function RecordContent() {
   const getDisplayAmount = (): number => {
     if (!amountInput) return 0;
     try {
-      // 전체 식을 계산
+      const normalized = amountInput.replace(/,00/g, '.00').replace(/,000/g, '.000');
       // eslint-disable-next-line no-eval
-      const result = eval(amountInput);
+      const result = eval(normalized);
       return Math.round((result || 0) * 100) / 100;
     } catch {
       // 에러 시 마지막 숫자 반환
@@ -214,8 +214,11 @@ export default function RecordContent() {
         if (value === 'backspace') {
           result = prev.slice(0, -1);
         } else if (value === '+' || value === '-' || value === '*' || value === '/') {
-          if (!/[+\-*/]$/.test(result)) {
-            result = prev + value;
+          if (!/[+\-*/]$/.test(result) && result !== '') {
+            const calculated = calculateExpression(result);
+            result = calculated.toString() + value;
+          } else if (result === '') {
+            result = '0' + value;
           }
         } else if (value === ',00' || value === ',000') {
           const zeros = value === ',00' ? '00' : '000';
@@ -755,23 +758,24 @@ export default function RecordContent() {
 
       {/* Save Button */}
       <div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md border-t border-gray-200 bg-white px-6 py-4">
-        <Button
-          onClick={() => {
-            if (isAssetMode) {
-              console.log('Asset saved:', record);
-            } else {
-              console.log('Record saved:', record);
+        {!isAmountEditing &&
+          <Button
+            onClick={() => {
+              if (isAssetMode) {
+                console.log('Asset saved:', record);
+              } else {
+                console.log('Record saved:', record);
+              }
+            }}
+            disabled={
+              isAssetMode
+                ? record.category === ''
+                : record.category === '' || (record.type === 'expense' && record.paymentMethod === '')
             }
-          }}
-          disabled={
-            isAssetMode
-              ? record.category === ''
-              : record.category === '' || (record.type === 'expense' && record.paymentMethod === '')
-          }
-          size="lg"
-        >
+            size="lg"
+          >
           저장
-        </Button>
+        </Button>}
         {isAmountEditing && <KeyBoardUserExperience changeAmount={handleAmountChange} />}
       </div>
     </div>
