@@ -4,7 +4,7 @@ import { useEffect, useRef, RefObject } from 'react';
 
 export function useClickOutside<T extends HTMLElement>(
   callback: () => void
-): RefObject<T> {
+): RefObject<T | null> {
   const ref = useRef<T>(null);
 
   useEffect(() => {
