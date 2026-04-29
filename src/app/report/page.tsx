@@ -2,15 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ReportMonthCard from '@/features/report/ui/ReportMonthCard';
-import ReportEmpty from '@/features/report/ui/ReportEmpty';
-import ReportInsights from '@/features/report/ui/ReportInsights';
-import CategoryChart from '@/features/report/ui/CategoryChart';
-import EmotionList from '@/features/report/ui/EmotionList';
-import SituationTags from '@/features/report/ui/SituationTags';
+import ReportMonthCard from '@/widgets/report/ReportMonthCard';
+import ReportEmpty from '@/widgets/report/ReportEmpty';
+import ReportInsights from '@/widgets/report/ReportInsights';
+import CategoryChart from '@/widgets/report/CategoryChart';
+import EmotionList from '@/widgets/report/EmotionList';
+import SituationTags from '@/widgets/report/SituationTags';
 import Footer from '@/shared/ui/Footer';
 import PageHeader from '@/shared/ui/PageHeader';
-import { reportMockData } from '@/features/report/mock/reportMockData';
+import { reportMockData } from '@/shared/constants/reportMockData';
 
 export default function ReportPage() {
   const router = useRouter();

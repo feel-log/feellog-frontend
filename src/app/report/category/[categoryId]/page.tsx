@@ -9,7 +9,7 @@ import {
   type ExpenseItem,
   type ExpenseDateGroup,
   type EmotionBadge,
-} from '@/features/report/mock/categoryDetailMockData';
+} from '@/shared/constants/categoryDetailMockData';
 
 interface PageProps {
   params: Promise<{ categoryId: string }>;
@@ -66,7 +66,7 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
   return (
     <div className="flex flex-col gap-1.25">
       {showDate && (
-        <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
+        <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#474C52]">
           {item.dateLabel}
         </p>
       )}
@@ -155,7 +155,7 @@ export default function CategoryDetailPage({ params }: PageProps) {
               key={group.dateLabel}
               className="flex flex-col gap-3.75 border-b border-[#E5E5E5] px-4 py-7.5 last:border-b-0"
             >
-              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
+              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#474C52]">
                 {group.dateLabel}
               </p>
               <div className="flex flex-col gap-5">

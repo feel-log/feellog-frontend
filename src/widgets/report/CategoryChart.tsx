@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { CategoryItem } from '@/features/report/mock/reportMockData';
+import type { CategoryItem } from '@/shared/constants/reportMockData';
 
 interface CategoryChartProps {
   summary: string;
@@ -57,7 +57,7 @@ export default function CategoryChart({ summary, categories }: CategoryChartProp
   if (categories.length === 0) return null;
 
   const topCategory = [...categories].sort((a, b) => b.percentage - a.percentage)[0];
-  const visibleCategories = expanded ? categories : categories.slice(0, 3);
+  const visibleCategories = expanded ? categories.slice(0, 5) : categories.slice(0, 3);
 
   return (
     <div className="flex flex-col gap-5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">

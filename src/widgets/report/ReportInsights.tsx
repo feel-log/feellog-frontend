@@ -1,4 +1,4 @@
-import type { Insight } from '@/features/report/mock/reportMockData';
+import type { Insight } from '@/shared/constants/reportMockData';
 
 interface ReportInsightsProps {
   userName: string;
