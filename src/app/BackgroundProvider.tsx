@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 export default function BackgroundProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 export default function HouseHoldBox({ children, isAnchor, anchor, className } : { children: React.ReactNode, isAnchor?: boolean, anchor?: string, className?: string }) {
   return (

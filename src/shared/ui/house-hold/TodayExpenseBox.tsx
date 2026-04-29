@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useFormattedDate } from '@/shared/hooks';
 import { getDailyExpense, dailyExpenses } from '@/shared/constants/dailyExpense';
 import Image from 'next/image';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 const TODAY = new Date('2026-04-21');
 const MIN_DATE = new Date('2026-04-08');
