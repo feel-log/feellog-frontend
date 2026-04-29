@@ -5,6 +5,7 @@ import "./globals.css";
 import StatusBar from '@/shared/ui/StatusBar';
 import Footer from '@/shared/ui/Footer';
 import BackgroundProvider from './BackgroundProvider';
+import { QueryProvider } from '@/shared/lib/QueryProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -85,17 +86,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} ${pretendard.variable} h-full antialiased`}
-      suppressHydrationWarning
-    >
-      <body className="bg-gray-50 select-none" suppressHydrationWarning>
-        <BackgroundProvider>
-          <StatusBar />
-          {children}
-        </BackgroundProvider>
-      </body>
-    </html>
+    <QueryProvider>
+      <html
+        lang="ko"
+        className={`${geistSans.variable} ${geistMono.variable} ${pretendard.variable} h-full antialiased`}
+        suppressHydrationWarning
+      >
+        <body className="bg-gray-50 select-none" suppressHydrationWarning>
+          <BackgroundProvider>
+            <StatusBar />
+            {children}
+          </BackgroundProvider>
+        </body>
+      </html>
+    </QueryProvider>
   );
 }

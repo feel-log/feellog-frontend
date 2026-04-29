@@ -7,7 +7,7 @@ import PageHeader from '@/shared/ui/PageHeader';
 import BottomSheet from '@/shared/ui/BottomSheet';
 import Button from '@/shared/ui/Button';
 import SelectField from '@/shared/ui/SelectField';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import KeyBoardUserExperience from '@/shared/ui/record/KeyBoardUserExperience';
 
 interface RecordState {

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { dailyExpenses, getDailyExpense } from '@/shared/constants/dailyExpense';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton from '@/shared/ui/SortButton';
 

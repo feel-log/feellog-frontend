@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import PageHeader from '@/shared/ui/PageHeader';
 import Footer from '@/shared/ui/Footer';
 import { getAssetCategory, AssetRecord } from '@/shared/constants/assetData';
