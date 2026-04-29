@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ChipSelect from '@/features/retro/ui/ChipSelect';
-import ListSelect from '@/features/retro/ui/ListSelect';
+import ChipSelect from '@/widgets/retro/ChipSelect';
+import ListSelect from '@/widgets/retro/ListSelect';
 import PageHeader from '@/shared/ui/PageHeader';
 
 const EMOTIONS = [

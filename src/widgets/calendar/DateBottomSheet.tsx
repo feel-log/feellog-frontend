@@ -77,7 +77,7 @@ export default function DateBottomSheet({
                 {dateLabel}
               </p>
               <button onClick={handleClose} aria-label="닫기">
-                <img src="/icons/icon_X.svg" alt="" width={28} height={28} />
+                <img src="/svg/icon_X_dark.svg" alt="" width={28} height={28} />
               </button>
             </div>
 
@@ -98,7 +98,7 @@ export default function DateBottomSheet({
               className="absolute right-4 top-3.5"
               aria-label="닫기"
             >
-              <img src="/icons/icon_X.svg" alt="" width={28} height={28} />
+              <img src="/svg/icon_X_dark.svg" alt="" width={28} height={28} />
             </button>
           <div className="flex flex-col gap-5 overflow-y-auto">
             <div className="flex flex-col gap-5">

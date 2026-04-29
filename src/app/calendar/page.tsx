@@ -2,15 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import CalendarHeader from '@/features/calendar/ui/CalendarHeader';
-import CalendarGrid from '@/features/calendar/ui/CalendarGrid';
-import DateBottomSheet from '@/features/calendar/ui/DateBottomSheet';
+import CalendarHeader from '@/widgets/calendar/CalendarHeader';
+import CalendarGrid from '@/widgets/calendar/CalendarGrid';
+import DateBottomSheet from '@/widgets/calendar/DateBottomSheet';
 import PageHeader from '@/shared/ui/PageHeader';
 import {
   getCalendarDailyData,
   getDailyAmounts,
   getMonthlyTotals,
-} from '@/features/calendar/mock/calendarMockData';
+} from '@/shared/constants/calendarMockData';
 
 export default function CalendarPage() {
   const router = useRouter();
@@ -73,7 +73,7 @@ export default function CalendarPage() {
           aria-label="지출 추가"
           className="pointer-events-auto z-40 mb-32.5 mr-4 flex size-14.5 items-center justify-center rounded-full bg-[#13278A] p-2.75 shadow-[2px_3px_7px_0px_rgba(49,49,49,0.3)]"
         >
-          <img src="/icons/icon_plus.svg" alt="" width={36} height={36} />
+          <img src="/svg/icon_plus_white.svg" alt="" width={36} height={36} />
         </button>
       </div>
 

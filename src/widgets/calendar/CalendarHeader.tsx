@@ -33,7 +33,7 @@ export default function CalendarHeader({
       <div className="flex items-center justify-center gap-2.5">
         <button onClick={onPrevMonth}>
           <img
-            src="/icons/icon_arrow_left_fill.svg"
+            src="/svg/icon_arrow_left_fill.svg"
             alt="이전 달"
             width={26}
             height={26}
@@ -45,7 +45,7 @@ export default function CalendarHeader({
         </span>
         <button onClick={onNextMonth} disabled={isNextDisabled}>
           <img
-            src="/icons/icon_arrow_right_fill.svg"
+            src="/svg/icon_arrow_right_fill.svg"
             alt="다음 달"
             width={26}
             height={26}

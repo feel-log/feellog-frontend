@@ -206,7 +206,7 @@ export default function MonthPickerBottomSheet({
             날짜 설정
           </h2>
           <button onClick={handleClose} aria-label="닫기">
-            <Image src="/icons/icon_X.svg" alt="" width={28} height={28} />
+            <Image src="/svg/icon_X_dark.svg" alt="" width={28} height={28} />
           </button>
         </div>
 

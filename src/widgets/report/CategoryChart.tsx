@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { CategoryItem } from '@/features/report/mock/reportMockData';
+import type { CategoryItem } from '@/shared/constants/reportMockData';
 
 interface CategoryChartProps {
   summary: string;

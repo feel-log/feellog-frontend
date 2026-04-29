@@ -1,4 +1,4 @@
-import type { SituationTag } from '@/features/report/mock/reportMockData';
+import type { SituationTag } from '@/shared/constants/reportMockData';
 
 interface SituationTagsProps {
   summary: string;

@@ -53,7 +53,7 @@ export default function PageHeader({
           className="cursor-pointer"
         >
           <Image
-            src="/icons/icon_arrow_left.svg"
+            src="/svg/icon_arrow_left.svg"
             alt=""
             width={28}
             height={28}
@@ -69,7 +69,7 @@ export default function PageHeader({
           aria-label="닫기"
           className="ml-auto cursor-pointer"
         >
-          <Image src="/icons/icon_X.svg" alt="" width={28} height={28} />
+          <Image src="/svg/icon_X_dark.svg" alt="" width={28} height={28} />
         </button>
       )}
     </header>

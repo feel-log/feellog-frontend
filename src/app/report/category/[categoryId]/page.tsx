@@ -9,7 +9,7 @@ import {
   type ExpenseItem,
   type ExpenseDateGroup,
   type EmotionBadge,
-} from '@/features/report/mock/categoryDetailMockData';
+} from '@/shared/constants/categoryDetailMockData';
 
 interface PageProps {
   params: Promise<{ categoryId: string }>;
