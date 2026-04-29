@@ -166,23 +166,6 @@ npm run lint
 - `prettier-plugin-tailwindcss`로 자동 정렬
 - Pretendard 폰트 기본 적용 (한글 지원)
 
-## 최근 작업 이력
-
-### 주요 커밋
-- **e33ce4f**: API 데이터 페칭 설계 개선
-- **aba6b57**: 빌드 에러 수정
-- **6d2e878**: QueryProvider 구성 및 features/entities 분리
-- **f2cea3c**: useClickOutside 반환 타입 수정
-- **8dcec04**: 폴더 구조 정리 (FSD Convention 적용)
-- **683d69c**: 리포트 디자인 업데이트
-- **9dbe4a4**: 캐싱 전략 설정
-- **7739887**: 공통 Fetch 래퍼 설정
-
-### 진행 중인 작업
-- [ ] 백엔드 API 통합
-- [ ] 사용자 인증 시스템 완성
-- [ ] 데이터 동기화
-
 ## 문서
 
 자세한 설정 및 구현 가이드는 `docs/` 디렉토리를 참고하세요:
