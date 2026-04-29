@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import SocialLoginButton from '@/shared/login/SocialLoginButton';
+import SocialLoginButton from '@/shared/ui/login/SocialLoginButton';
 
 export default function LoginContent() {
   return (
