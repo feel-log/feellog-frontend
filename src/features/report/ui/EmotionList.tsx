@@ -12,7 +12,7 @@ interface EmotionListProps {
 
 export default function EmotionList({ summary, emotions }: EmotionListProps) {
   const [expanded, setExpanded] = useState(false);
-  const visibleEmotions = expanded ? emotions : emotions.slice(0, 3);
+  const visibleEmotions = expanded ? emotions.slice(0, 5) : emotions.slice(0, 3);
 
   return (
     <div className="flex flex-col gap-7.5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
