@@ -8,7 +8,7 @@ import {
   getEmotionDetail,
   type EmotionExpenseItem,
   type EmotionExpenseDateGroup,
-} from '@/features/report/mock/emotionDetailMockData';
+} from '@/shared/constants/emotionDetailMockData';
 
 interface PageProps {
   params: Promise<{ emotionId: string }>;

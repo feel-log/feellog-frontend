@@ -8,7 +8,7 @@ import {
   monthlyExpenseMock,
   getMonthlyExpenseTotal,
   type MonthlyExpenseItem,
-} from '@/features/report/mock/monthlyExpenseMockData';
+} from '@/shared/constants/monthlyExpenseMockData';
 
 interface DayGroup {
   date: string;

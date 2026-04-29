@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
-import type { EmotionItem } from '@/features/report/mock/reportMockData';
+import type { EmotionItem } from '@/shared/constants/reportMockData';
 
 interface EmotionListProps {
   summary: string;

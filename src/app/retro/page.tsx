@@ -1,10 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import RetroEmpty from '@/features/retro/ui/RetroEmpty';
-import RetroMain from '@/features/retro/ui/RetroMain';
+import RetroEmpty from '@/widgets/retro/RetroEmpty';
+import RetroMain from '@/widgets/retro/RetroMain';
 import PageHeader from '@/shared/ui/PageHeader';
-import { retroMockData } from '@/features/retro/mock/retroMockData';
+import { retroMockData } from '@/shared/constants/retroMockData';
 
 const TODAY = new Date();
 const TODAY_LABEL = `${TODAY.getMonth() + 1}월 ${TODAY.getDate()}일 지출`;
