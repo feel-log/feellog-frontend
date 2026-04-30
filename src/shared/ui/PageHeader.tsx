@@ -22,14 +22,19 @@ export default function PageHeader({
   onClose,
   closeHref,
 }: PageHeaderProps) {
-  const router = useRouter();
+  let router: ReturnType<typeof useRouter> | null = null;
+  try {
+    router = useRouter();
+  } catch {
+    router = null;
+  }
 
   const handleBack = () => {
     if (onBack) {
       onBack();
-    } else if (backHref) {
+    } else if (backHref && router) {
       router.push(backHref);
-    } else {
+    } else if (router) {
       router.back();
     }
   };
@@ -37,9 +42,9 @@ export default function PageHeader({
   const handleClose = () => {
     if (onClose) {
       onClose();
-    } else if (closeHref) {
+    } else if (closeHref && router) {
       router.push(closeHref);
-    } else {
+    } else if (router) {
       router.back();
     }
   };

@@ -10,6 +10,7 @@ const navItems = [
   { id: 'my_page', label: '마이페이지', path: '/my_page', icon: 'user' },
 ];
 
+
 function FooterIcon({ icon }: { icon: string }) {
   switch (icon) {
     case 'household':
@@ -153,8 +154,21 @@ function FooterIcon({ icon }: { icon: string }) {
 }
 
 export default function Footer() {
-  const router = useRouter();
-  const pathname = usePathname();
+  let router: ReturnType<typeof useRouter> | null = null;
+  let pathname = '/';
+
+  try {
+    router = useRouter();
+    pathname = usePathname();
+  } catch {
+    // Storybook environment without router
+  }
+
+  const handleNavigation = (path: string) => {
+    if (router) {
+      router.push(path);
+    }
+  };
 
   return (
     <div className="fixed right-0 bottom-0 left-0 z-20 mx-auto w-full max-w-md bg-[url('/svg/subtract.png')] bg-center">
@@ -167,7 +181,7 @@ export default function Footer() {
             return (
             <button
               key={item.id}
-              onClick={() => router.push(item.path)}
+              onClick={() => handleNavigation(item.path)}
               className={`flex flex-col items-center gap-1 text-black font-bold cursor-pointer px-6.5 mt-2 ${
                 isActive ? 'opacity-100' : 'opacity-50'
               }
@@ -186,7 +200,7 @@ export default function Footer() {
         </div>
 
         <button
-          onClick={() => router.push('/record')}
+          onClick={() => handleNavigation('/record')}
           className="absolute cursor-pointer -top-7 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-blue-900 text-white flex items-center justify-center shadow-lg hover:bg-blue-800 transition-colors"
         >
           <Image src={"/svg/icon_plus.svg"} alt={"plus"} width={26} height={26} />
