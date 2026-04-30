@@ -16,7 +16,7 @@ export default function RetroPage() {
   const hasData = totalExpense > 0;
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col bg-white">
       <PageHeader title="회고하기" backHref="/" />
 
       <div className="px-4 pt-5">
@@ -28,7 +28,7 @@ export default function RetroPage() {
         </p>
       </div>
 
-      <div className="flex flex-1 items-start justify-center px-4 pt-5">
+      <div className="flex flex-1 items-start justify-center px-4 pt-5 pb-6">
         {hasData ? (
           <RetroMain
             totalExpense={totalExpense}
@@ -42,7 +42,7 @@ export default function RetroPage() {
         )}
       </div>
 
-      <div className="flex w-full items-center justify-center bg-white px-4 pt-6 pb-12.75">
+      <div className="flex w-full items-center justify-center bg-white px-4 pt-6 pb-9">
         <button
           onClick={() => router.push(hasData ? '/retro/survey' : '/record?type=expense')}
           className="h-13.5 w-full rounded-[10px] bg-[#13278A] text-[20px] font-semibold leading-normal tracking-[-0.5px] text-white transition-colors hover:bg-[#0F1F6E]"

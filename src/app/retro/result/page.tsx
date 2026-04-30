@@ -30,7 +30,7 @@ export default function RetroResultPage() {
         closeHref="/retro"
       />
 
-      <div className="flex flex-col gap-10 pb-25 pl-3.75 pr-4 pt-5">
+      <div className="flex flex-col gap-10 px-4 pt-5 pb-25">
         {/* 섹션 1: 타이틀 + 결과 카드 */}
         <div className="flex flex-col gap-5">
           {/* 타이틀 */}
@@ -42,7 +42,7 @@ export default function RetroResultPage() {
 
           {/* 결과 요약 카드 */}
           <div
-            className="flex h-30 w-89.75 flex-col gap-1.5 rounded-xl p-4"
+            className="flex h-30 w-full flex-col gap-1.5 rounded-xl p-4"
             style={{
               background:
                 'linear-gradient(98.51deg, #F7F8FA -1.34%, #ECF2FC 70.89%, #D8E8FF 119.81%) padding-box, linear-gradient(98.51deg, #6B9CE5 0%, #13278A 100%) border-box',
@@ -93,7 +93,7 @@ export default function RetroResultPage() {
               이런 점을 바꿔보면 어떨까요?
             </p>
           </div>
-          <div className="h-30 w-89.75 rounded-xl bg-[#F7F8FA] p-4">
+          <div className="h-30 w-full rounded-xl bg-[#F7F8FA] p-4">
             <p className="whitespace-pre-line text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#27282C]">
               {resultData.feedback.message}
             </p>
@@ -108,7 +108,7 @@ export default function RetroResultPage() {
               {resultData.feedback.actionTitle}
             </p>
           </div>
-          <div className="flex h-30 w-89.75 flex-col gap-3 rounded-xl bg-[#F7F8FA] p-4">
+          <div className="flex h-30 w-full flex-col gap-3 rounded-xl bg-[#F7F8FA] p-4">
             {resultData.feedback.actions.map((action) => (
               <div key={action} className="flex items-center gap-1.5">
                 <span className="flex size-3.75 shrink-0 items-center justify-center rounded-full bg-[#13278A]">
