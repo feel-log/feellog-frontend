@@ -41,7 +41,7 @@ export default function RetroMain({
   return (
     <div className="flex w-full flex-col gap-5">
 
-      <div className="relative flex h-90 w-89.5 flex-col items-center rounded-[12px] bg-[#F7F8FA]">
+      <div className="relative flex h-90 w-full flex-col items-center rounded-[12px] bg-[#F7F8FA] px-5">
         <div className="mt-7.5 flex flex-col items-center gap-0.5">
           <p className="text-[18px] font-bold text-[#1C1D1F]">
             오늘은 {topCategory}에 가장 많이 지출했어요
@@ -72,7 +72,7 @@ export default function RetroMain({
 
         <button
           onClick={handleDetailClick}
-          className="absolute bottom-4 mx-auto w-78.5 rounded-lg bg-[#DEE8F7] px-14 py-2.5"
+          className="absolute right-4 bottom-4 left-4 rounded-lg bg-[#DEE8F7] px-14 py-2.5"
         >
           <p className="text-center text-[16px] font-semibold text-[#13278A]">
             지출 상세 내역
@@ -80,7 +80,7 @@ export default function RetroMain({
         </button>
       </div>
 
-      <div className="overflow-hidden" ref={emblaRef}>
+      <div className="-mx-4 overflow-hidden" ref={emblaRef}>
         <div className="flex gap-1.5">
           {emotions.map((emotion) => (
             <div

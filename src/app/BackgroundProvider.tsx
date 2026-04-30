@@ -11,13 +11,15 @@ export default function BackgroundProvider({ children }: { children: React.React
   return (
     <div
       className={cn(
-        'mx-auto flex min-h-screen max-w-md flex-col',
+        'min-h-screen w-full',
         isHomePage
           ? 'bg-linear-to-b from-[#ecf2fb] to-[#f3f8ff]' :
           isLoginPage ? 'bg-[#13278a]' : 'bg-white'
       )}
     >
-      {children}
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
+        {children}
+      </div>
     </div>
   );
 }

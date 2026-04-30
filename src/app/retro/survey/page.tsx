@@ -150,7 +150,7 @@ export default function RetroSurveyPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-1/2 flex w-full max-w-md -translate-x-1/2 items-center justify-center bg-white pt-6 pb-12.75 pl-4.25 pr-3.75">
+      <div className="fixed bottom-0 left-1/2 flex w-full max-w-97.5 -translate-x-1/2 items-center justify-center bg-white px-4 pt-6 pb-9">
         <button
           onClick={handleSubmit}
           className={`h-13.5 w-full rounded-[10px] text-[20px] font-semibold ${
