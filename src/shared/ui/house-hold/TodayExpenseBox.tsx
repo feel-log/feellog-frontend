@@ -11,7 +11,12 @@ const TODAY = new Date('2026-04-21');
 const MIN_DATE = new Date('2026-04-08');
 
 export default function TodayExpenseBox() {
-  const router = useRouter();
+  let router: ReturnType<typeof useRouter> | null = null;
+  try {
+    router = useRouter();
+  } catch {
+    // Storybook environment without router
+  }
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
 
   const canGoPrev = selectedDate > MIN_DATE;
@@ -53,7 +58,7 @@ export default function TodayExpenseBox() {
 
       <button
         className={'absolute top-5 right-5 cursor-pointer'}
-        onClick={() => router.push(`/export?date=${dateString}`)}
+        onClick={() => router?.push(`/export?date=${dateString}`)}
       >
         <Image src={'/svg/icon_arrow_right.svg'} alt={'right-arrow'} width={20} height={20} />
       </button>
@@ -96,7 +101,7 @@ export default function TodayExpenseBox() {
             아직 지출이 없어요
           </p>
           <button
-            onClick={() => router.push(`/record?date=${dateString}`)}
+            onClick={() => router?.push(`/record?date=${dateString}`)}
             className="w-full rounded-lg border border-gray-300 py-3 text-center font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
             오늘의 지출 기록하러가기
