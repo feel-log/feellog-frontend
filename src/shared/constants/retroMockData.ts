@@ -7,8 +7,8 @@ export const retroMockData = {
     { name: '식비', amount: 42000, ratio: 80 },
   ],
   emotions: [
-    { name: '우울함', emoji: '😔' },
-    { name: '피곤함', emoji: '😩' },
-    { name: '스트레스', emoji: '😤' },
+    { name: '우울함' },
+    { name: '피곤함' },
+    { name: '스트레스' },
   ],
 };

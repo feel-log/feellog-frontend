@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import useEmblaCarousel from 'embla-carousel-react';
+import EmotionIcon from '@/shared/ui/EmotionIcon';
 
 interface ExpenseCategory {
   name: string;
@@ -11,7 +12,6 @@ interface ExpenseCategory {
 
 interface Emotion {
   name: string;
-  emoji: string;
 }
 
 interface RetroMainProps {
@@ -87,12 +87,12 @@ export default function RetroMain({
               key={emotion.name}
               className="flex h-21.25 w-37 shrink-0 flex-col items-center justify-center rounded-[12px] bg-[#F7F8FA] px-4 py-3.5"
             >
-              <p className="text-[14px] font-medium text-[#73787E]">
+              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
                 오늘의 소비 감정
               </p>
               <div className="mt-1.5 flex items-center gap-1.5">
-                <span className="text-[25px]">{emotion.emoji}</span>
-                <p className="text-[20px] font-semibold text-[#1C1D1F]">
+                <EmotionIcon name={emotion.name} size={25} />
+                <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
                   {emotion.name}
                 </p>
               </div>
