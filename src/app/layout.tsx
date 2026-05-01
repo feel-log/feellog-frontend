@@ -6,6 +6,7 @@ import StatusBar from '@/shared/ui/StatusBar';
 import Footer from '@/shared/ui/Footer';
 import BackgroundProvider from './BackgroundProvider';
 import { QueryProvider } from '@/shared/lib/QueryProvider';
+import { KakaoScript } from '@/shared/lib/KakaoScript';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -93,6 +94,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <body className="bg-gray-50 select-none" suppressHydrationWarning>
+          <KakaoScript />
           <BackgroundProvider>
             <StatusBar />
             {children}
