@@ -17,7 +17,7 @@ export default function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'font-medium transition-colors rounded-lg';
+  const baseStyles = 'font-medium transition-colors rounded-[10px]';
 
   const variantStyles = {
     primary: disabled
@@ -32,7 +32,7 @@ export default function Button({
   const sizeStyles = {
     sm: 'px-5 py-1 text-[14px]',
     md: 'px-6 py-2',
-    lg: 'px-6 py-3 w-full',
+    lg: 'h-13.5 w-full px-4 text-[20px] font-semibold tracking-[-0.025em]',
   };
 
   return (

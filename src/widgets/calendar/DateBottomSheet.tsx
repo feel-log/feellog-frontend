@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
+import TransactionTypeButton, { TransactionType } from '@/shared/ui/TransactionTypeButton';
 
 interface ExpenseItem {
   category: string;
@@ -33,6 +34,7 @@ export default function DateBottomSheet({
 }: DayDetailSheetProps) {
   const [isClosing, setIsClosing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [transactionType, setTransactionType] = useState<TransactionType>('expense');
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -81,13 +83,30 @@ export default function DateBottomSheet({
               </button>
             </div>
 
+            <div className="px-4 pt-3">
+              <TransactionTypeButton type={transactionType} onTypeChange={setTransactionType} />
+            </div>
+
             <div className="flex flex-1 flex-col items-center justify-center pb-10">
-              <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#474C52]">
-                지출 기록이 아직 없어요
-              </p>
-              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
-                오늘의 소비와 감정을 함께 기록해보세요
-              </p>
+              {transactionType === 'income' ? (
+                <>
+                  <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#474C52]">
+                    수입 기록이 아직 없어요
+                  </p>
+                  <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
+                    수입이 있다면 지금 기록해보세요
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#474C52]">
+                    지출 기록이 아직 없어요
+                  </p>
+                  <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
+                    오늘의 소비와 감정을 함께 기록해보세요
+                  </p>
+                </>
+              )}
             </div>
           </>
         ) : (
@@ -122,6 +141,7 @@ export default function DateBottomSheet({
             </div>
 
             <div className="flex flex-col gap-2.5 px-4">
+              <TransactionTypeButton type={transactionType} onTypeChange={setTransactionType} />
               <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
                 {dateLabel}
               </p>

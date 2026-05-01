@@ -5,9 +5,10 @@ import { useFormattedDate } from '@/shared/hooks';
 export function DateDisplay() {
   const today = new Date().toISOString();
   const formattedDate = useFormattedDate(today, {
-    month: 'numeric',
+    year: undefined,
+    month: 'long',
     day: 'numeric',
-    weekday: 'short',
+    weekday: 'long',
   });
 
   return <>{formattedDate}</>;

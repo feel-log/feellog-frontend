@@ -2,18 +2,19 @@
 
 import Image from 'next/image';
 import Button from './Button';
-import { cn } from '@/shared/lib/utils';
 
 interface BottomSheetProps {
   isOpen: boolean;
   title: string;
+  subtitle?: string;
   onClose: () => void;
   children: React.ReactNode;
   onSave?: () => void;
   isSaveDisabled?: boolean;
+  height: number;
 }
 
-export default function BottomSheet({ isOpen, title, onClose, children, onSave, isSaveDisabled }: BottomSheetProps) {
+export default function BottomSheet({ isOpen, title, subtitle, onClose, children, onSave, isSaveDisabled, height }: BottomSheetProps) {
   if (!isOpen) return null;
 
   return (
@@ -25,32 +26,41 @@ export default function BottomSheet({ isOpen, title, onClose, children, onSave, 
       />
 
       {/* Bottom Sheet */}
-      <div className="fixed bottom-0 left-0 max-w-md mx-auto right-0 z-50 max-h-[80vh] w-full overflow-y-auto rounded-t-2xl bg-white animate-slide-up">
+      <div
+        style={{ height: `${height}px` }}
+        className="fixed bottom-0 left-0 max-w-md mx-auto right-0 z-50 flex w-full flex-col overflow-hidden rounded-t-2xl bg-white animate-slide-up"
+      >
         {/* Header */}
-        <div className="sticky top-0 flex items-center justify-between bg-white p-6">
-          <h2 className="text-[16px] font-semibold text-gray-900">{title}</h2>
+        <div className="flex shrink-0 items-start justify-between bg-white px-4 pt-10 pb-10">
+          <div className="flex flex-col">
+            <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.025em] text-[#030303]">{title}</h2>
+            {subtitle && (
+              <p className="text-[16px] font-medium leading-normal tracking-[-0.025em] text-[#73787e]">{subtitle}</p>
+            )}
+          </div>
           <button
             onClick={onClose}
-            className="cursor-pointer text-gray-500 hover:text-gray-700"
+            className="cursor-pointer"
+            aria-label="닫기"
           >
-            <Image src={'/svg/icon_X.svg'} alt="close" width={24} height={24} />
+            <Image src={'/svg/icon_X.svg'} alt="close" width={28} height={28} />
           </button>
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6">
+        <div className="flex-1 overflow-y-auto px-4 pb-6">
           {children}
         </div>
 
         {/* Footer - Save Button */}
         {onSave && (
-          <div className="sticky bottom-0 px-6 py-4">
+          <div className="shrink-0 bg-white px-4 pt-6 pb-12">
             <Button
               onClick={onSave}
               disabled={isSaveDisabled}
               size="lg"
             >
-              저장
+              확인
             </Button>
           </div>
         )}

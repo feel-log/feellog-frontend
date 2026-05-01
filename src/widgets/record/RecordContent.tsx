@@ -29,13 +29,13 @@ const EXPENSE_CATEGORIES = [
     items: [
       { label: '식비', emoji: '🍔' },
       { label: '카페', emoji: '☕' },
-      { label: '생필품', emoji: '🌿' },
+      { label: '생필품', emoji: '🧼' },
     ],
   },
   {
     group: '소비',
     items: [
-      { label: '의류', emoji: '👕' },
+      { label: '의류', emoji: '👚' },
       { label: '교통비', emoji: '🚌' },
       { label: '의료', emoji: '🏥' },
       { label: '교육', emoji: '✏️' },
@@ -45,7 +45,7 @@ const EXPENSE_CATEGORIES = [
   {
     group: '고정',
     items: [
-      { label: '공과금', emoji: '⚡' },
+      { label: '공과금', emoji: '💸' },
       { label: '주거', emoji: '🏠' },
       { label: '보험료', emoji: '📄' },
       { label: '저축', emoji: '💰' },
@@ -107,23 +107,29 @@ function formatDateDisplay(dateString: string): string {
   return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
 }
 
-function getCategoryDisplay(category: string, type: 'income' | 'expense'): string {
-  if (type === 'income') {
-    return category;
-  }
-  for (const group of EXPENSE_CATEGORIES) {
-    for (const item of group.items) {
-      if (item.label === category) {
-        return `${item.emoji} ${item.label}`;
-      }
-    }
-  }
+function getCategoryDisplay(category: string): string {
   return category;
 }
 
-function getSituationTagsDisplay(tags: string[]): string {
-  if (!tags || tags.length === 0) return '';
-  return tags[0];
+function renderSituationTagsDisplay(tags: string[], memo: string): React.ReactNode {
+  const cleanTags = (tags || []).map((tag) => tag.replace(/^#/, ''));
+  if (cleanTags.length === 0 && !memo) return '';
+
+  return (
+    <div className="flex items-center gap-1.5">
+      {cleanTags.length > 0 && (
+        <span className="text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
+          {cleanTags.join(' ')}
+        </span>
+      )}
+      {cleanTags.length > 0 && memo && <span className="h-3 w-px bg-[#cacdd2]" />}
+      {memo && (
+        <span className="text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
+          {memo}
+        </span>
+      )}
+    </div>
+  );
 }
 
 export default function RecordContent() {
@@ -336,6 +342,18 @@ export default function RecordContent() {
       });
     }
 
+    const TOTAL_CELLS = 42;
+    const remaining = TOTAL_CELLS - days.length;
+    const nextMonth = month === 12 ? 1 : month + 1;
+    const nextYear = month === 12 ? year + 1 : year;
+    for (let i = 1; i <= remaining; i++) {
+      days.push({
+        day: i,
+        isCurrentMonth: false,
+        date: `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
+      });
+    }
+
     return days;
   };
 
@@ -347,9 +365,9 @@ export default function RecordContent() {
       <div className="px-6 py-6 pb-40">
         {/* Amount Section */}
         <div className="mb-1">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.25">
             <>
-              <h2 className={cn('pb-4 text-2xl font-bold', record.type === 'expense' && (isAmountEditing ? getDisplayAmount() : record.amount) !== 0 ? 'text-red-600' : 'text-gray-800')}>
+              <h2 className={cn('pb-4 text-[28px] font-semibold tracking-[-0.025em]', record.type === 'expense' && (isAmountEditing ? getDisplayAmount() : record.amount) !== 0 ? 'text-[#eb1c1c]' : 'text-[#030303]')}>
                 {isAmountEditing ? getDisplayAmount().toLocaleString() : record.amount.toLocaleString()}원
               </h2>
               <button
@@ -359,7 +377,7 @@ export default function RecordContent() {
                 }}
                 className="cursor-pointer pb-4"
               >
-                <Image src="/svg/icon_pencil.svg" alt="edit" width={20} height={20} />
+                <Image src="/svg/icon_pencil.svg" alt="edit" width={30} height={30} />
               </button>
             </>
           </div>
@@ -367,45 +385,34 @@ export default function RecordContent() {
 
         {/* Type Selection (Hidden in Asset Mode) */}
         {!isAssetMode && (
-          <div className="mb-8 flex gap-3">
-            <Button
-              variant="secondary"
-              size="sm"
-              isActive={record.type === 'income'}
-              onClick={() =>
-                setRecord((prev) => ({
-                  ...prev,
-                  type: 'income',
-                  category: '',
-                  paymentMethod: '',
-                  emotion: '',
-                  situationTags: [],
-                  memo: '',
-                }))
-              }
-              className="cursor-pointer rounded-full"
-            >
-              수입
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              isActive={record.type === 'expense'}
-              onClick={() =>
-                setRecord((prev) => ({
-                  ...prev,
-                  type: 'expense',
-                  category: '',
-                  paymentMethod: '',
-                  emotion: '',
-                  situationTags: [],
-                  memo: '',
-                }))
-              }
-              className="cursor-pointer rounded-full"
-            >
-              지출
-            </Button>
+          <div className="mb-8 flex gap-2">
+            {(['income', 'expense'] as const).map((type) => {
+              const isActive = record.type === type;
+              return (
+                <button
+                  key={type}
+                  onClick={() =>
+                    setRecord((prev) => ({
+                      ...prev,
+                      type,
+                      category: '',
+                      paymentMethod: '',
+                      emotion: '',
+                      situationTags: [],
+                      memo: '',
+                    }))
+                  }
+                  className={cn(
+                    'flex h-7.25 cursor-pointer items-center justify-center rounded-[20px] border px-5 py-1 text-[14px] font-medium tracking-[-0.025em] transition-colors',
+                    isActive
+                      ? 'border-[#1c1d1f] text-[#27282c]'
+                      : 'border-[#9fa4a8] text-[#9fa4a8]'
+                  )}
+                >
+                  {type === 'income' ? '수입' : '지출'}
+                </button>
+              );
+            })}
           </div>
         )}
 
@@ -426,14 +433,6 @@ export default function RecordContent() {
           />
         )}
 
-        {/* Category Section */}
-        <SelectField
-          label="카테고리"
-          value={getCategoryDisplay(record.category, record.type)}
-          placeholder="카테고리를 선택하세요"
-          onClick={() => setIsCategoryOpen(true)}
-        />
-
         {/* Payment Method Section (Expense Only) */}
         {record.type === 'expense' && (
           <SelectField
@@ -443,6 +442,14 @@ export default function RecordContent() {
             onClick={() => setIsPaymentOpen(true)}
           />
         )}
+
+        {/* Category Section */}
+        <SelectField
+          label="카테고리"
+          value={getCategoryDisplay(record.category)}
+          placeholder="카테고리를 선택하세요"
+          onClick={() => setIsCategoryOpen(true)}
+        />
 
         {/* Emotion Section (Expense Only) */}
         {record.type === 'expense' && (
@@ -458,7 +465,7 @@ export default function RecordContent() {
         {record.type === 'expense' ? (
           <SelectField
             label="상황 태그 · 메모"
-            value={getSituationTagsDisplay(record.situationTags || []) || record.memo}
+            value={renderSituationTagsDisplay(record.situationTags || [], record.memo)}
             placeholder="상황 태그·메모를 입력하세요"
             onClick={() => {
               setTempTags([...(record.situationTags || [])]);
@@ -485,9 +492,10 @@ export default function RecordContent() {
         title="날짜를 선택해주세요"
         onClose={() => setIsDateOpen(false)}
         onSave={handleDateSave}
+        height={636}
       >
-        <div className="mb-6">
-          <div className="mb-4 flex items-center">
+        <div>
+          <div className="mb-5 flex items-center gap-5">
             <button
               onClick={() => {
                 if (calendarMonth.month === 1) {
@@ -496,11 +504,12 @@ export default function RecordContent() {
                   setCalendarMonth({ ...calendarMonth, month: calendarMonth.month - 1 });
                 }
               }}
-              className="cursor-pointer text-gray-500 hover:text-gray-700"
+              className="cursor-pointer"
+              aria-label="이전 달"
             >
-              <Image src={'/svg/icon_arrow_left_fill.svg'} alt={'left'} width={20} height={20} />
+              <Image src={'/svg/icon_arrow_left_fill.svg'} alt={'left'} width={30} height={30} />
             </button>
-            <h3 className="px-3 text-lg font-semibold">
+            <h3 className="min-w-13.5 text-center text-[20px] font-bold tracking-[-0.025em] text-[#27282c]">
               {calendarMonth.year === 2026 ? `${calendarMonth.month}월` : `${calendarMonth.year}년 ${calendarMonth.month}월`}
             </h3>
             <button
@@ -518,48 +527,46 @@ export default function RecordContent() {
               className={cn(
                 calendarMonth.year === new Date(today).getFullYear() &&
                 calendarMonth.month === new Date(today).getMonth() + 1
-                  ? 'cursor-not-allowed text-gray-300 opacity-45'
-                  : 'cursor-pointer text-gray-500 hover:text-gray-700'
+                  ? 'cursor-not-allowed opacity-45'
+                  : 'cursor-pointer'
               )}
+              aria-label="다음 달"
             >
               <Image
                 src={'/svg/icon_arrow_left_fill.svg'}
                 alt={'right'}
-                width={20}
-                height={20}
+                width={30}
+                height={30}
                 className={'rotate-180'}
               />
             </button>
           </div>
 
-          <div className="mb-3 grid grid-cols-7 gap-2 text-center">
+          <div className="mb-5 grid grid-cols-7 text-center">
             {DAY_OF_WEEK.map((day) => (
-              <div key={day} className="text-xs font-semibold text-gray-500">
+              <div key={day} className="text-[14px] font-medium tracking-[-0.025em] text-[#73787e]">
                 {day}
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-2 text-center">
+          <div className="grid grid-cols-7 gap-y-5 text-center">
             {getCalendarDays().map((item, idx) => {
               const isSelected = item.date === tempDate;
-              const isToday = item.date === today;
               return (
                 <button
                   key={idx}
                   onClick={() => setTempDate(item.date)}
                   className={cn(
-                    'relative aspect-square cursor-pointer text-sm transition-colors',
-                    !item.isCurrentMonth && 'text-gray-300',
-                    isSelected && 'relative flex items-center justify-center text-white',
-                    isToday && !isSelected && 'text-black'
+                    'relative mx-auto flex h-7.5 w-7.5 cursor-pointer items-center justify-center text-[18px] font-semibold tracking-[-0.025em] transition-colors',
+                    isSelected
+                      ? 'rounded-full bg-[#13278a] text-white'
+                      : item.isCurrentMonth
+                        ? 'text-[#030303]'
+                        : 'text-[#9fa4a8]'
                   )}
                 >
-                  {isSelected && <div className="absolute h-8 w-8 rounded-full bg-[#13278a]" />}
-                  {isToday && !isSelected && (
-                    <div className="absolute top-1/2 left-1/2 h-8 w-8 -translate-1/2 rounded-full bg-gray-300" />
-                  )}
-                  <span className="relative z-10">{item.day}</span>
+                  {item.day}
                 </button>
               );
             })}
@@ -571,47 +578,47 @@ export default function RecordContent() {
       <BottomSheet
         isOpen={isCategoryOpen}
         title="카테고리를 선택해주세요"
+        subtitle={record.type === 'expense' ? '한 가지만 선택할 수 있어요' : undefined}
         onClose={() => {
           setIsCategoryOpen(false);
           setSelectedCategory('');
         }}
         onSave={handleCategorySave}
         isSaveDisabled={selectedCategory === ''}
+        height={record.type === 'expense' ? 636 : 492}
       >
         {record.type === 'income' ? (
-          <div className="category__wrapper">
-            <div className="mb-50 grid grid-cols-3 gap-2 space-y-2">
-              {INCOME_CATEGORIES.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => handleCategorySelect(category)}
-                  className={cn(
-                    'mb-0 w-full cursor-pointer rounded-[30px] px-1 py-2 text-center text-[14px] transition-colors',
-                    selectedCategory === category
-                      ? 'border border-[#13278a] bg-[#ecf2fb] font-medium text-[#13278a]'
-                      : 'border border-gray-200 text-gray-900 hover:border-gray-300'
-                  )}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+          <div className="flex flex-wrap gap-2">
+            {INCOME_CATEGORIES.map((category) => (
+              <button
+                key={category}
+                onClick={() => handleCategorySelect(category)}
+                className={cn(
+                  'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
+                  selectedCategory === category
+                    ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
+                    : 'border-[#e5e5e5] text-[#474c52]'
+                )}
+              >
+                {category}
+              </button>
+            ))}
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="flex flex-col gap-10">
             {EXPENSE_CATEGORIES.map((group) => (
-              <div key={group.group}>
-                <h3 className="mb-3 text-sm font-semibold text-gray-700">{group.group}</h3>
-                <div className="grid grid-cols-3 gap-2">
+              <div key={group.group} className="flex flex-col gap-3">
+                <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
+                <div className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
                     <button
                       key={item.label}
                       onClick={() => handleCategorySelect(item.label)}
                       className={cn(
-                        'flex items-center justify-center gap-1 rounded-full border px-3 py-2 text-sm transition-colors',
+                        'flex h-9.5 w-26.25 cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
                         selectedCategory === item.label
-                          ? 'border-[#13278a] bg-[#ecf2fb] font-medium text-[#13278a]'
-                          : 'border-gray-200 text-gray-900 hover:border-gray-300'
+                          ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
+                          : 'border-[#e5e5e5] text-[#474c52]'
                       )}
                     >
                       <span>{item.emoji}</span>
@@ -636,17 +643,18 @@ export default function RecordContent() {
           }}
           onSave={handlePaymentSave}
           isSaveDisabled={selectedPayment === ''}
+          height={492}
         >
-          <div className="grid grid-cols-3 gap-2 space-y-2">
+          <div className="flex flex-wrap gap-2">
             {PAYMENT_METHODS.map((method) => (
               <button
                 key={method}
                 onClick={() => setSelectedPayment(method)}
                 className={cn(
-                  'mb-0 w-full cursor-pointer rounded-[30px] px-1 py-2 text-center text-[14px] transition-colors',
+                  'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
                   selectedPayment === method
-                    ? 'border border-[#13278a] bg-[#ecf2fb] font-medium text-[#13278a]'
-                    : 'border border-gray-200 text-gray-900 hover:border-gray-300'
+                    ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
+                    : 'border-[#e5e5e5] text-[#474c52]'
                 )}
               >
                 {method}
@@ -660,31 +668,33 @@ export default function RecordContent() {
       {record.type === 'expense' && (
         <BottomSheet
           isOpen={isEmotionOpen}
-          title="감정을 선택해주세요"
+          title="지출할 때의 감정을 선택해주세요"
+          subtitle="세 가지까지 선택할 수 있어요"
           onClose={() => {
             setIsEmotionOpen(false);
             setSelectedEmotion('');
           }}
           onSave={handleEmotionSave}
           isSaveDisabled={false}
+          height={636}
         >
-          <div className="space-y-6">
+          <div className="flex flex-col gap-10">
             {EMOTIONS.map((group) => (
-              <div key={group.group}>
-                <h3 className="mb-3 text-sm font-semibold text-gray-700">{group.group}</h3>
-                <div className="grid grid-cols-3 gap-2">
+              <div key={group.group} className="flex flex-col gap-3">
+                <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
+                <div className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
                     <button
                       key={item.label}
                       onClick={() => setSelectedEmotion(item.label)}
                       className={cn(
-                        'rounded-full border px-3 py-2 text-sm transition-colors flex justify-center items-center gap-3',
+                        'flex h-9.5 w-26.25 cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
                         selectedEmotion === item.label
-                          ? 'border-[#13278a] bg-[#ecf2fb] font-medium text-[#13278a]'
-                          : 'border-gray-200 text-gray-900 hover:border-gray-300'
+                          ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
+                          : 'border-[#e5e5e5] text-[#27282c]'
                       )}
                     >
-                      <Image src={item.emoji} alt={item.label} width={14} height={14} />
+                      <Image src={item.emoji} alt={item.label} width={24} height={24} />
                       <span>{item.label}</span>
                     </button>
                   ))}
@@ -699,19 +709,21 @@ export default function RecordContent() {
       {record.type === 'income' && (
         <BottomSheet
           isOpen={isMemoOpen}
-          title="메모를 입력해주세요."
+          title="메모를 입력해주세요"
           onClose={() => setIsMemoOpen(false)}
           onSave={handleMemoSave}
-          isSaveDisabled={memoInput.trim() === ''}
+          height={429}
         >
           <textarea
             value={memoInput}
-            onChange={(e) => setMemoInput(e.target.value.slice(0, 100))}
-            placeholder="100자 이내로 입력해주세요."
+            onChange={(e) => setMemoInput(e.target.value.slice(0, 50))}
+            placeholder="50자 이내로 입력해주세요"
             autoFocus
-            className="h-32 w-full resize-none rounded-lg border border-gray-200 p-3 focus:border-blue-600 focus:outline-none"
+            className="h-25.25 w-full resize-none rounded-[10px] border border-[#e5e5e5] p-4 text-[16px] font-medium tracking-[-0.025em] text-[#27282c] placeholder:font-medium placeholder:text-[#9fa4a8] focus:border-[#13278a] focus:outline-none"
           />
-          <div className="mt-2 text-right text-sm text-gray-500">{memoInput.length}/100</div>
+          <div className="mt-2 text-right text-[14px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
+            {memoInput.length}/50
+          </div>
         </BottomSheet>
       )}
 
@@ -720,23 +732,25 @@ export default function RecordContent() {
         <BottomSheet
           isOpen={isSituationOpen}
           title="상황 태그 · 메모를 입력해주세요"
+          subtitle="상황 태그는 두 가지만 선택할 수 있어요"
           onClose={() => setIsSituationOpen(false)}
           onSave={handleSituationSave}
-          isSaveDisabled={false}
+          height={650}
         >
-          <div className="space-y-6">
-            <div>
-              <p className="mb-3 text-sm text-gray-600">상황 태그는 두 가지만 선택할 수 있어요</p>
-              <div className="grid grid-cols-3 gap-2">
+          <div className="flex flex-col gap-10">
+            {/* 상황 태그 Section */}
+            <div className="flex flex-col gap-3">
+              <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">상황 태그</h3>
+              <div className="flex flex-wrap gap-x-2 gap-y-2.5">
                 {SITUATION_TAGS.map((tag) => (
                   <button
                     key={tag}
                     onClick={() => handleTagToggle(tag)}
                     className={cn(
-                      'rounded-full border px-3 py-2 text-sm transition-colors',
+                      'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
                       tempTags.includes(tag)
-                        ? 'border-[#13278a] bg-[#ecf2fb] font-medium text-[#13278a]'
-                        : 'border-gray-200 text-gray-900 hover:border-gray-300'
+                        ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
+                        : 'border-[#e5e5e5] text-[#27282c]'
                     )}
                   >
                     {tag}
@@ -745,23 +759,28 @@ export default function RecordContent() {
               </div>
             </div>
 
-            <div>
+            {/* 메모 Section */}
+            <div className="flex flex-col gap-2">
+              <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">메모</h3>
               <textarea
                 value={tempMemo}
-                onChange={(e) => setTempMemo(e.target.value.slice(0, 100))}
-                placeholder="100자 이내로 입력해주세요."
-                className="h-32 w-full resize-none rounded-lg border border-gray-200 p-3 focus:border-blue-600 focus:outline-none"
+                onChange={(e) => setTempMemo(e.target.value.slice(0, 50))}
+                placeholder="50자 이내로 입력해주세요"
+                className="h-25.25 w-full resize-none rounded-[10px] border border-[#e5e5e5] p-4 text-[16px] font-medium tracking-[-0.025em] text-[#27282c] placeholder:font-medium placeholder:text-[#9fa4a8] focus:border-[#13278a] focus:outline-none"
               />
-              <div className="mt-2 text-right text-sm text-gray-500">{tempMemo.length}/100</div>
+              <div className="text-right text-[14px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
+                {tempMemo.length}/50
+              </div>
             </div>
           </div>
         </BottomSheet>
       )}
 
       {/* Save Button */}
-      <div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md border-t border-gray-200 bg-white px-6 py-4">
-        {!isAmountEditing &&
-          <Button
+      <div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md bg-white">
+        {!isAmountEditing && (
+          <div className="px-4 pt-6 pb-12">
+            <Button
             onClick={() => {
               if (isAssetMode) {
                 console.log('Asset saved:', record);
@@ -776,8 +795,10 @@ export default function RecordContent() {
             }
             size="lg"
           >
-          저장
-        </Button>}
+            저장
+          </Button>
+          </div>
+        )}
         {isAmountEditing && <KeyBoardUserExperience changeAmount={handleAmountChange} />}
       </div>
     </div>

@@ -41,48 +41,45 @@ export default function TodayExpenseBox() {
   const dateString = selectedDate.toISOString().split('T')[0];
   const expenseData = useMemo(() => getDailyExpense(dateString), [dateString]);
   const formattedDate = useFormattedDate(selectedDate.toISOString(), {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    weekday: 'short',
+    year: undefined,
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
   });
 
   const totalAmount = expenseData?.totalAmount ?? 0;
 
   return (
-    <div className="relative mb-4 w-full rounded-[8px] bg-linear-to-r from-white to-[#eaf5ff] px-4 py-4 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)]">
-      <div className="mb-5 flex flex-col">
-        <span className="text-[14px] text-gray-500">오늘의 지출 비용</span>
-        <span className="text-[18px] font-bold">{totalAmount.toLocaleString()}원</span>
+    <div className="relative mb-2 w-full rounded-[12px] bg-white px-4 pt-4 pb-5.5 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)]">
+      <div className="mb-5 flex items-center justify-between">
+        <div className="flex flex-col">
+          <span className="text-[16px] font-medium tracking-[-0.025em] text-[#73787e]">오늘의 지출 비용</span>
+          <span className="text-[24px] font-semibold tracking-[-0.025em] text-[#030303]">{totalAmount.toLocaleString()}원</span>
+        </div>
+        <button
+          className={'cursor-pointer'}
+          onClick={() => router?.push(`/export?date=${dateString}`)}
+        >
+          <Image src={'/svg/icon_arrow_right.svg'} alt={'right-arrow'} width={24} height={24} />
+        </button>
       </div>
 
-      <button
-        className={'absolute top-5 right-5 cursor-pointer'}
-        onClick={() => router?.push(`/export?date=${dateString}`)}
-      >
-        <Image src={'/svg/icon_arrow_right.svg'} alt={'right-arrow'} width={20} height={20} />
-      </button>
-
-      <div className={cn('flex items-center gap-4', totalAmount === 0 ? 'mb-2' : 'mb-6')}>
+      <div className={cn('flex items-center gap-0.75', totalAmount === 0 ? 'mb-2' : 'mb-6')}>
         <button
           onClick={handlePrevDay}
           disabled={!canGoPrev}
-          className={`text-2xl transition-colors ${
-            canGoPrev
-              ? 'cursor-pointer text-gray-700 hover:text-black'
-              : 'cursor-not-allowed text-gray-300'
+          className={`transition-opacity ${
+            canGoPrev ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
           }`}
         >
           <Image src={'/svg/icon_arrow_left_fill.svg'} alt={'prev'} width={20} height={20} />
         </button>
-        <span className="text-[17px] font-medium">{formattedDate}</span>
+        <span className="text-[16px] font-medium tracking-[-0.025em] text-[#27282c]">{formattedDate}</span>
         <button
           onClick={handleNextDay}
           disabled={!canGoNext}
-          className={`text-2xl transition-colors ${
-            canGoNext
-              ? 'cursor-pointer text-gray-700 hover:text-black'
-              : 'cursor-not-allowed text-gray-300 opacity-50'
+          className={`transition-opacity ${
+            canGoNext ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
           }`}
         >
           <Image
@@ -102,30 +99,30 @@ export default function TodayExpenseBox() {
           </p>
           <button
             onClick={() => router?.push(`/record?date=${dateString}`)}
-            className="w-full rounded-lg border border-gray-300 py-3 text-center font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="w-full rounded-[10px] border border-[#e5e5e5] py-3 text-center text-[16px] font-medium text-[#27282c] transition-colors hover:bg-gray-50"
           >
             오늘의 지출 기록하러가기
           </button>
         </div>
       ) : (
         <>
-          <div className="space-y-4">
+          <div className="space-y-5">
             {expenseData?.categories.map((category, idx) => (
-              <div key={idx} className="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-[15px] font-medium">{category.name}</span>
-                  <span className="text-[15px] font-bold">
+              <div key={idx}>
+                <div className="mb-1.25 flex items-center justify-between">
+                  <span className="text-[16px] font-medium tracking-[-0.025em] text-[#27282c]">{category.name}</span>
+                  <span className="text-[18px] font-semibold tracking-[-0.025em] text-[#030303]">
                     {category.amount.toLocaleString()}원
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.25">
                   {category.emotions.map((emotion, emoIdx) => (
                     <span
                       key={emoIdx}
-                      className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm"
+                      className="inline-flex items-center gap-1.25 rounded-full bg-[#f0f4f5] px-2.5 py-0.75 text-[12px] font-medium tracking-[-0.025em] text-[#474c52]"
                     >
                       <Image src={emotion.emoji} alt={emotion.label} width={14} height={14} />
-                      <span className="text-gray-700">{emotion.label}</span>
+                      <span>{emotion.label}</span>
                     </span>
                   ))}
                 </div>
@@ -133,7 +130,10 @@ export default function TodayExpenseBox() {
             ))}
           </div>
 
-          <button className="mt-6 w-full rounded-lg border border-gray-300 py-3 text-center font-medium text-gray-700 transition-colors hover:bg-gray-50 cursor-pointer">
+          <button
+            onClick={() => router?.push(`/export?date=${dateString}`)}
+            className="mt-6 w-full rounded-[10px] border border-[#e5e5e5] px-2.5 py-3 text-center text-[16px] font-medium tracking-[-0.025em] text-[#27282c] transition-colors hover:bg-gray-50 cursor-pointer"
+          >
             더보기
           </button>
         </>
