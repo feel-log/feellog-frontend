@@ -1,7 +1,16 @@
+"use client";
+
 import Image from 'next/image';
 import { SocialLoginButton } from '@/features/login';
+import { useGuestLogin } from '@/features/login/model/useGuestLogin';
 
 export default function LoginContent() {
+  const { mutate: loginGuest } = useGuestLogin();
+
+  const handleNoLogin = () => {
+    loginGuest();
+  }
+
   return (
     <div className={'login__content__wrapper relative h-[calc(100vh-60.99px)]'}>
       <div className={'logo__part flex flex-col items-center pt-25'}>
@@ -25,7 +34,7 @@ export default function LoginContent() {
           color={'#fee500'}
           textColor={'#000'}
         />
-        <button className={'mt-3 text-[17px] text-white'}>로그인 없이 둘러보기</button>
+        <button className={'mt-3 text-[14px] text-white'} onClick={handleNoLogin}>로그인 없이 둘러보기</button>
       </div>
     </div>
   );

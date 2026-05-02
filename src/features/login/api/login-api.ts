@@ -22,3 +22,9 @@ export function loginGoogleApi(body: LoginRequest): Promise<LoginResponse> {
     body: JSON.stringify(body)
   })
 }
+
+export function loginGuestApi(): Promise<LoginResponse> {
+  return apiClient<LoginResponse>("/api/v1/auth/guest", {
+    method: "POST"
+  });
+}
