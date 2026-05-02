@@ -10,6 +10,20 @@ declare global {
   }
 }
 
+interface SocialLoginButtonProps {
+  imageUrl: string;
+  imageSize?: number;
+  text: string;
+  bgColor: string;
+  textColor: string;
+  borderColor?: string;
+  rounded?: string;
+  fontFamily?: string;
+  fontWeight?: 'medium' | 'semibold';
+  gap?: string;
+  onClick?: () => void;
+}
+
 export function SocialLoginButton({ social,imageUrl, text, color, textColor }: { social:"kakao" | "google",imageUrl: string, text: string, color: string, textColor: string }) {
   const { mutate: loginKakao, isPending } = useKakaoLogin();
   const { mutate: loginGoogle } = useGoogleLogin();
