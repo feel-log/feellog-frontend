@@ -3,7 +3,7 @@ import SocialLoginButton from '@/shared/ui/login/SocialLoginButton';
 
 export default function LoginContent() {
   return (
-    <div className="relative h-[calc(100vh-60.99px)] w-full">
+    <div className="relative h-screen w-full">
       {/* 로고 */}
       <div className="absolute left-1/2 top-36.5 -translate-x-1/2">
         <Image
