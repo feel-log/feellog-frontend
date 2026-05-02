@@ -199,6 +199,9 @@ html {
   html {
     @apply font-sans;
   }
+  button:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 /* 이미지 드래그 방지 */
