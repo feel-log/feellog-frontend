@@ -14,8 +14,6 @@ export async function apiClient<T>(
     }
   });
 
-  console.log(BASE_URL);
-
   console.log(res);
 
   if(!res.ok) throw new Error(`API Error: ${res.status}`);
