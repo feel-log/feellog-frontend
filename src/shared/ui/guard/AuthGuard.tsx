@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useKakaoToken } from '@/shared/store';
+import { useToken } from '@/shared/store';
 
 interface IAuthGuard {
   children: React.ReactNode
@@ -11,7 +11,7 @@ interface IAuthGuard {
 export function AuthGuard({ children }: IAuthGuard) {
   const router = useRouter();
   const pathname = usePathname();
-  const { getAccessToken, getRefreshToken } = useKakaoToken();
+  const { getAccessToken, getRefreshToken } = useToken();
 
   const accessToken = getAccessToken();
   const refreshToken = getRefreshToken();

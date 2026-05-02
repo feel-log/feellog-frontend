@@ -1,27 +1,23 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { LoginResponse } from '@/features/login/api/login-api';
 
-interface LoginKakaoResponse {
-  accessToken: string;
-  refreshToken: string;
-}
-
-interface KakaoTokenState extends LoginKakaoResponse {
+interface tokenState extends LoginResponse {
   isLoaded: boolean;
-  setTokens: (tokens: LoginKakaoResponse) => void;
+  setTokens: (tokens: LoginResponse) => void;
   clearTokens: () => void;
   getAccessToken: () => string | null;
   getRefreshToken: () => string | null;
 }
 
-export const useKakaoToken = create<KakaoTokenState>()(
+export const useToken = create<tokenState>()(
   persist(
     (set, get) => ({
       accessToken: '',
       refreshToken: '',
       isLoaded: false,
 
-      setTokens: (tokens: LoginKakaoResponse) => {
+      setTokens: (tokens: LoginResponse) => {
         set({
           accessToken: tokens.accessToken,
           refreshToken: tokens.refreshToken,

@@ -1,3 +1,4 @@
 export { SocialLoginButton } from './ui/SocialLoginButton';
-export { useLoginKakao } from './model/useLoginKakao';
-export { loginApi } from './api/login-api'
+export { useKakaoLogin } from './model/useKakaoLogin';
+export { useGoogleLogin } from './model/useGoogleLogin';
+export { loginKakaoApi, loginGoogleApi } from './api/login-api'

@@ -1,16 +1,23 @@
 import { apiClient } from '@/shared/api/api-instance';
 
-interface LoginKakaoRequest {
+interface LoginRequest {
   accessToken: string
 }
 
-interface LoginKakaoResponse {
+export interface LoginResponse {
   accessToken: string
   refreshToken: string
 }
 
-export function loginApi(body: LoginKakaoRequest) : Promise<LoginKakaoResponse> {
-  return apiClient<LoginKakaoResponse>("/api/v1/auth/kakao", {
+export function loginKakaoApi(body: LoginRequest) : Promise<LoginResponse> {
+  return apiClient<LoginResponse>("/api/v1/auth/kakao", {
+    method: "POST",
+    body: JSON.stringify(body)
+  })
+}
+
+export function loginGoogleApi(body: LoginRequest): Promise<LoginResponse> {
+  return apiClient<LoginResponse>("/api/v1/auth/google", {
     method: "POST",
     body: JSON.stringify(body)
   })

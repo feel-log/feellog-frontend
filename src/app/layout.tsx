@@ -7,6 +7,7 @@ import Footer from '@/shared/ui/Footer';
 import BackgroundProvider from './BackgroundProvider';
 import { QueryProvider } from '@/shared/lib/QueryProvider';
 import { KakaoScript } from '@/shared/lib/KakaoScript';
+import { GoogleScript } from '@/shared/lib/GoogleScript';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -95,6 +96,7 @@ export default function RootLayout({
       >
         <body className="bg-gray-50 select-none" suppressHydrationWarning>
           <KakaoScript />
+          <GoogleScript />
           <BackgroundProvider>
             <StatusBar />
             {children}

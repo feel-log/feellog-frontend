@@ -1,16 +1,17 @@
 "use client";
 
 import { useMutation } from '@tanstack/react-query';
-import { loginApi } from '@/features/login';
-import { useKakaoToken } from '@/shared/store';
+import { loginKakaoApi } from '@/features/login/api/login-api';
+import { useToken } from '@/shared/store';
 import { useRouter } from 'next/navigation';
 
-export function useLoginKakao() {
-  const { setTokens } = useKakaoToken();
+
+export function useKakaoLogin() {
+  const { setTokens } = useToken();
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (accessToken: string) => loginApi({
+    mutationFn: (accessToken: string) => loginKakaoApi({
       accessToken,
     }),
     onSuccess: (data) => {
