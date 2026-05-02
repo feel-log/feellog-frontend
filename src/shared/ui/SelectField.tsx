@@ -7,6 +7,8 @@ interface SelectFieldProps {
   value: React.ReactNode;
   placeholder: string;
   onClick: () => void;
+  error?: string;
+  errorKey?: number;
 }
 
 export default function SelectField({
@@ -14,12 +16,22 @@ export default function SelectField({
   value,
   placeholder,
   onClick,
+  error,
+  errorKey,
 }: SelectFieldProps) {
   const hasValue = typeof value === 'string' ? value !== '' : !!value;
 
   return (
     <div className="mb-6.25">
       <h3 className="mb-2 text-[17px] font-semibold tracking-[-0.025em] text-[#27282c]">{label}</h3>
+      {error && (
+        <p
+          key={errorKey}
+          className="animate-shake text-[14px] font-medium tracking-[-0.025em] text-[#eb1c1c]"
+        >
+          {error}
+        </p>
+      )}
       <button
         onClick={onClick}
         className="flex w-full cursor-pointer items-center justify-between text-left"

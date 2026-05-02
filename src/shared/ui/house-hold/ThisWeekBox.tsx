@@ -9,7 +9,7 @@ export default function ThisWeekBox() {
   const [todayDate, setTodayDate] = useState<number>(0);
 
   useEffect(() => {
-    const today = new Date('2026-04-21');
+    const today = new Date();
     setTodayDate(today.getDate());
     setWeekData(generateThisWeek(today));
   }, []);

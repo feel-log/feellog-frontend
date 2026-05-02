@@ -16,7 +16,7 @@ interface RecordState {
   date: string;
   category: string;
   paymentMethod?: string;
-  emotion?: string;
+  emotion?: string[];
   situationTags?: string[];
   memo: string;
 }
@@ -116,15 +116,15 @@ function renderSituationTagsDisplay(tags: string[], memo: string): React.ReactNo
   if (cleanTags.length === 0 && !memo) return '';
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex min-w-0 flex-1 items-start gap-1.5">
       {cleanTags.length > 0 && (
-        <span className="text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
+        <span className="shrink-0 whitespace-nowrap text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
           {cleanTags.join(' ')}
         </span>
       )}
-      {cleanTags.length > 0 && memo && <span className="h-3 w-px bg-[#cacdd2]" />}
+      {cleanTags.length > 0 && memo && <span className="mt-2 h-3 w-px shrink-0 bg-[#cacdd2]" />}
       {memo && (
-        <span className="text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
+        <span className="min-w-0 flex-1 wrap-break-word text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
           {memo}
         </span>
       )}
@@ -135,7 +135,8 @@ function renderSituationTagsDisplay(tags: string[], memo: string): React.ReactNo
 export default function RecordContent() {
   const searchParams = useSearchParams();
 
-  const today = '2026-04-22';
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   const selectedDate = searchParams?.get('date') || today;
   const typeParam = searchParams?.get('type');
   const isAssetMode = typeParam === 'asset';
@@ -147,7 +148,7 @@ export default function RecordContent() {
     date: selectedDate,
     category: '',
     paymentMethod: '',
-    emotion: '',
+    emotion: [],
     situationTags: [],
     memo: '',
   });
@@ -161,7 +162,7 @@ export default function RecordContent() {
 
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedPayment, setSelectedPayment] = useState('');
-  const [selectedEmotion, setSelectedEmotion] = useState('');
+  const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
   const [memoInput, setMemoInput] = useState('');
   const [tempTags, setTempTags] = useState<string[]>([]);
   const [tempMemo, setTempMemo] = useState('');
@@ -169,6 +170,47 @@ export default function RecordContent() {
 
   const [amountInput, setAmountInput] = useState('');
   const [isAmountEditing, setIsAmountEditing] = useState(false);
+  const [errors, setErrors] = useState<{ date?: string; category?: string; paymentMethod?: string }>({});
+  const [shakeKey, setShakeKey] = useState(0);
+
+  useEffect(() => {
+    if (record.category && errors.category) {
+      setErrors((prev) => ({ ...prev, category: undefined }));
+    }
+  }, [record.category, errors.category]);
+
+  useEffect(() => {
+    if (record.paymentMethod && errors.paymentMethod) {
+      setErrors((prev) => ({ ...prev, paymentMethod: undefined }));
+    }
+  }, [record.paymentMethod, errors.paymentMethod]);
+
+  useEffect(() => {
+    if (isDateSelected && errors.date) {
+      setErrors((prev) => ({ ...prev, date: undefined }));
+    }
+  }, [isDateSelected, errors.date]);
+
+  const handleSaveClick = () => {
+    const newErrors: typeof errors = {};
+    if (!isAssetMode && !isDateSelected) newErrors.date = '항목을 선택해주세요';
+    if (!record.category) newErrors.category = '항목을 선택해주세요';
+    if (record.type === 'expense' && !record.paymentMethod) {
+      newErrors.paymentMethod = '항목을 선택해주세요';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setShakeKey((prev) => prev + 1);
+      return;
+    }
+
+    if (isAssetMode) {
+      console.log('Asset saved:', record);
+    } else {
+      console.log('Record saved:', record);
+    }
+  };
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const [year, month] = selectedDate.split('-').map(Number);
     return { year, month };
@@ -268,10 +310,18 @@ export default function RecordContent() {
   const handleEmotionSave = () => {
     setRecord((prev) => ({
       ...prev,
-      emotion: selectedEmotion,
+      emotion: selectedEmotions,
     }));
     setIsEmotionOpen(false);
-    setSelectedEmotion('');
+    setSelectedEmotions([]);
+  };
+
+  const handleEmotionToggle = (emotion: string) => {
+    if (selectedEmotions.includes(emotion)) {
+      setSelectedEmotions(selectedEmotions.filter((e) => e !== emotion));
+    } else if (selectedEmotions.length < 3) {
+      setSelectedEmotions([...selectedEmotions, emotion]);
+    }
   };
 
   const handleMemoSave = () => {
@@ -391,17 +441,21 @@ export default function RecordContent() {
               return (
                 <button
                   key={type}
-                  onClick={() =>
+                  onClick={() => {
                     setRecord((prev) => ({
                       ...prev,
                       type,
+                      amount: 0,
+                      date: today,
                       category: '',
                       paymentMethod: '',
-                      emotion: '',
+                      emotion: [],
                       situationTags: [],
                       memo: '',
-                    }))
-                  }
+                    }));
+                    setIsDateSelected(false);
+                    setErrors({});
+                  }}
                   className={cn(
                     'flex h-7.25 cursor-pointer items-center justify-center rounded-[20px] border px-5 py-1 text-[14px] font-medium tracking-[-0.025em] transition-colors',
                     isActive
@@ -430,6 +484,8 @@ export default function RecordContent() {
               });
               setIsDateOpen(true);
             }}
+            error={errors.date}
+            errorKey={shakeKey}
           />
         )}
 
@@ -440,6 +496,8 @@ export default function RecordContent() {
             value={record.paymentMethod || ''}
             placeholder="결제 수단을 선택하세요"
             onClick={() => setIsPaymentOpen(true)}
+            error={errors.paymentMethod}
+            errorKey={shakeKey}
           />
         )}
 
@@ -449,15 +507,20 @@ export default function RecordContent() {
           value={getCategoryDisplay(record.category)}
           placeholder="카테고리를 선택하세요"
           onClick={() => setIsCategoryOpen(true)}
+          error={errors.category}
+          errorKey={shakeKey}
         />
 
         {/* Emotion Section (Expense Only) */}
         {record.type === 'expense' && (
           <SelectField
             label="감정"
-            value={record.emotion || ''}
+            value={record.emotion?.join(' ') || ''}
             placeholder="감정을 선택하세요"
-            onClick={() => setIsEmotionOpen(true)}
+            onClick={() => {
+              setSelectedEmotions(record.emotion || []);
+              setIsEmotionOpen(true);
+            }}
           />
         )}
 
@@ -520,16 +583,7 @@ export default function RecordContent() {
                   setCalendarMonth({ ...calendarMonth, month: calendarMonth.month + 1 });
                 }
               }}
-              disabled={
-                calendarMonth.year === new Date(today).getFullYear() &&
-                calendarMonth.month === new Date(today).getMonth() + 1
-              }
-              className={cn(
-                calendarMonth.year === new Date(today).getFullYear() &&
-                calendarMonth.month === new Date(today).getMonth() + 1
-                  ? 'cursor-not-allowed opacity-45'
-                  : 'cursor-pointer'
-              )}
+              className="cursor-pointer"
               aria-label="다음 달"
             >
               <Image
@@ -553,10 +607,17 @@ export default function RecordContent() {
           <div className="grid grid-cols-7 gap-y-5 text-center">
             {getCalendarDays().map((item, idx) => {
               const isSelected = item.date === tempDate;
+              const handleDayClick = () => {
+                if (!item.isCurrentMonth) {
+                  const [y, m] = item.date.split('-').map(Number);
+                  setCalendarMonth({ year: y, month: m });
+                }
+                setTempDate(item.date);
+              };
               return (
                 <button
                   key={idx}
-                  onClick={() => setTempDate(item.date)}
+                  onClick={handleDayClick}
                   className={cn(
                     'relative mx-auto flex h-7.5 w-7.5 cursor-pointer items-center justify-center text-[18px] font-semibold tracking-[-0.025em] transition-colors',
                     isSelected
@@ -672,7 +733,7 @@ export default function RecordContent() {
           subtitle="세 가지까지 선택할 수 있어요"
           onClose={() => {
             setIsEmotionOpen(false);
-            setSelectedEmotion('');
+            setSelectedEmotions([]);
           }}
           onSave={handleEmotionSave}
           isSaveDisabled={false}
@@ -686,10 +747,10 @@ export default function RecordContent() {
                   {group.items.map((item) => (
                     <button
                       key={item.label}
-                      onClick={() => setSelectedEmotion(item.label)}
+                      onClick={() => handleEmotionToggle(item.label)}
                       className={cn(
                         'flex h-9.5 w-26.25 cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
-                        selectedEmotion === item.label
+                        selectedEmotions.includes(item.label)
                           ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                           : 'border-[#e5e5e5] text-[#27282c]'
                       )}
@@ -781,22 +842,16 @@ export default function RecordContent() {
         {!isAmountEditing && (
           <div className="px-4 pt-6 pb-12">
             <Button
-            onClick={() => {
-              if (isAssetMode) {
-                console.log('Asset saved:', record);
-              } else {
-                console.log('Record saved:', record);
+              onClick={handleSaveClick}
+              size="lg"
+              disabled={
+                !record.category ||
+                (!isAssetMode && !isDateSelected) ||
+                (record.type === 'expense' && !record.paymentMethod)
               }
-            }}
-            disabled={
-              isAssetMode
-                ? record.category === ''
-                : record.category === '' || (record.type === 'expense' && record.paymentMethod === '')
-            }
-            size="lg"
-          >
-            저장
-          </Button>
+            >
+              저장
+            </Button>
           </div>
         )}
         {isAmountEditing && <KeyBoardUserExperience changeAmount={handleAmountChange} />}
