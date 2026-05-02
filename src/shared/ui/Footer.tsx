@@ -7,7 +7,7 @@ const navItems = [
   { id: 'household', label: '가계부', path: '/', icon: 'household' },
   { id: 'report', label: '리포트', path: '/report', icon: 'chart' },
   { id: 'asset', label: '자산', path: '/asset', icon: 'asset' },
-  { id: 'my_page', label: '마이페이지', path: '/my_page', icon: 'user' },
+  { id: 'my-page', label: '마이페이지', path: '/my-page', icon: 'user' },
 ];
 
 

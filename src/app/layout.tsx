@@ -4,6 +4,10 @@ import localFont from "next/font/local";
 import "./globals.css";
 import BackgroundProvider from './BackgroundProvider';
 import { QueryProvider } from '@/shared/lib/QueryProvider';
+import { KakaoScript } from '@/shared/lib/KakaoScript';
+import { GoogleScript } from '@/shared/lib/GoogleScript';
+import { Header } from '@/shared/ui';
+import StatusBar from '@/shared/ui/StatusBar';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -75,7 +79,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#ffffff",
+  themeColor: "#3B82F6",
 };
 
 export default function RootLayout({
@@ -91,7 +95,12 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <body className="bg-gray-50 select-none" suppressHydrationWarning>
-          <BackgroundProvider>{children}</BackgroundProvider>
+        <KakaoScript />
+        <GoogleScript />
+          <BackgroundProvider>
+            <StatusBar />
+            {children}
+          </BackgroundProvider>
         </body>
       </html>
     </QueryProvider>
