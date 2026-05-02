@@ -7,7 +7,8 @@ export interface ExpenseCategory {
   name: string;
   amount: number;
   emotions: Emotion[];
-  tag: string[]
+  tag: string[];
+  memo?: string;
 }
 
 export interface DailyExpenseData {
@@ -317,10 +318,18 @@ export const dailyExpenses: DailyExpenseData[] = [
         tag: ['#기분전환', '#보상심리'],
       },
       {
-        name: '생필품',
+        name: '취미',
         amount: 12000,
-        emotions: [{ emoji: '/svg/emo/thanks_L.svg', label: '스트레스' }],
-        tag: ['#기분전환', '#보상심리'],
+        emotions: [{ emoji: '/svg/emo/thanks_L.svg', label: '뿌듯함' }],
+        tag: ['#기분전환', '#할인'],
+        memo: '피규어 신상 구매',
+      },
+      {
+        name: '생필품',
+        amount: 5000,
+        emotions: [{ emoji: '/svg/emo/thanks_L.svg', label: '뿌듯함' }],
+        tag: ['#필요'],
+        memo: '다이소',
       },
       {
         name: '식비',

@@ -172,9 +172,9 @@ export default function Footer() {
 
   return (
     <div className="fixed right-0 bottom-0 left-0 z-20 mx-auto w-full max-w-md bg-[url('/svg/subtract.png')] bg-center">
-      <div className="relative h-22.5 flex justify-between">
-        <div className="flex w-full">
-          {navItems.map((item, index) => {
+      <div className="relative h-22.5 flex justify-between items-start">
+        <div className="flex">
+          {navItems.slice(0, 2).map((item) => {
             const isActive = item.path === '/'
               ? pathname === '/'
               : pathname === item.path || pathname.startsWith(item.path + '/');
@@ -182,18 +182,31 @@ export default function Footer() {
             <button
               key={item.id}
               onClick={() => handleNavigation(item.path)}
-              className={`flex flex-col items-center gap-1 text-black font-bold cursor-pointer px-6.5 mt-2 ${
-                isActive ? 'opacity-100' : 'opacity-50'
-              }
-              ${
-                index === 1 ? 'mr-7.75' : ''
-              }
-              ${
-                index === 2 ? 'ml-7.75' : ''
+              className={`flex w-20.5 flex-col items-center gap-1 cursor-pointer pt-2 ${
+                isActive ? 'text-[#1c1d1f] opacity-100' : 'text-[#9fa4a8] opacity-50'
               }`}
             >
               <FooterIcon icon={item.icon} />
-              <span className="text-[16px] font-medium whitespace-nowrap">{item.label}</span>
+              <span className="text-[14px] font-medium tracking-[-0.025em] whitespace-nowrap">{item.label}</span>
+            </button>
+            );
+          })}
+        </div>
+        <div className="flex">
+          {navItems.slice(2).map((item) => {
+            const isActive = item.path === '/'
+              ? pathname === '/'
+              : pathname === item.path || pathname.startsWith(item.path + '/');
+            return (
+            <button
+              key={item.id}
+              onClick={() => handleNavigation(item.path)}
+              className={`flex w-20.5 flex-col items-center gap-1 cursor-pointer pt-2 ${
+                isActive ? 'text-[#1c1d1f] opacity-100' : 'text-[#9fa4a8] opacity-50'
+              }`}
+            >
+              <FooterIcon icon={item.icon} />
+              <span className="text-[14px] font-medium tracking-[-0.025em] whitespace-nowrap">{item.label}</span>
             </button>
             );
           })}
@@ -201,9 +214,9 @@ export default function Footer() {
 
         <button
           onClick={() => handleNavigation('/record')}
-          className="absolute cursor-pointer -top-7 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full bg-blue-900 text-white flex items-center justify-center shadow-lg hover:bg-blue-800 transition-colors"
+          className="absolute cursor-pointer -top-7.5 left-1/2 transform -translate-x-1/2 w-15 h-15 rounded-full bg-[#13278a] text-white flex items-center justify-center shadow-[2px_4px_4px_0px_rgba(49,49,49,0.3)] hover:bg-[#0e1f6e] transition-colors"
         >
-          <Image src={"/svg/icon_plus.svg"} alt={"plus"} width={26} height={26} />
+          <Image src={"/svg/icon_plus.svg"} alt={"plus"} width={36} height={36} />
         </button>
       </div>
     </div>

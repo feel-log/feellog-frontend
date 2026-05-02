@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import StatusBar from '@/shared/ui/StatusBar';
-import Footer from '@/shared/ui/Footer';
 import BackgroundProvider from './BackgroundProvider';
 import { QueryProvider } from '@/shared/lib/QueryProvider';
 
@@ -77,7 +75,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#3B82F6",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -93,10 +91,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <body className="bg-gray-50 select-none" suppressHydrationWarning>
-          <BackgroundProvider>
-            <StatusBar />
-            {children}
-          </BackgroundProvider>
+          <BackgroundProvider>{children}</BackgroundProvider>
         </body>
       </html>
     </QueryProvider>

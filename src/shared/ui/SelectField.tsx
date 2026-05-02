@@ -1,13 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import { cn } from '@/shared/lib/utils';
 
 interface SelectFieldProps {
   label: string;
-  value: string;
+  value: React.ReactNode;
   placeholder: string;
   onClick: () => void;
+  error?: string;
+  errorKey?: number;
 }
 
 export default function SelectField({
@@ -15,27 +16,44 @@ export default function SelectField({
   value,
   placeholder,
   onClick,
+  error,
+  errorKey,
 }: SelectFieldProps) {
+  const hasValue = typeof value === 'string' ? value !== '' : !!value;
+
   return (
-    <div className="mb-8">
-      <h3 className="mb-2 text-[18px] font-bold text-gray-600">{label}</h3>
+    <div className="mb-6.25">
+      <h3 className="mb-2 text-[17px] font-semibold tracking-[-0.025em] text-[#27282c]">{label}</h3>
+      {error && (
+        <p
+          key={errorKey}
+          className="animate-shake text-[14px] font-medium tracking-[-0.025em] text-[#eb1c1c]"
+        >
+          {error}
+        </p>
+      )}
       <button
         onClick={onClick}
-        className="w-full flex items-center justify-between py-3 text-left hover:border-gray-300 cursor-pointer"
+        className="flex w-full cursor-pointer items-center justify-between text-left"
       >
-        <span
-          className={cn(
-            'transition-colors',
-            value ? 'text-[#13278A] font-semilight' : 'text-gray-400 font-semilight',
-          )}
-        >
-          {value || placeholder}
-        </span>
+        {hasValue ? (
+          typeof value === 'string' ? (
+            <span className="text-[17px] font-semibold tracking-[-0.025em] text-[#13278a] transition-colors">
+              {value}
+            </span>
+          ) : (
+            value
+          )
+        ) : (
+          <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8] transition-colors">
+            {placeholder}
+          </span>
+        )}
         <Image
           src="/svg/icon_arrow_right.svg"
           alt="select"
-          width={20}
-          height={20}
+          width={30}
+          height={30}
         />
       </button>
     </div>

@@ -3,16 +3,50 @@ import SocialLoginButton from '@/shared/ui/login/SocialLoginButton';
 
 export default function LoginContent() {
   return (
-    <div className={"login__content__wrapper relative h-[calc(100vh_-_60.99px)]"}>
-      <div className={"logo__part flex flex-col items-center pt-25"}>
-        <Image src={"/svg/feel_log_big.svg"} alt={"feel_log_login"} width={181} height={53} />
-        <span className={"block mt-2.5 text-white text-[14px]"}>감정으로 읽는 소비 기록</span>
+    <div className="relative h-screen w-full">
+      {/* 로고 */}
+      <div className="absolute left-1/2 top-36.5 -translate-x-1/2">
+        <Image
+          src="/svg/feel_log_big.svg"
+          alt="Feel-Log"
+          width={181}
+          height={53}
+          priority
+        />
+        <p className="mt-2.5 text-center text-[16px] font-medium tracking-[-0.025em] text-white">
+          감정으로 읽는 소비 기록
+        </p>
       </div>
-      <div className={"login__part absolute bottom-10 left-0 right-0 flex flex-col items-center gap-3"}>
-        <SocialLoginButton imageUrl={"/svg/kakaotalk.svg"} text={"카카오로 로그인"} color={"#fee500"} textColor={"#000"} />
-        <SocialLoginButton imageUrl={"/svg/naver.svg"} text={"네이버로 로그인"} color={"#05ac4f"} textColor={"#fff"} />
-        <button className={"text-white text-[17px] mt-3"}>로그인 없이 둘러보기</button>
+
+      {/* 로그인 버튼 그룹 */}
+      <div className="absolute bottom-35 left-1/2 flex w-75 -translate-x-1/2 flex-col gap-3.75">
+        <SocialLoginButton
+          imageUrl="/svg/google.svg"
+          imageSize={20}
+          text="Google로 로그인"
+          bgColor="#ffffff"
+          textColor="#1f1f1f"
+          borderColor="#747775"
+          rounded="rounded-[4px]"
+          fontFamily="Roboto, system-ui, sans-serif"
+          fontWeight="medium"
+          gap="gap-3"
+        />
+        <SocialLoginButton
+          imageUrl="/svg/kakaotalk.svg"
+          imageSize={18}
+          text="카카오 로그인"
+          bgColor="#fee500"
+          textColor="rgba(0, 0, 0, 0.85)"
+          fontFamily='"Apple SD Gothic Neo", system-ui, sans-serif'
+          fontWeight="semibold"
+        />
       </div>
+
+      {/* 둘러보기 버튼 */}
+      <button className="absolute bottom-23.5 left-1/2 -translate-x-1/2 cursor-pointer px-2.5 text-[14px] font-medium tracking-[-0.025em] text-white">
+        로그인 없이 둘러보기
+      </button>
     </div>
   );
 }

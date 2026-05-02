@@ -9,15 +9,15 @@ export default function BackgroundProvider({ children }: { children: React.React
   const isLoginPage = pathname === '/login';
 
   return (
-    <div
-      className={cn(
-        'min-h-screen w-full',
-        isHomePage
-          ? 'bg-linear-to-b from-[#ecf2fb] to-[#f3f8ff]' :
-          isLoginPage ? 'bg-[#13278a]' : 'bg-white'
-      )}
-    >
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
+    <div className="min-h-screen w-full bg-gray-100">
+      <div
+        className={cn(
+          'mx-auto flex min-h-screen w-full max-w-md flex-col',
+          isHomePage
+            ? 'bg-[linear-gradient(180deg,#cce1ff_8.65%,#f3f8ff_100%)]' :
+            isLoginPage ? 'bg-[#13278a]' : 'bg-white'
+        )}
+      >
         {children}
       </div>
     </div>
