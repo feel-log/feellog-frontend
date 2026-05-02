@@ -14,9 +14,9 @@ export interface AssetCategory {
 
 export const ASSET_CATEGORIES: AssetCategory[] = [
   {
-    id: 'savings',
-    label: '저축',
-    color: '#13278a',
+    id: 'salary',
+    label: '급여',
+    color: '#13278A',
     total: 5400000,
     records: [
       { date: '4.20', amount: 50000 },
@@ -28,24 +28,38 @@ export const ASSET_CATEGORIES: AssetCategory[] = [
     ],
   },
   {
-    id: 'investment',
-    label: '투자',
-    color: '#F5A623',
+    id: 'allowance',
+    label: '용돈',
+    color: '#FFDB72',
     total: 6800000,
     records: [],
   },
   {
-    id: 'insurance',
-    label: '보험',
-    color: '#4CAF50',
+    id: 'side',
+    label: '부수입',
+    color: '#58E1B6',
     total: 5000000,
+    records: [],
+  },
+  {
+    id: 'bonus',
+    label: '상여금',
+    color: '#FF8C19',
+    total: 1760000,
+    records: [],
+  },
+  {
+    id: 'finance',
+    label: '금융 수입',
+    color: '#64A2FF',
+    total: 0,
     records: [],
   },
   {
     id: 'etc',
     label: '기타',
-    color: '#9E9E9E',
-    total: 1760000,
+    color: '#CACDD2',
+    total: 0,
     records: [],
   },
 ];

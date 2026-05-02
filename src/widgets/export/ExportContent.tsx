@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { dailyExpenses, getDailyExpense } from '@/shared/constants/dailyExpense';
-import { cn } from '@/shared/lib/utils';
+import { getDailyExpense } from '@/shared/constants/dailyExpense';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton from '@/shared/ui/SortButton';
+import { useFormattedDate } from '@/shared/hooks';
 
 type SortType = 'latest' | 'oldest' | 'expensive' | 'cheap';
 
@@ -17,7 +17,7 @@ interface ExpenseItem {
   category: string;
   amount: number;
   emotions: Array<{ emoji: string; label: string }>;
-  description?: string;
+  memo?: string;
   paymentMethod: string;
   tag: string[];
 }
@@ -30,7 +30,14 @@ export default function ExportContent() {
   const expenseData = getDailyExpense(selectedDate);
   const totalAmount = expenseData?.totalAmount ?? 0;
 
-  const getExpenses = () => {
+  const formattedDate = useFormattedDate(selectedDate, {
+    year: undefined,
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
+  });
+
+  const getExpenses = (): ExpenseItem[] => {
     if (!expenseData || expenseData.categories.length === 0) return [];
 
     const items: ExpenseItem[] = expenseData.categories.map((category, idx) => ({
@@ -39,6 +46,7 @@ export default function ExportContent() {
       amount: category.amount,
       emotions: category.emotions,
       tag: category.tag,
+      memo: category.memo,
       paymentMethod: idx % 2 === 0 ? '카드' : '현금',
     }));
 
@@ -59,63 +67,99 @@ export default function ExportContent() {
 
   return (
     <div>
-      {/* Header */}
       <PageHeader title="오늘의 지출 비용" />
 
-      {/* Content */}
-      <div className="px-6 py-6">
-        {/* Amount Section */}
-        <div className="mb-8 border-b border-gray-200">
-          <p className="mb-2 text-sm text-gray-600">지출</p>
-          <h2
-            className={`pb-4 text-2xl font-bold ${totalAmount > 0 ? 'text-red-600' : 'text-gray-800'}`}
-          >
-            {totalAmount.toLocaleString()}원
-          </h2>
+      {/* 합계 섹션 */}
+      <div className="border-b-[5px] border-[#f7f8fa] px-4 pt-5 pb-3.75">
+        <p className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">지출</p>
+        <p className="text-[28px] font-semibold tracking-[-0.025em] text-[#eb1c1c]">
+          {totalAmount.toLocaleString()}원
+        </p>
+      </div>
+
+      {/* 정렬 셀렉터 + 본문 */}
+      <div className="px-4 pt-5">
+        <div className="flex justify-end">
+          <SortButton sortType={sortType} onSortChange={setSortType} />
         </div>
 
-        {/* Sort Button */}
-        <SortButton sortType={sortType} onSortChange={setSortType} />
-
-        {/* Expense List or Empty State */}
         {totalAmount === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <h3 className="mb-1 text-[16px] font-medium text-gray-800">지출 기록이 아직 없어요</h3>
-            <p className="mb-6 text-[12px] text-gray-500">오늘의 소비와 감정을 함께 기록해보세요</p>
+            <h3 className="mb-1 text-[18px] font-semibold tracking-[-0.025em] text-[#474c52]">
+              지출 기록이 아직 없어요
+            </h3>
+            <p className="text-[14px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
+              오늘의 소비와 감정을 함께 기록해보세요
+            </p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {expenses.map((expense, idx) => (
-              <div key={idx} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
-                <div className="mb-3 flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-gray-900">{expense.name}</h4>
-                    <div className={"flex items-center"}>
-                      <div className="mt-2 flex flex-wrap gap-3 pr-2 relative after:content-[''] after:absolute after:top-0 after:bottom-0 after:right-0 after:my-auto after:w-0.5 after:h-3.5 after:bg-gray-200">
-                        {expense.tag?.map((tag, tagIdx) => (
-                          <span
-                            key={tagIdx}
-                            className="inline-flex items-center py-1 text-[16px] text-[#13278a]"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      <div className={"mt-2 pl-2 flex items-center gap-1.5"}>
-                        {expense.emotions.map((emotion, emoIdx) => (
-                            <Image key={emotion.label} src={emotion.emoji} alt={emotion.label} width={24} height={24} />
+          <>
+            {/* 날짜 라벨 */}
+            <p className="mb-2.5 text-[14px] font-medium tracking-[-0.025em] text-[#474c52]">
+              {formattedDate}
+            </p>
+
+            {/* 항목 리스트 */}
+            <div className="flex flex-col gap-5">
+              {expenses.map((expense, idx) => (
+                <div key={idx} className="flex flex-col gap-1.25">
+                  {/* 카테고리명 + 금액 */}
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">
+                      {expense.name}
+                    </h4>
+                    <p className="text-[20px] font-semibold tracking-[-0.025em] text-[#030303]">
+                      {expense.amount.toLocaleString()}원
+                    </p>
+                  </div>
+
+                  {/* 태그 + 감정 + 결제수단 */}
+                  <div className="flex items-center justify-between gap-1.25">
+                    <div className="flex items-center gap-2">
+                      {expense.tag && expense.tag.length > 0 && (
+                        <div className="flex items-center gap-1.5">
+                          {expense.tag.map((tag, tagIdx) => (
+                            <span
+                              key={tagIdx}
+                              className="text-[16px] font-medium tracking-[-0.025em] text-[#13278a]"
+                            >
+                              {tag}
+                            </span>
                           ))}
-                      </div>
+                        </div>
+                      )}
+                      {expense.emotions.length > 0 && (
+                        <>
+                          <span className="h-3.5 w-px shrink-0 bg-[#e5e5e5]" />
+                          <div className="flex items-center gap-1.5">
+                            {expense.emotions.map((emotion) => (
+                              <Image
+                                key={emotion.label}
+                                src={emotion.emoji}
+                                alt={emotion.label}
+                                width={20}
+                                height={20}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      )}
                     </div>
+                    <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
+                      {expense.paymentMethod}
+                    </span>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-gray-900">{expense.amount.toLocaleString()}원</p>
-                    <p className="text-xs text-gray-500">{expense.paymentMethod}</p>
-                  </div>
+
+                  {/* 메모 */}
+                  {expense.memo && (
+                    <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
+                      {expense.memo}
+                    </span>
+                  )}
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

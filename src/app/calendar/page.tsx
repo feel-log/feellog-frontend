@@ -85,6 +85,7 @@ export default function CalendarPage() {
           income={dayData.income}
           expense={dayData.expense}
           expenseItems={dayData.expenseItems}
+          incomeItems={dayData.incomeItems}
           onClose={() => setSelectedDay(null)}
         />
       )}

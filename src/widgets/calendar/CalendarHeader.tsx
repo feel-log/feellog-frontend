@@ -8,6 +8,12 @@ interface CalendarHeaderProps {
   balance: number;
 }
 
+function getHeaderAmountSize(amount: number): string {
+  return Math.abs(amount) >= 10_000_000
+    ? 'text-[14px] tracking-[-0.35px]'
+    : 'text-[16px] tracking-[-0.4px]';
+}
+
 export default function CalendarHeader({
   year,
   month,
@@ -60,7 +66,7 @@ export default function CalendarHeader({
             <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
               수입
             </p>
-            <p className="whitespace-nowrap text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#030303]">
+            <p className={`whitespace-nowrap font-semibold leading-normal text-[#030303] ${getHeaderAmountSize(income)}`}>
               {income.toLocaleString()}원
             </p>
           </div>
@@ -68,7 +74,7 @@ export default function CalendarHeader({
             <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
               지출
             </p>
-            <p className="whitespace-nowrap text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#EB1C1C]">
+            <p className={`whitespace-nowrap font-semibold leading-normal text-[#EB1C1C] ${getHeaderAmountSize(expense)}`}>
               {expense.toLocaleString()}원
             </p>
           </div>
@@ -76,7 +82,7 @@ export default function CalendarHeader({
             <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
               합계
             </p>
-            <p className="whitespace-nowrap text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#030303]">
+            <p className={`whitespace-nowrap font-semibold leading-normal text-[#030303] ${getHeaderAmountSize(balance)}`}>
               {balance.toLocaleString()}원
             </p>
           </div>
