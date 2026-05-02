@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useKakaoLogin, useGoogleLogin } from '@/features/login';
 
@@ -14,7 +13,6 @@ declare global {
 export function SocialLoginButton({ social,imageUrl, text, color, textColor }: { social:"kakao" | "google",imageUrl: string, text: string, color: string, textColor: string }) {
   const { mutate: loginKakao, isPending } = useKakaoLogin();
   const { mutate: loginGoogle } = useGoogleLogin();
-  const googleButtonRef = useRef<HTMLDivElement>(null);
 
   const handleLoginButton = () => {
     if (social === 'kakao') {
@@ -26,10 +24,23 @@ export function SocialLoginButton({ social,imageUrl, text, color, textColor }: {
         success: (authObj: { access_token: string }) => {
           loginKakao(authObj.access_token);
         },
-        error: (error: unknown) => {
+        fail: (error: unknown) => {
           console.error('카카오 로그인 실패', error);
         },
       });
+    } else if (social === 'google') {
+      if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+        console.log('Google SDK not initialized');
+        return;
+      }
+      window.google.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+        callback: (response) => {
+          loginGoogle(response.credential);
+        }
+      })
+
+      window.google.accounts.id.prompt();
     }
   }
 
