@@ -1,5 +1,10 @@
 import LoginContent from '@/widgets/login/LoginContent';
+import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
 
 export default function LoginPage() {
-  return <LoginContent />
+  return (
+    <AuthGuard>
+      <LoginContent />
+    </AuthGuard>
+  )
 }

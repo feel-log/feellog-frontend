@@ -6,12 +6,12 @@ import { useKakaoToken } from '@/shared/store';
 import { useRouter } from 'next/navigation';
 
 export function useLoginKakao() {
-  const {setTokens} = useKakaoToken();
+  const { setTokens } = useKakaoToken();
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (code: string) => loginApi({
-      code
+    mutationFn: (accessToken: string) => loginApi({
+      accessToken,
     }),
     onSuccess: (data) => {
       setTokens({

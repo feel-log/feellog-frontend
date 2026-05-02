@@ -1,1 +1,1 @@
-export { useKakaoToken } from './kakaoTokenStore';
+export { useKakaoToken } from './token-store';
