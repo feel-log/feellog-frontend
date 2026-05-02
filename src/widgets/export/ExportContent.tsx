@@ -150,7 +150,7 @@ export default function ExportContent() {
                     </span>
                   </div>
 
-                  {/* 메모 (별도 줄) */}
+                  {/* 메모 */}
                   {expense.memo && (
                     <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
                       {expense.memo}

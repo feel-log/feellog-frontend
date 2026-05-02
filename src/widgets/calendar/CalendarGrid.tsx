@@ -1,5 +1,14 @@
 const DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
+function getCellAmountSize(amount: number): string {
+  const abs = Math.abs(amount);
+  if (abs >= 100_000_000) return 'text-[8px] tracking-[-0.2px]';
+  if (abs >= 10_000_000) return 'text-[9px] tracking-[-0.225px]';
+  if (abs >= 1_000_000) return 'text-[10px] tracking-[-0.25px]';
+  if (abs >= 100_000) return 'text-[11px] tracking-[-0.275px]';
+  return 'text-[12px] tracking-[-0.3px]';
+}
+
 function getCalendarDates(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay();
   const lastDate = new Date(year, month + 1, 0).getDate();
@@ -88,24 +97,24 @@ export default function CalendarGrid({
             <div
               key={index}
               onClick={() => date.isCurrentMonth && onDateClick?.(date.day)}
-              className={`flex flex-col gap-1.25 overflow-hidden px-1.25 py-2 ${
+              className={`flex flex-col items-start gap-2.5 px-1.25 py-2 ${
                 date.isCurrentMonth ? 'cursor-pointer' : ''
               }`}
             >
               <div
-                className={`flex w-5.25 items-center justify-center text-[14px] font-medium leading-normal tracking-[-0.35px] ${dayClass}`}
+                className={`flex size-6.25 items-center justify-center text-[14px] font-medium leading-normal tracking-[-0.35px] ${dayClass}`}
               >
                 {date.day}
               </div>
               {amounts && (
-                <div className="flex flex-col gap-1.25 text-[12px] font-medium leading-normal tracking-[-0.3px]">
+                <div className="flex flex-col gap-1.25 font-medium leading-normal">
                   {amounts.income ? (
-                    <span className="text-[#030303]">
+                    <span className={`whitespace-nowrap text-[#030303] ${getCellAmountSize(amounts.income)}`}>
                       +{amounts.income.toLocaleString()}
                     </span>
                   ) : null}
                   {amounts.expense ? (
-                    <span className="text-[#EB1C1C]">
+                    <span className={`whitespace-nowrap text-[#EB1C1C] ${getCellAmountSize(amounts.expense)}`}>
                       -{amounts.expense.toLocaleString()}
                     </span>
                   ) : null}

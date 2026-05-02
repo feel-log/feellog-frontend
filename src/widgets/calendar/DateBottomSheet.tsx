@@ -13,6 +13,26 @@ interface ExpenseItem {
   emotions?: string[];
 }
 
+interface IncomeItem {
+  category: string;
+  amount: number;
+  memo?: string;
+}
+
+function EmptyRecord({ type }: { type: TransactionType }) {
+  const isIncome = type === 'income';
+  return (
+    <>
+      <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#474C52]">
+        {isIncome ? '수입 기록이 아직 없어요' : '지출 기록이 아직 없어요'}
+      </p>
+      <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
+        {isIncome ? '수입이 있다면 지금 기록해보세요' : '오늘의 소비와 감정을 함께 기록해보세요'}
+      </p>
+    </>
+  );
+}
+
 interface DayDetailSheetProps {
   date: number;
   month: number;
@@ -20,6 +40,7 @@ interface DayDetailSheetProps {
   income: number;
   expense: number;
   expenseItems: ExpenseItem[];
+  incomeItems: IncomeItem[];
   onClose: () => void;
 }
 
@@ -30,6 +51,7 @@ export default function DateBottomSheet({
   income,
   expense,
   expenseItems,
+  incomeItems,
   onClose,
 }: DayDetailSheetProps) {
   const [isClosing, setIsClosing] = useState(false);
@@ -88,25 +110,7 @@ export default function DateBottomSheet({
             </div>
 
             <div className="flex flex-1 flex-col items-center justify-center pb-10">
-              {transactionType === 'income' ? (
-                <>
-                  <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#474C52]">
-                    수입 기록이 아직 없어요
-                  </p>
-                  <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
-                    수입이 있다면 지금 기록해보세요
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#474C52]">
-                    지출 기록이 아직 없어요
-                  </p>
-                  <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
-                    오늘의 소비와 감정을 함께 기록해보세요
-                  </p>
-                </>
-              )}
+              <EmptyRecord type={transactionType} />
             </div>
           </>
         ) : (
@@ -145,55 +149,83 @@ export default function DateBottomSheet({
               <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
                 {dateLabel}
               </p>
-              <div className="flex flex-col gap-5">
-                {expenseItems.map((item, index) => (
-                  <div key={index} className="flex flex-col gap-0.75">
-
-                    <div className="flex items-center justify-between">
-                      <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#27282C]">
-                        {item.category}
-                      </p>
-                      <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-                        {item.amount.toLocaleString()}원
-                      </p>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1.5">
-                          {item.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#13278A]"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
+              {transactionType === 'income' ? (
+                incomeItems.length === 0 ? (
+                  <div className="flex flex-1 flex-col items-center justify-center py-20">
+                    <EmptyRecord type="income" />
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-5">
+                    {incomeItems.map((item, index) => (
+                      <div key={index} className="flex flex-col gap-0.75">
+                        <div className="flex items-center justify-between">
+                          <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#27282C]">
+                            {item.category}
+                          </p>
+                          <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+                            {item.amount.toLocaleString()}원
+                          </p>
                         </div>
-                        {item.emotions && item.emotions.length > 0 && (
-                          <>
-                            <span className="h-3.5 w-px bg-[#E5E5E5]" />
-                            <div className="flex items-center gap-1.5">
-                              {item.emotions.map((emotion) => (
-                                <EmotionIcon key={emotion} name={emotion} size={24} />
-                              ))}
-                            </div>
-                          </>
+                        {item.memo && (
+                          <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
+                            {item.memo}
+                          </p>
                         )}
                       </div>
-                      <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
-                        {item.paymentMethod}
-                      </p>
-                    </div>
-
-                    {item.memo && (
-                      <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
-                        {item.memo}
-                      </p>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
+                )
+              ) : (
+                <div className="flex flex-col gap-5">
+                  {expenseItems.map((item, index) => (
+                    <div key={index} className="flex flex-col gap-0.75">
+
+                      <div className="flex items-center justify-between">
+                        <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#27282C]">
+                          {item.category}
+                        </p>
+                        <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+                          {item.amount.toLocaleString()}원
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5">
+                            {item.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#13278A]"
+                              >
+                                #{tag}
+                              </span>
+                            ))}
+                          </div>
+                          {item.emotions && item.emotions.length > 0 && (
+                            <>
+                              <span className="h-3.5 w-px bg-[#E5E5E5]" />
+                              <div className="flex items-center gap-1.5">
+                                {item.emotions.map((emotion) => (
+                                  <EmotionIcon key={emotion} name={emotion} size={24} />
+                                ))}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
+                          {item.paymentMethod}
+                        </p>
+                      </div>
+
+                      {item.memo && (
+                        <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
+                          {item.memo}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           </>
