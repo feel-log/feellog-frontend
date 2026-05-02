@@ -97,10 +97,10 @@ export default function RootLayout({
         <body className="bg-gray-50 select-none" suppressHydrationWarning>
         <KakaoScript />
         <GoogleScript />
-          <BackgroundProvider>
-            <StatusBar />
-            {children}
-          </BackgroundProvider>
+        <BackgroundProvider>
+          <StatusBar />
+          {children}
+        </BackgroundProvider>
         </body>
       </html>
     </QueryProvider>
