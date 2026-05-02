@@ -35,7 +35,7 @@ export default function Dropdown<T extends string>({
   };
 
   const itemBaseClass =
-    'flex h-[33px] w-full items-center border border-[#e5e5e5] bg-white px-[15px] py-1.5 text-[14px] font-medium tracking-[-0.025em] text-[#474c52] cursor-pointer';
+    'flex h-[33px] w-full items-center whitespace-nowrap border border-[#e5e5e5] bg-white px-[15px] py-1.5 text-[14px] font-medium tracking-[-0.025em] text-[#474c52] cursor-pointer';
 
   return (
     <div

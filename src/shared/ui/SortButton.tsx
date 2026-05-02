@@ -12,8 +12,8 @@ interface SortButtonProps {
 const sortOptions: DropdownOption<SortType>[] = [
   { value: 'latest', label: '최신순' },
   { value: 'oldest', label: '오래된순' },
-  { value: 'expensive', label: '금액 높은 순' },
-  { value: 'cheap', label: '금액 낮은 순' },
+  { value: 'expensive', label: '금액 높은순' },
+  { value: 'cheap', label: '금액 낮은순' },
 ];
 
 export default function SortButton({ sortType, onSortChange }: SortButtonProps) {

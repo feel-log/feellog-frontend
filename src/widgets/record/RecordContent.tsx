@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import PageHeader from '@/shared/ui/PageHeader';
 import BottomSheet from '@/shared/ui/BottomSheet';
@@ -140,7 +140,8 @@ export default function RecordContent() {
   const selectedDate = searchParams?.get('date') || today;
   const typeParam = searchParams?.get('type');
   const isAssetMode = typeParam === 'asset';
-  const initialType: 'income' | 'expense' = typeParam === 'income' ? 'income' : 'expense';
+  const initialType: 'income' | 'expense' =
+    typeParam === 'income' || isAssetMode ? 'income' : 'expense';
 
   const [record, setRecord] = useState<RecordState>({
     amount: 0,
@@ -193,7 +194,7 @@ export default function RecordContent() {
 
   const handleSaveClick = () => {
     const newErrors: typeof errors = {};
-    if (!isAssetMode && !isDateSelected) newErrors.date = '항목을 선택해주세요';
+    if (!isDateSelected) newErrors.date = '항목을 선택해주세요';
     if (!record.category) newErrors.category = '항목을 선택해주세요';
     if (record.type === 'expense' && !record.paymentMethod) {
       newErrors.paymentMethod = '항목을 선택해주세요';
@@ -410,26 +411,38 @@ export default function RecordContent() {
 
   return (
     <div className="min-h-screen bg-white">
-      <PageHeader title={isAssetMode ? '자산' : '가계부'} />
+      <PageHeader title={isAssetMode ? '자산 추가' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">
         {/* Amount Section */}
-        <div className="mb-1">
+        <div
+          className={cn(
+            'mb-1',
+            isAssetMode && 'mb-7.5 border-b border-[#E5E5E5] pb-3.75'
+          )}
+        >
           <div className="flex items-center gap-1.25">
-            <>
-              <h2 className={cn('pb-4 text-[28px] font-semibold tracking-[-0.025em]', record.type === 'expense' && (isAmountEditing ? getDisplayAmount() : record.amount) !== 0 ? 'text-[#eb1c1c]' : 'text-[#030303]')}>
-                {isAmountEditing ? getDisplayAmount().toLocaleString() : record.amount.toLocaleString()}원
-              </h2>
-              <button
-                onClick={() => {
-                  setAmountInput(record.amount.toString());
-                  setIsAmountEditing(true);
-                }}
-                className="cursor-pointer pb-4"
-              >
-                <Image src="/svg/icon_pencil.svg" alt="edit" width={30} height={30} />
-              </button>
-            </>
+            <h2
+              className={cn(
+                'text-[28px] font-semibold tracking-[-0.025em]',
+                !isAssetMode && 'pb-4',
+                record.type === 'expense' &&
+                  (isAmountEditing ? getDisplayAmount() : record.amount) !== 0
+                  ? 'text-[#eb1c1c]'
+                  : 'text-[#030303]'
+              )}
+            >
+              {isAmountEditing ? getDisplayAmount().toLocaleString() : record.amount.toLocaleString()}원
+            </h2>
+            <button
+              onClick={() => {
+                setAmountInput(record.amount.toString());
+                setIsAmountEditing(true);
+              }}
+              className={cn('cursor-pointer', !isAssetMode && 'pb-4')}
+            >
+              <Image src="/svg/icon_pencil.svg" alt="edit" width={30} height={30} />
+            </button>
           </div>
         </div>
 
@@ -470,24 +483,22 @@ export default function RecordContent() {
           </div>
         )}
 
-        {/* Date Section (Hidden in Asset Mode) */}
-        {!isAssetMode && (
-          <SelectField
-            label="날짜"
-            value={isDateSelected ? formatDateDisplay(record.date) : ''}
-            placeholder="날짜를 선택하세요"
-            onClick={() => {
-              setTempDate(record.date);
-              setCalendarMonth(() => {
-                const [year, month] = record.date.split('-').map(Number);
-                return { year, month };
-              });
-              setIsDateOpen(true);
-            }}
-            error={errors.date}
-            errorKey={shakeKey}
-          />
-        )}
+        {/* Date Section */}
+        <SelectField
+          label="날짜"
+          value={isDateSelected ? formatDateDisplay(record.date) : ''}
+          placeholder="날짜를 선택하세요"
+          onClick={() => {
+            setTempDate(record.date);
+            setCalendarMonth(() => {
+              const [year, month] = record.date.split('-').map(Number);
+              return { year, month };
+            });
+            setIsDateOpen(true);
+          }}
+          error={errors.date}
+          errorKey={shakeKey}
+        />
 
         {/* Payment Method Section (Expense Only) */}
         {record.type === 'expense' && (
@@ -846,7 +857,7 @@ export default function RecordContent() {
               size="lg"
               disabled={
                 !record.category ||
-                (!isAssetMode && !isDateSelected) ||
+                !isDateSelected ||
                 (record.type === 'expense' && !record.paymentMethod)
               }
             >

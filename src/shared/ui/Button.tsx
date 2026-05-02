@@ -21,7 +21,7 @@ export default function Button({
 
   const variantStyles = {
     primary: disabled
-      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+      ? 'bg-[#E5E5E5] text-[#9FA4A8] cursor-not-allowed'
       : 'bg-[#13278a] text-white hover:bg-gray-800 cursor-pointer',
     secondary: isActive
       ? 'border border-black text-black'

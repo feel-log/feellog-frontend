@@ -28,10 +28,10 @@ export default function BottomSheet({ isOpen, title, subtitle, onClose, children
       {/* Bottom Sheet */}
       <div
         style={{ height: `${height}px` }}
-        className="fixed bottom-0 left-0 max-w-md mx-auto right-0 z-50 flex w-full flex-col overflow-hidden rounded-t-2xl bg-white animate-slide-up"
+        className="fixed bottom-0 left-0 max-w-md mx-auto right-0 z-50 flex w-full flex-col overflow-hidden rounded-t-[20px] bg-white animate-slide-up"
       >
         {/* Header */}
-        <div className="flex shrink-0 items-start justify-between bg-white px-4 pt-10 pb-10">
+        <div className="flex shrink-0 items-start justify-between bg-white px-4 pt-7.5 pb-7.5">
           <div className="flex flex-col">
             <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.025em] text-[#030303]">{title}</h2>
             {subtitle && (
@@ -48,7 +48,7 @@ export default function BottomSheet({ isOpen, title, subtitle, onClose, children
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-4 pb-6">
+        <div className="flex-1 overflow-y-auto px-4 pt-2.5 pb-6">
           {children}
         </div>
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -11,6 +12,7 @@ interface PageHeaderProps {
   showClose?: boolean;
   onClose?: () => void;
   closeHref?: string;
+  rightAction?: ReactNode;
 }
 
 export default function PageHeader({
@@ -21,6 +23,7 @@ export default function PageHeader({
   showClose = false,
   onClose,
   closeHref,
+  rightAction,
 }: PageHeaderProps) {
   let router: ReturnType<typeof useRouter> | null = null;
   try {
@@ -77,6 +80,7 @@ export default function PageHeader({
           <Image src="/svg/icon_X_dark.svg" alt="" width={28} height={28} />
         </button>
       )}
+      {rightAction && <div className="ml-auto">{rightAction}</div>}
     </header>
   );
 }
