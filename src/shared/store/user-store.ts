@@ -29,11 +29,11 @@ export const useUser = create<UserState>()(
 
       clearUser: () => {
         set({
-          id: '',
+          id: 0,
           email: '',
           nickname: '',
           birthDate: '',
-          gender: '',
+          gender: 'male',
           provider: '',
           isLoaded: false,
         });
