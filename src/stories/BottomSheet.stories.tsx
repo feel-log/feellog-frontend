@@ -32,6 +32,7 @@ export const Default: Story = {
     onClose: () => {},
     onSave: () => alert('Saved!'),
     isSaveDisabled: false,
+    height: 400,
     children: (
       <div className="space-y-4">
         <button className="w-full px-4 py-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50">
@@ -58,6 +59,7 @@ export const Disabled: Story = {
     onClose: () => {},
     onSave: () => alert('Saved!'),
     isSaveDisabled: true,
+    height: 400,
     children: (
       <div className="space-y-4">
         <button className="w-full px-4 py-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50">
@@ -76,6 +78,7 @@ export const NoSaveButton: Story = {
     isOpen: true,
     title: '알림',
     onClose: () => {},
+    height: 300,
     children: (
       <div>
         <p className="text-gray-700">이것은 저장 버튼이 없는 바텀 시트입니다.</p>
@@ -129,5 +132,6 @@ export const Interactive: Story = {
   },
   args: {
     title: '카테고리 선택',
+    height: 400,
   },
 };
