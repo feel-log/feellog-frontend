@@ -12,11 +12,11 @@ interface UserState extends User {
 export const useUser = create<UserState>()(
   persist(
     (set, get) => ({
-      id: '',
+      id: 0,
       email: '',
       nickname: '',
       birthDate: '',
-      gender: '',
+      gender: 'male',
       provider: '',
       isLoaded: false,
 
