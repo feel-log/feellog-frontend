@@ -28,6 +28,9 @@ const emotions = [
 ];
 
 export const AllEmotions: Story = {
+  args: {
+    name: '기쁨',
+  },
   render: () => (
     <div className="grid grid-cols-3 gap-4">
       {emotions.map((emotion) => (
@@ -41,6 +44,10 @@ export const AllEmotions: Story = {
 };
 
 export const SmallSize: Story = {
+  args: {
+    name: '기쁨',
+    size: 20,
+  },
   render: () => (
     <div className="flex gap-4 flex-wrap">
       {emotions.slice(0, 5).map((emotion) => (
@@ -54,6 +61,10 @@ export const SmallSize: Story = {
 };
 
 export const LargeSize: Story = {
+  args: {
+    name: '기쁨',
+    size: 48,
+  },
   render: () => (
     <div className="flex gap-8 flex-wrap">
       {emotions.slice(0, 3).map((emotion) => (
