@@ -131,7 +131,10 @@ export const Interactive: Story = {
     );
   },
   args: {
+    isOpen: false,
     title: '카테고리 선택',
+    onClose: () => {},
+    children: <div />,
     height: 400,
   },
 };
