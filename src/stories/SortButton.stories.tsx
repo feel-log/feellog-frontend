@@ -69,6 +69,9 @@ export const Oldest: Story = {
 };
 
 export const Interactive: Story = {
+  args: {
+    sortType: 'latest',
+  },
   render: () => {
     const [sortType, setSortType] = useState<'latest' | 'oldest' | 'expensive' | 'cheap'>('latest');
     return (
