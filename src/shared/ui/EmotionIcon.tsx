@@ -9,5 +9,5 @@ interface EmotionIconProps {
 export default function EmotionIcon({ name, size = 24 }: EmotionIconProps) {
   const src = getEmotionSvgPath(name);
   if (!src) return null;
-  return <Image src={src} alt={name} width={size} height={size} />;
+  return <Image src={src} alt={name} width={size} height={size} loading="lazy" />;
 }

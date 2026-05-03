@@ -1,16 +1,32 @@
 'use client';
 
-import { Suspense } from 'react';
-import RecordContent from '@/widgets/record/RecordContent';
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+import FullScreenLoader from '@/shared/ui/FullScreenLoader';
 
-function RecordPageContent() {
-  return <RecordContent />;
-}
+const RecordContent = dynamic(() => import('@/widgets/record/RecordContent'), {
+  loading: () => (
+    <div className="flex flex-col gap-4 p-4">
+      <div className="h-12 bg-gray-200 rounded animate-pulse" />
+      <div className="h-40 bg-gray-200 rounded animate-pulse" />
+      <div className="h-32 bg-gray-200 rounded animate-pulse" />
+    </div>
+  ),
+});
 
 export default function RecordPage() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
-    <Suspense fallback={<div>로딩중...</div>}>
-      <RecordPageContent />
-    </Suspense>
+    <>
+      <FullScreenLoader isLoading={!isMounted} />
+      <div className={!isMounted ? 'pointer-events-none' : ''}>
+        <RecordContent />
+      </div>
+    </>
   );
 }

@@ -1,12 +1,23 @@
 import { useState } from 'react';
 import Image from 'next/image';
+import { useToken, useUser } from '@/shared/store';
+import { useRouter } from 'next/navigation';
 
 export default function CommonFeature({ title, secondary, changeLogoutModal }: { title: string; secondary: string; changeLogoutModal?: (isOpen: boolean) => void; }) {
   const [isPushedNotification, setIsPushedNotification] = useState(false);
+  const { clearTokens } = useToken();
+  const { clearUser } = useUser();
+  const router = useRouter();
 
   const switchNotification = () => {
     setIsPushedNotification((prev) => !prev);
   };
+
+  const moveToLogin = () => {
+    clearTokens();
+    clearUser();
+    router.push('/login');
+  }
 
   return (
     <div className={'common__menu px-5 mb-4'}>
@@ -27,7 +38,7 @@ export default function CommonFeature({ title, secondary, changeLogoutModal }: {
       {secondary.startsWith('로그') && (
         <div className={'relative flex justify-between items-center w-full'}>
           <span className={'text-[14px] font-bold'}>{secondary}</span>
-          <button onClick={() => changeLogoutModal?.(true)}>
+          <button className={"cursor-pointer"} onClick={() => secondary.startsWith("로그아웃") ? changeLogoutModal?.(true) : moveToLogin()}>
             <Image src={'/svg/chev_right.png'} alt={'chev_right'} width={20} height={20} />
           </button>
         </div>

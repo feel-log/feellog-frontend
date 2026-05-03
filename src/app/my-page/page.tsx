@@ -4,10 +4,9 @@ import { useState } from 'react';
 import PageHeader from '@/shared/ui/PageHeader';
 import { UserBox } from '@/entities/user';
 import CommonFeature from '@/shared/ui/my-page/CommonFeature';
-import { useToken, useUser } from '@/shared/store';
+import { useUser } from '@/shared/store';
 import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
 import { LogoutModal } from '@/features/logout/ui/LogoutModal';
-import { useLogout } from '@/features/logout/model/useLogout';
 
 
 export default function MyPage() {

@@ -24,7 +24,7 @@ interface SocialLoginButtonProps {
   onClick?: () => void;
 }
 
-export function SocialLoginButton({ social,imageUrl, text, color, textColor }: { social:"kakao" | "google",imageUrl: string, text: string, color: string, textColor: string }) {
+export function SocialLoginButton({ social, imageUrl, text, color, textColor, isPriority = false }: { social:"kakao" | "google", imageUrl: string, text: string, color: string, textColor: string, isPriority?: boolean }) {
   const { mutate: loginKakao, isPending } = useKakaoLogin();
   const { mutate: loginGoogle } = useGoogleLogin();
 
@@ -60,7 +60,7 @@ export function SocialLoginButton({ social,imageUrl, text, color, textColor }: {
 
   return (
     <button className={"w-3/4 py-4 px-5 rounded-[8px] flex items-center cursor-pointer"} style={{ backgroundColor: color}} onClick={handleLoginButton} disabled={isPending}>
-      <Image src={imageUrl} alt={text} width={20} height={20} />
+      <Image src={imageUrl} alt={text} width={20} height={20} priority={isPriority} loading={isPriority ? undefined : "lazy"} />
       <span className={"absolute left-1/2 -translate-x-1/2 text-[13px]"} style={{ color: textColor }}>{text}</span>
     </button>
   );

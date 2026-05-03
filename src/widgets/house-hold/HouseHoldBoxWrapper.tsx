@@ -4,6 +4,7 @@ import Image from 'next/image';
 import HouseHoldBox from '@/shared/ui/house-hold/HouseHoldBox';
 import ThisWeekBox from '@/shared/ui/house-hold/ThisWeekBox';
 import TodayExpenseBox from '@/shared/ui/house-hold/TodayExpenseBox';
+import HouseHoldBoxSkeleton from './HouseHoldBoxSkeleton';
 import { useWeekExpend } from '@/entities/week-expenditure/model/useWeekExpend';
 import { useToken } from '@/shared/store';
 
@@ -11,6 +12,14 @@ export default function HouseHoldBoxWrapper() {
   const { getAccessToken, isLoaded } = useToken();
   const accessToken = getAccessToken();
   const query = useWeekExpend(accessToken || '');
+
+  if (!isLoaded || !accessToken || query.isLoading) {
+    return <HouseHoldBoxSkeleton />;
+  }
+
+  if (query.isError) {
+    return <div className="text-center text-red-500">데이터를 불러오는 데 실패했습니다</div>;
+  }
 
   return (
     <div className={'house__hold__box__wrapper'}>

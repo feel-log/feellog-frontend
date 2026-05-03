@@ -60,7 +60,7 @@ export default function TodayExpenseBox() {
           className={'cursor-pointer'}
           onClick={() => router?.push(`/export?date=${dateString}`)}
         >
-          <Image src={'/svg/icon_arrow_right.svg'} alt={'right-arrow'} width={24} height={24} />
+          <Image src={'/svg/icon_arrow_right.svg'} alt={'right-arrow'} width={24} height={24} loading="lazy" />
         </button>
       </div>
 
@@ -72,7 +72,7 @@ export default function TodayExpenseBox() {
             canGoPrev ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
           }`}
         >
-          <Image src={'/svg/icon_arrow_left_fill.svg'} alt={'prev'} width={20} height={20} />
+          <Image src={'/svg/icon_arrow_left_fill.svg'} alt={'prev'} width={20} height={20} loading="lazy" />
         </button>
         <span className="text-[16px] font-medium tracking-[-0.025em] text-[#27282c]">{formattedDate}</span>
         <button
@@ -121,7 +121,7 @@ export default function TodayExpenseBox() {
                       key={emoIdx}
                       className="inline-flex items-center gap-1.25 rounded-full bg-[#f0f4f5] px-2.5 py-0.75 text-[12px] font-medium tracking-[-0.025em] text-[#474c52]"
                     >
-                      <Image src={emotion.emoji} alt={emotion.label} width={14} height={14} />
+                      <Image src={emotion.emoji} alt={emotion.label} width={14} height={14} loading="lazy" />
                       <span>{emotion.label}</span>
                     </span>
                   ))}

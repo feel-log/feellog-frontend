@@ -43,7 +43,7 @@ export default function BottomSheet({ isOpen, title, subtitle, onClose, children
             className="cursor-pointer"
             aria-label="닫기"
           >
-            <Image src={'/svg/icon_X.svg'} alt="close" width={28} height={28} />
+            <Image src={'/svg/icon_X.svg'} alt="close" width={28} height={28} loading="lazy" />
           </button>
         </div>
 

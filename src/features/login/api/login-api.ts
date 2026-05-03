@@ -1,6 +1,6 @@
 import { apiClient } from '@/shared/api/api-instance';
 
-interface LoginRequest {
+export interface LoginRequest {
   accessToken: string
 }
 
