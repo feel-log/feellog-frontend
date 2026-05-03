@@ -49,6 +49,11 @@ export const useToken = create<tokenState>()(
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.isLoaded = true;
+        }
+      },
     }
   )
 );

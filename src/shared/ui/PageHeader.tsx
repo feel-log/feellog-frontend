@@ -65,6 +65,7 @@ export default function PageHeader({
             alt=""
             width={28}
             height={28}
+            loading="lazy"
           />
         </button>
       )}
@@ -77,7 +78,7 @@ export default function PageHeader({
           aria-label="닫기"
           className="ml-auto cursor-pointer"
         >
-          <Image src="/svg/icon_X_dark.svg" alt="" width={28} height={28} />
+          <Image src="/svg/icon_X_dark.svg" alt="" width={28} height={28} loading="lazy" />
         </button>
       )}
       {rightAction && <div className="ml-auto">{rightAction}</div>}

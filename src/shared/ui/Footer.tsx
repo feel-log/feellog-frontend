@@ -216,7 +216,15 @@ export default function Footer() {
           onClick={() => handleNavigation('/record')}
           className="absolute cursor-pointer -top-7.5 left-1/2 transform -translate-x-1/2 w-15 h-15 rounded-full bg-[#13278a] text-white flex items-center justify-center shadow-[2px_4px_4px_0px_rgba(49,49,49,0.3)] hover:bg-[#0e1f6e] transition-colors"
         >
-          <Image src={"/svg/icon_plus.svg"} alt={"plus"} width={36} height={36} />
+          <Image
+            src={"/svg/icon_plus.svg"}
+            alt={"plus"}
+            width={36}
+            height={36}
+            priority
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IGZpbGw9IiMxMzI3OGEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48L3N2Zz4="
+          />
         </button>
       </div>
     </div>

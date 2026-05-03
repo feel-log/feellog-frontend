@@ -44,19 +44,19 @@ export default function KeyBoardUserExperience({ changeAmount } : { changeAmount
       </div>
       <div className={'flex flex-1 flex-col'}>
         <button onClick={handleBackspace} className={operatorButtonClass}>
-          <Image src={'/svg/backspace.svg'} alt={'backspace'} width={28} height={28} />
+          <Image src={'/svg/backspace.svg'} alt={'backspace'} width={28} height={28} loading="lazy" />
         </button>
         <button onClick={() => handleOperation('+')} className={operatorButtonClass}>
-          <Image src={'/svg/plus.svg'} alt={'plus'} width={28} height={28} />
+          <Image src={'/svg/plus.svg'} alt={'plus'} width={28} height={28} loading="lazy" />
         </button>
         <button onClick={() => handleOperation('-')} className={operatorButtonClass}>
-          <Image src={'/svg/minus.svg'} alt={'minus'} width={28} height={28} />
+          <Image src={'/svg/minus.svg'} alt={'minus'} width={28} height={28} loading="lazy" />
         </button>
         <button onClick={() => handleOperation('*')} className={operatorButtonClass}>
-          <Image src={'/svg/multiply.svg'} alt={'multiply'} width={28} height={28} />
+          <Image src={'/svg/multiply.svg'} alt={'multiply'} width={28} height={28} loading="lazy" />
         </button>
         <button onClick={() => handleOperation('/')} className={operatorButtonClass}>
-          <Image src={'/svg/division.svg'} alt={'division'} width={28} height={28} />
+          <Image src={'/svg/division.svg'} alt={'division'} width={28} height={28} loading="lazy" />
         </button>
       </div>
       <button

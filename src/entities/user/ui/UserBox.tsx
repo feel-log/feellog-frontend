@@ -8,7 +8,7 @@ export function UserBox() {
   const accessToken = getAccessToken();
   const user = getUser();
 
-  useUserGetter(accessToken);
+  const query = useUserGetter(accessToken);
 
   return (
     <div className={"user-box-wrapper px-5"}>
@@ -17,8 +17,13 @@ export function UserBox() {
           <Image src={"/svg/free_log_chc.png"} alt={"profile"} fill />
         </div>
         <div className={"info p-1.25 flex flex-col justify-center"}>
-          <span className={"font-bold"}>{user ? user.nickname : "손님"}</span>
-          <span className={"text-[14px]"}>{user?.provider === 'GOOGLE' ? '구글로 로그인되었습니다.' : user?.provider === 'KAKAO' ? '카카오로 로그인되었습니다.' : '로그인하세요'}</span>
+          {(query.isLoading || !user ) && <div className={"text-[14px]"}>정보를 불러오고 있습니다.</div>}
+          {!query.isLoading && user &&
+            <>
+              <span className={"font-bold"}>{user ? user.nickname : "손님"}</span>
+              <span className={"text-[14px]"}>{user?.provider === 'GOOGLE' ? '구글로 로그인되었습니다.' : user?.provider === 'KAKAO' ? '카카오로 로그인되었습니다.' : '로그인하세요'}</span>
+            </>
+          }
         </div>
       </div>
     </div>
