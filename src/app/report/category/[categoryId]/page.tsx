@@ -1,33 +1,37 @@
 'use client';
 
 import { use, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { useToken } from '@/shared/store';
+import { reportQueries, type CategoryExpense } from '@/entities/report';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton, { type SortType } from '@/shared/ui/SortButton';
-import EmotionIcon from '@/shared/ui/EmotionIcon';
-import {
-  getCategoryDetail,
-  type ExpenseItem,
-  type ExpenseDateGroup,
-  type EmotionBadge,
-} from '@/shared/constants/categoryDetailMockData';
 
 interface PageProps {
   params: Promise<{ categoryId: string }>;
 }
 
-interface FlatItem extends ExpenseItem {
+interface FlatItem extends CategoryExpense {
   dateLabel: string;
   dateOrder: number;
 }
 
-function flattenGroups(month: number, groups: ExpenseDateGroup[]): FlatItem[] {
-  return groups.flatMap((g) =>
-    g.items.map((item) => ({
-      ...item,
-      dateLabel: `${month}월 ${g.date}`,
-      dateOrder: parseInt(g.date.replace(/[^0-9]/g, ''), 10),
-    })),
-  );
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const;
+
+function formatDateLabel(isoDate: string): string {
+  const [, m, d] = isoDate.split('-').map(Number);
+  const date = new Date(isoDate);
+  const weekday = WEEKDAYS[date.getDay()];
+  return `${m}월 ${d}일 ${weekday}요일`;
+}
+
+function flattenExpenses(expenses: CategoryExpense[]): FlatItem[] {
+  return expenses.map((item) => ({
+    ...item,
+    dateLabel: formatDateLabel(item.date),
+    dateOrder: new Date(item.date).getTime(),
+  }));
 }
 
 function sortFlatItems(items: FlatItem[], sortType: SortType): FlatItem[] {
@@ -71,27 +75,15 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
         </p>
       )}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5">
-            {item.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#13278A]"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
-          {item.emotions.length > 0 && (
-            <>
-              <span className="h-3.5 w-px bg-[#D9D9D9]" />
-              <div className="flex items-center gap-1.5">
-                {item.emotions.map((emo: EmotionBadge) => (
-                  <EmotionIcon key={emo.name} name={emo.name} size={20} />
-                ))}
-              </div>
-            </>
-          )}
+        <div className="flex items-center gap-1.5">
+          {item.situationTags.map((tag) => (
+            <span
+              key={tag.situationTagId}
+              className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#13278A]"
+            >
+              #{tag.situationName}
+            </span>
+          ))}
         </div>
         <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
           {item.amount.toLocaleString()}원
@@ -102,7 +94,7 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
           {item.memo ?? ''}
         </p>
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
-          {item.payment}
+          {item.paymentMethod}
         </p>
       </div>
     </div>
@@ -111,36 +103,52 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
 
 export default function CategoryDetailPage({ params }: PageProps) {
   const { categoryId } = use(params);
-  const decodedId = decodeURIComponent(categoryId);
-  const detail = getCategoryDetail(decodedId)!;
+  const searchParams = useSearchParams();
+
+  const today = new Date();
+  const year = Number(searchParams?.get('year') ?? today.getFullYear());
+  const month = Number(searchParams?.get('month') ?? today.getMonth() + 1);
+  const numericCategoryId = Number(categoryId);
+
+  const { getAccessToken } = useToken();
+  const token = getAccessToken();
+
   const [sortType, setSortType] = useState<SortType>('latest');
 
+  const { data, isLoading } = useQuery({
+    ...reportQueries.categoryDetail(token || '', numericCategoryId, year, month),
+    enabled: !!token && Number.isFinite(numericCategoryId),
+  });
+
   const flatItems = useMemo(
-    () => flattenGroups(detail.month, detail.groups),
-    [detail],
+    () => flattenExpenses(data?.expenses ?? []),
+    [data],
   );
-  const sortedItems = useMemo(() => sortFlatItems(flatItems, sortType), [flatItems, sortType]);
-  const groupedItems = useMemo(() => regroupByDate(sortedItems), [sortedItems]);
+  const sortedItems = useMemo(
+    () => sortFlatItems(flatItems, sortType),
+    [flatItems, sortType],
+  );
+  const groupedItems = useMemo(
+    () => regroupByDate(sortedItems),
+    [sortedItems],
+  );
 
   const isDateSort = sortType === 'latest' || sortType === 'oldest';
+  const categoryName = data?.category.categoryName ?? '';
+  const totalAmount = data?.totalAmount ?? 0;
 
   return (
     <div className="flex flex-1 flex-col bg-white">
       <PageHeader title="카테고리별 지출 항목" />
 
       <div className="border-b-[5px] border-[#F7F8FA] px-4 pt-3 pb-5">
-        <div className="flex items-center gap-4">
-          <span className="flex h-18 w-12 items-center justify-center text-[48px] leading-[150%]">
-            {detail.emoji}
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[18px] font-medium leading-normal tracking-[-0.45px] text-[#474C52]">
+            {categoryName}
           </span>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[18px] font-medium leading-normal tracking-[-0.45px] text-[#474C52]">
-              {detail.name}
-            </span>
-            <span className="text-[24px] font-semibold leading-normal tracking-[-0.6px] text-[#030303]">
-              {detail.totalAmount.toLocaleString()}원
-            </span>
-          </div>
+          <span className="text-[24px] font-semibold leading-normal tracking-[-0.6px] text-[#030303]">
+            {totalAmount.toLocaleString()}원
+          </span>
         </div>
       </div>
 
@@ -148,7 +156,20 @@ export default function CategoryDetailPage({ params }: PageProps) {
         <SortButton sortType={sortType} onSortChange={setSortType} />
       </div>
 
-      {isDateSort ? (
+      {isLoading ? (
+        <div className="flex flex-1 items-center justify-center py-20">
+          <p className="text-[14px] text-[#9FA4A8]">불러오는 중...</p>
+        </div>
+      ) : sortedItems.length === 0 ? (
+        <div className="flex flex-1 flex-col items-center justify-center py-20">
+          <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#474C52]">
+            아직 등록된 지출이 없어요
+          </p>
+          <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
+            지출을 기록하면 이곳에 표시돼요
+          </p>
+        </div>
+      ) : isDateSort ? (
         <div className="flex flex-col">
           {groupedItems.map((group) => (
             <div
@@ -160,7 +181,7 @@ export default function CategoryDetailPage({ params }: PageProps) {
               </p>
               <div className="flex flex-col gap-5">
                 {group.items.map((item) => (
-                  <ExpenseItemRow key={item.id} item={item} showDate={false} />
+                  <ExpenseItemRow key={item.expenseId} item={item} showDate={false} />
                 ))}
               </div>
             </div>
@@ -169,7 +190,7 @@ export default function CategoryDetailPage({ params }: PageProps) {
       ) : (
         <div className="flex flex-col gap-7.5 px-4 pt-3.75 pb-7.5">
           {sortedItems.map((item) => (
-            <ExpenseItemRow key={item.id} item={item} showDate={true} />
+            <ExpenseItemRow key={item.expenseId} item={item} showDate={true} />
           ))}
         </div>
       )}

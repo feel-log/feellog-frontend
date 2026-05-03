@@ -4,12 +4,16 @@ import { useState } from 'react';
 import Link from 'next/link';
 import type { CategoryItem } from '@/shared/constants/reportMockData';
 
+type CategoryChartCategory = CategoryItem & { id?: number };
+
 interface CategoryChartProps {
   summary: string;
-  categories: CategoryItem[];
+  categories: CategoryChartCategory[];
+  year?: number;
+  month?: number;
 }
 
-function DonutChart({ categories }: { categories: CategoryItem[] }) {
+function DonutChart({ categories }: { categories: CategoryChartCategory[] }) {
   const radius = 70;
   const strokeWidth = 30;
   const circumference = 2 * Math.PI * radius;
@@ -51,7 +55,7 @@ function DonutChart({ categories }: { categories: CategoryItem[] }) {
   );
 }
 
-export default function CategoryChart({ summary, categories }: CategoryChartProps) {
+export default function CategoryChart({ summary, categories, year, month }: CategoryChartProps) {
   const [expanded, setExpanded] = useState(false);
 
   if (categories.length === 0) return null;
@@ -90,7 +94,11 @@ export default function CategoryChart({ summary, categories }: CategoryChartProp
         {visibleCategories.map((cat) => (
           <Link
             key={cat.name}
-            href={`/report/category/${encodeURIComponent(cat.name)}`}
+            href={
+              cat.id != null && year != null && month != null
+                ? `/report/category/${cat.id}?year=${year}&month=${month}`
+                : `/report/category/${encodeURIComponent(cat.name)}`
+            }
             className="flex items-center justify-between"
           >
             <div className="flex items-center gap-2.5">
