@@ -5,12 +5,14 @@ import { todayExpendQueries } from '@/entities/today-expenditure/api/today-expen
 import { useMonthExpendStore } from '@/shared/store/month-expend-store';
 import { useEffect, useRef } from 'react';
 
-export function useTodayExpend(accessToken: string, year: number, month: number) {
+export function useTodayExpend(year: number, month: number) {
   const prevMonthRef = useRef<string | null>(null);
 
   const query = useQuery({
-    ...todayExpendQueries.getTodayQueries(accessToken, year, month),
-    enabled: !!accessToken,
+    ...todayExpendQueries.getTodayQueries(year, month),
+    staleTime: 1000 * 60,  // 1분간 캐시 유지
+    refetchOnWindowFocus: false,  // 창 포커스 시 자동 refetch 비활성화
+    refetchOnReconnect: false,  // 재연결 시 자동 refetch 비활성화
   });
 
   // 월이 바뀔 때만 refetch

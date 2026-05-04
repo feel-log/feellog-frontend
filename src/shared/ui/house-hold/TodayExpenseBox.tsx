@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useFormattedDate } from '@/shared/hooks';
 import Image from 'next/image';
 import { cn } from '@/shared/lib/utils';
-import { useToken } from '@/shared/store';
 import { useMonthExpendStore } from '@/shared/store/month-expend-store';
 import { useTodayExpend } from '@/entities/today-expenditure/model/useTodayExpend';
 import { EMOTIONS } from '@/widgets/record/RecordContent';
@@ -15,15 +14,12 @@ const MIN_DATE = new Date('2026-04-08');
 
 export default function TodayExpenseBox() {
   const router = useRouter();
-  const { getAccessToken } = useToken();
-  const accessToken = getAccessToken();
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
 
   const canGoPrev = selectedDate > MIN_DATE;
   const canGoNext = selectedDate < TODAY;
 
   useTodayExpend(
-    accessToken!,
     Number(selectedDate.getFullYear()),
     Number(selectedDate.getMonth() + 1)
   );

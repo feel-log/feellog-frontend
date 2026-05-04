@@ -2,7 +2,6 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
-import type { Viewport } from 'next';
 import { Header } from '@/shared/ui';
 import Footer from '@/shared/ui/Footer';
 import FullScreenLoader from '@/shared/ui/FullScreenLoader';

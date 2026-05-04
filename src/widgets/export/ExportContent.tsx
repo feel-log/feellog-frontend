@@ -3,16 +3,18 @@
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { getDailyExpense } from '@/shared/constants/dailyExpense';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton from '@/shared/ui/SortButton';
 import { useFormattedDate } from '@/shared/hooks';
+import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
+import { DailyExpendType } from '@/entities/daily-expend/model/daily-expend-type';
+import { EXPENSE_CATEGORIES, EMOTIONS } from '@/widgets/record/RecordContent';
+import { PAYMENT_METHODS, SITUATION_TAGS } from '@/widgets/record/RecordContent';
 
 type SortType = 'latest' | 'oldest' | 'expensive' | 'cheap';
 
-const TODAY = '2026-04-21';
-
 interface ExpenseItem {
+  expenseId: number;
   name: string;
   category: string;
   amount: number;
@@ -20,15 +22,17 @@ interface ExpenseItem {
   memo?: string;
   paymentMethod: string;
   tag: string[];
+  expenseTime: string;
 }
 
 export default function ExportContent() {
   const searchParams = useSearchParams();
   const [sortType, setSortType] = useState<SortType>('latest');
 
-  const selectedDate = searchParams?.get('date') || TODAY;
-  const expenseData = getDailyExpense(selectedDate);
-  const totalAmount = expenseData?.totalAmount ?? 0;
+  const selectedDate = searchParams?.get('date') || new Date().toISOString().split('T')[0];
+  const [year, month, day] = selectedDate.split('-').map(Number);
+
+  const { data = [], isLoading } = useDailyExpend(year, month, day);
 
   const formattedDate = useFormattedDate(selectedDate, {
     year: undefined,
@@ -37,18 +41,37 @@ export default function ExportContent() {
     weekday: 'long',
   });
 
-  const getExpenses = (): ExpenseItem[] => {
-    if (!expenseData || expenseData.categories.length === 0) return [];
+  const convertToExpenseItem = (expense: DailyExpendType): ExpenseItem => {
+    const category = EXPENSE_CATEGORIES.flatMap((g) => g.items).find(
+      (item) => item.id === expense.categoryId
+    )?.label || '';
 
-    const items: ExpenseItem[] = expenseData.categories.map((category, idx) => ({
-      name: category.name,
-      category: category.name,
-      amount: category.amount,
-      emotions: category.emotions,
-      tag: category.tag,
-      memo: category.memo,
-      paymentMethod: idx % 2 === 0 ? '카드' : '현금',
-    }));
+    const paymentMethod =
+      PAYMENT_METHODS.find((m) => m.id === expense.paymentMethodId)?.name || '';
+
+    const emotions = EMOTIONS.flatMap((g) => g.items)
+      .filter((e) => expense.emotionIds.includes(e.id))
+      .map((e) => ({ emoji: e.emoji, label: e.label }));
+
+    const tags = SITUATION_TAGS.filter((t) => expense.situationTagIds.includes(t.id)).map(
+      (t) => '#' + t.label
+    );
+
+    return {
+      expenseId: expense.expenseId,
+      name: category,
+      category,
+      amount: expense.amount,
+      emotions,
+      tag: tags,
+      memo: expense.memo,
+      paymentMethod,
+      expenseTime: expense.expenseTime,
+    };
+  };
+
+  const getExpenses = (): ExpenseItem[] => {
+    const items = data.map(convertToExpenseItem);
 
     switch (sortType) {
       case 'expensive':
@@ -56,14 +79,26 @@ export default function ExportContent() {
       case 'cheap':
         return [...items].sort((a, b) => a.amount - b.amount);
       case 'oldest':
-        return [...items].reverse();
+        return [...items].sort((a, b) => a.expenseTime.localeCompare(b.expenseTime));
       case 'latest':
       default:
-        return items;
+        return [...items].sort((a, b) => b.expenseTime.localeCompare(a.expenseTime));
     }
   };
 
+  const totalAmount = data.reduce((sum, item) => sum + item.amount, 0);
   const expenses = getExpenses();
+
+  if (isLoading) {
+    return (
+      <div>
+        <PageHeader title="오늘의 지출 비용" />
+        <div className="flex justify-center items-center py-20">
+          <div className="text-[16px] text-[#9fa4a8]">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -101,8 +136,8 @@ export default function ExportContent() {
 
             {/* 항목 리스트 */}
             <div className="flex flex-col gap-5">
-              {expenses.map((expense, idx) => (
-                <div key={idx} className="flex flex-col gap-1.25">
+              {expenses.map((expense) => (
+                <div key={expense.expenseId} className="flex flex-col gap-1.25">
                   {/* 카테고리명 + 금액 */}
                   <div className="flex items-center justify-between">
                     <h4 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">

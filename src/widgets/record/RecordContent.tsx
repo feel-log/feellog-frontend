@@ -53,7 +53,7 @@ const INCOME_CATEGORIES =
   }
 ];
 
-const EXPENSE_CATEGORIES = [
+export const EXPENSE_CATEGORIES = [
   {
     group: '생활',
     items: [
@@ -91,7 +91,7 @@ const EXPENSE_CATEGORIES = [
   },
 ];
 
-const PAYMENT_METHODS = [
+export const PAYMENT_METHODS = [
   {
     name: '카드',
     id: 1
@@ -143,7 +143,7 @@ export const EMOTIONS = [
   },
 ];
 
-const SITUATION_TAGS = [
+export const SITUATION_TAGS = [
   { label: '피로회복', id: 1 },
   { label: '기분전환', id: 2 },
   { label: '보상심리', id: 3 },
@@ -168,27 +168,6 @@ function getCategoryDisplay (categoryId: number | null){
   return EXPENSE_CATEGORIES.flatMap(g => g.items)
     .find(item => item.id === categoryId)?.label ?? '';
 };
-
-function renderSituationTagsDisplay(tags: string[], memo: string): React.ReactNode {
-  const cleanTags = (tags || []).map((tag) => tag.replace(/^#/, ''));
-  if (cleanTags.length === 0 && !memo) return '';
-
-  return (
-    <div className="flex min-w-0 flex-1 items-start gap-1.5">
-      {cleanTags.length > 0 && (
-        <span className="shrink-0 whitespace-nowrap text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
-          {cleanTags.join(' ')}
-        </span>
-      )}
-      {cleanTags.length > 0 && memo && <span className="mt-2 h-3 w-px shrink-0 bg-[#cacdd2]" />}
-      {memo && (
-        <span className="min-w-0 flex-1 wrap-break-word text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
-          {memo}
-        </span>
-      )}
-    </div>
-  );
-}
 
 export default function RecordContent() {
   const searchParams = useSearchParams();
@@ -439,7 +418,7 @@ export default function RecordContent() {
 
   console.log(record);
   // API 호출
-  const { mutate: houseHoldPost } = useHouseHoldPost('expense', accessToken!,{
+  const { mutate: houseHoldPost } = useHouseHoldPost('expense', {
     userId: user?.id ?? 0,
     categoryId: record.categoryId ?? null,
     paymentMethodId: record.paymentMethodId ?? null,
@@ -452,8 +431,17 @@ export default function RecordContent() {
     situationTagIds: record.situationTagIds ?? []
   });
 
+  const isFormValid = () => {
+    if (record.type === 'expense') {
+      return isDateSelected && record.paymentMethodId !== null && record.categoryId !== null;
+    }
+    return true;
+  };
+
   const submitHouseHoldPost = () => {
-    houseHoldPost();
+    if (isFormValid()) {
+      houseHoldPost();
+    }
   }
 
 
@@ -901,6 +889,7 @@ export default function RecordContent() {
             <Button
               size="lg"
               onClick={submitHouseHoldPost}
+              disabled={!isFormValid()}
             >
               저장
             </Button>

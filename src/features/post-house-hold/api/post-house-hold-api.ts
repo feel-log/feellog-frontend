@@ -15,13 +15,9 @@ export interface HouseHoldPostRequest {
   situationTagIds: number[]
 }
 
-export function postHouseHoldApi(token: string, houseHoldPostRequest: HouseHoldPostRequest) {
-  console.log(houseHoldPostRequest);
+export function postHouseHoldApi(houseHoldPostRequest: HouseHoldPostRequest) {
   return apiClient<void>("/api/v1/expenses", {
     method: 'POST',
     body: JSON.stringify(houseHoldPostRequest),
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
   })
 }
