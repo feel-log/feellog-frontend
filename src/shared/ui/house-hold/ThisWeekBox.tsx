@@ -39,7 +39,7 @@ export default function ThisWeekBox({ data } : { data: WeekExpendType}) {
             </span>
             {week.expense > 0 && (
               <span className={'text-[12px] font-medium tracking-[-0.025em] text-[#eb1c1c]'}>
-                {week.expense.toLocaleString()}
+                -{week.expense.toLocaleString()}
               </span>
             )}
           </div>
