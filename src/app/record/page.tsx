@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import FullScreenLoader from '@/shared/ui/FullScreenLoader';
+import { useIsMounted } from '@/shared/hooks';
 
 const RecordContent = dynamic(() => import('@/widgets/record/RecordContent'), {
   loading: () => (
@@ -15,11 +15,7 @@ const RecordContent = dynamic(() => import('@/widgets/record/RecordContent'), {
 });
 
 export default function RecordPage() {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   return (
     <>
