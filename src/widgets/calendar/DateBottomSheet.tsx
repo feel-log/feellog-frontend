@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
 import TransactionTypeButton, { TransactionType } from '@/shared/ui/TransactionTypeButton';
 
@@ -101,7 +102,7 @@ export default function DateBottomSheet({
                 {dateLabel}
               </p>
               <button onClick={handleClose} aria-label="닫기">
-                <img src="/svg/icon_X_dark.svg" alt="" width={28} height={28} />
+                <Image src="/svg/icon_X_dark.svg" alt="" width={28} height={28} />
               </button>
             </div>
 

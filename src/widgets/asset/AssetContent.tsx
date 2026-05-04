@@ -66,7 +66,7 @@ export default function AssetContent() {
             aria-label="자산 추가"
             className="cursor-pointer"
           >
-            <img src="/svg/icon_plus_black.svg" alt="" width={28} height={28} />
+            <Image src="/svg/icon_plus_black.svg" alt="" width={28} height={28} />
           </button>
         }
       />
@@ -114,7 +114,7 @@ export default function AssetContent() {
                 <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
                   {category.total.toLocaleString()}원
                 </p>
-                <img src="/svg/icon_arrow_right.svg" alt="" width={26} height={26} />
+                <Image src="/svg/icon_arrow_right.svg" alt="" width={26} height={26} />
               </div>
             </button>
           ))}

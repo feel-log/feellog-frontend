@@ -7,6 +7,5 @@ export const dailyExpendQueries = {
     queryOptions({
       queryKey: [...dailyExpendQueries.all, year, month, day],
       queryFn: () => dailyExpendApi(year, month, day),
-      staleTime: 1000 * 60,
     }),
 };
