@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import PageHeader from '@/shared/ui/PageHeader';
@@ -12,6 +12,8 @@ import KeyBoardUserExperience from '@/shared/ui/record/KeyBoardUserExperience';
 import { useToken, useUser } from '@/shared/store';
 import { useUserGetter } from '@/entities/user';
 import { useHouseHoldPost } from '@/features/post-house-hold/model/useHouseHoldPost';
+import { useUpdateExpense } from '@/features/update-expense/model/useUpdateExpense';
+import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
 import { evaluate } from 'mathjs';
 
 interface RecordState {
@@ -167,7 +169,7 @@ function formatDateDisplay(dateString: string): string {
 function getCategoryDisplay (categoryId: number | null){
   return EXPENSE_CATEGORIES.flatMap(g => g.items)
     .find(item => item.id === categoryId)?.label ?? '';
-};
+}
 
 export default function RecordContent() {
   const searchParams = useSearchParams();
@@ -176,9 +178,18 @@ export default function RecordContent() {
   const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   const selectedDate = searchParams?.get('date') || today;
   const typeParam = searchParams?.get('type');
+  const expenseIdParam = searchParams?.get('expenseId');
+  const modeParam = searchParams?.get('mode');
+  const isEditMode = modeParam === 'edit' && expenseIdParam;
   const isAssetMode = typeParam === 'asset';
   const initialType: 'income' | 'expense' =
     typeParam === 'income' || isAssetMode ? 'income' : 'expense';
+
+  // Edit 모드일 때 기존 데이터 로드
+  const expenseYear = parseInt(selectedDate.split('-')[0]);
+  const expenseMonth = parseInt(selectedDate.split('-')[1]);
+  const expenseDay = parseInt(selectedDate.split('-')[2]);
+  const { data: dailyExpenseData = [] } = useDailyExpend(expenseYear, expenseMonth, expenseDay);
 
   const [record, setRecord] = useState<RecordState>({
     amount: 0,
@@ -190,6 +201,33 @@ export default function RecordContent() {
     situationTagIds: [],
     memo: '',
   });
+
+  // Edit 모드일 때 초기값 설정
+  useEffect(() => {
+    if (isEditMode && expenseIdParam && dailyExpenseData.length > 0) {
+      const expense = dailyExpenseData.find(
+        (e) => e.expenseId === parseInt(expenseIdParam)
+      );
+      if (expense) {
+        setRecord({
+          amount: expense.amount,
+          type: 'expense',
+          date: expense.expenseDate,
+          categoryId: expense.categoryId,
+          paymentMethodId: expense.paymentMethodId,
+          emotionIds: expense.emotionIds,
+          situationTagIds: expense.situationTagIds,
+          memo: expense.memo,
+        });
+        setAmountInput(expense.amount.toString());
+        setSelectedCategoryId(expense.categoryId);
+        setSelectedPaymentId(expense.paymentMethodId);
+        setSelectedEmotions(expense.emotionIds);
+        setTempTags(expense.situationTagIds);
+        setTempMemo(expense.memo);
+      }
+    }
+  }, [isEditMode, expenseIdParam, dailyExpenseData]);
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -299,7 +337,6 @@ export default function RecordContent() {
       ...prev,
       categoryId: selectedCategoryId,
     }));
-    console.log(record);
     setIsCategoryOpen(false);
     setSelectedCategoryId(null);
   };
@@ -416,7 +453,6 @@ export default function RecordContent() {
   const date = new Date(record.date);
   const hhmm = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
 
-  console.log(record);
   // API 호출
   const { mutate: houseHoldPost } = useHouseHoldPost('expense', {
     userId: user?.id ?? 0,
@@ -431,6 +467,8 @@ export default function RecordContent() {
     situationTagIds: record.situationTagIds ?? []
   });
 
+  const updateExpenseMutation = useUpdateExpense();
+
   const isFormValid = () => {
     if (record.type === 'expense') {
       return isDateSelected && record.paymentMethodId !== null && record.categoryId !== null;
@@ -440,14 +478,32 @@ export default function RecordContent() {
 
   const submitHouseHoldPost = () => {
     if (isFormValid()) {
-      houseHoldPost();
+      if (isEditMode && expenseIdParam) {
+        updateExpenseMutation.mutate({
+          expenseId: parseInt(expenseIdParam),
+          request: {
+            userId: user?.id ?? 0,
+            categoryId: record.categoryId ?? null,
+            paymentMethodId: record.paymentMethodId ?? null,
+            amount: record.amount ?? 0,
+            memo: record.memo ?? "",
+            merchantName: "",
+            expenseDate: record.date,
+            expenseTime: hhmm,
+            emotionIds: record.emotionIds ?? [],
+            situationTagIds: record.situationTagIds ?? []
+          },
+        });
+      } else {
+        houseHoldPost();
+      }
     }
   }
 
 
   return (
     <div className="min-h-screen bg-white">
-      <PageHeader title={isAssetMode ? '자산 추가' : '가계부'} />
+      <PageHeader title={isEditMode ? '지출 수정' : isAssetMode ? '자산 추가' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">
         {/* Amount Section */}
