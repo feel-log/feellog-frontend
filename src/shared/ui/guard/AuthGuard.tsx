@@ -37,7 +37,7 @@ export function AuthGuard({ children }: IAuthGuard) {
     let intervalId: NodeJS.Timeout | null = null;
 
     if(pathname !== '/login') {
-      intervalId = setInterval(interval, 20 * 60 * 1000)
+      intervalId = setInterval(interval, 10 * 60 * 1000)
     }
 
     return () => {
