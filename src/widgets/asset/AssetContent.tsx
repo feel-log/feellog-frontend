@@ -1,13 +1,59 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Footer from '@/shared/ui/Footer';
 import PageHeader from '@/shared/ui/PageHeader';
-import { ASSET_CATEGORIES, getTotalAsset } from '@/shared/constants/assetData';
+import SortButton, { SortType } from '@/shared/ui/SortButton';
+import { useGetAssets } from '@/entities/get-assets/useGetAssets';
+
+const SORT_MAPPING: Record<SortType, 'LATEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC'> = {
+  latest: 'LATEST',
+  expensive: 'AMOUNT_DESC',
+  cheap: 'AMOUNT_ASC',
+  oldest: 'LATEST',
+};
 
 export default function AssetContent() {
   const router = useRouter();
-  const totalAsset = getTotalAsset();
+  const [sortType, setSortType] = useState<SortType>('latest');
+
+  const { data: assetsData, isLoading } = useGetAssets({
+    sort: SORT_MAPPING[sortType],
+    page: 0,
+    size: 100,
+  });
+
+  const totalAsset = assetsData?.totalAmount ?? 0;
+  const groupedAssets = assetsData?.categories ?? [];
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col bg-white pb-30">
+        <PageHeader title="자산" showBack={false} />
+
+        <div className="flex flex-col gap-1.25 border-b-[5px] border-[#F7F8FA] px-4 pb-3.75">
+          <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
+          <div className="h-8 w-32 bg-gray-200 rounded animate-pulse mt-2" />
+        </div>
+
+        <div className="flex flex-col gap-3.75 px-4 pt-12.5">
+          <div className="h-8 w-20 bg-gray-200 rounded animate-pulse mb-4" />
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="size-3.5 rounded-full bg-gray-200" />
+                <div className="h-5 w-24 bg-gray-200 rounded animate-pulse" />
+              </div>
+              <div className="h-6 w-28 bg-gray-200 rounded animate-pulse" />
+            </div>
+          ))}
+        </div>
+
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-white pb-30">
@@ -47,7 +93,9 @@ export default function AssetContent() {
         </div>
       ) : (
         <div className="flex flex-col gap-3.75 px-4 pt-12.5">
-          {ASSET_CATEGORIES.map((category) => (
+          <SortButton sortType={sortType} onSortChange={setSortType} />
+
+          {groupedAssets.map((category) => (
             <button
               key={category.id}
               onClick={() => router.push(`/asset/${category.id}`)}

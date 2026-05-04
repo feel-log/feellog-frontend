@@ -4,27 +4,48 @@ import { useState } from 'react';
 import PageHeader from '@/shared/ui/PageHeader';
 import Footer from '@/shared/ui/Footer';
 import SortButton, { SortType } from '@/shared/ui/SortButton';
-import { getAssetCategory } from '@/shared/constants/assetData';
+import { ASSET_CATEGORIES } from '@/shared/constants/assetData';
+import { useGetAssets } from '@/entities/get-assets/useGetAssets';
 
 interface AssetDetailContentProps {
   categoryId: string;
 }
 
+const CATEGORY_ID_MAP: Record<string, number> = {
+  salary: 1,
+  allowance: 2,
+  side: 3,
+  bonus: 4,
+  finance: 5,
+  etc: 6,
+};
+
+const SORT_MAPPING: Record<SortType, 'LATEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC'> = {
+  latest: 'LATEST',
+  expensive: 'AMOUNT_DESC',
+  cheap: 'AMOUNT_ASC',
+  oldest: 'LATEST',
+};
+
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const;
 
 function formatRecordDate(date: string): string {
-  const [monthStr, dayStr] = date.split('.');
-  const month = Number(monthStr);
-  const day = Number(dayStr);
-  if (Number.isNaN(month) || Number.isNaN(day)) return date;
-  const year = new Date().getFullYear();
+  const [year, month, day] = date.split('-').map(Number);
   const weekday = WEEKDAYS[new Date(year, month - 1, day).getDay()];
   return `${month}월 ${day}일 ${weekday}요일`;
 }
 
 export default function AssetDetailContent({ categoryId }: AssetDetailContentProps) {
-  const category = getAssetCategory(categoryId);
+  const category = ASSET_CATEGORIES.find(cat => cat.id === categoryId);
+  const apiCategoryId = CATEGORY_ID_MAP[categoryId];
   const [sortType, setSortType] = useState<SortType>('latest');
+
+  const { data: assetsData, isLoading } = useGetAssets({
+    categoryId: apiCategoryId,
+    sort: SORT_MAPPING[sortType],
+    page: 0,
+    size: 100,
+  });
 
   if (!category) {
     return (
@@ -36,22 +57,33 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
     );
   }
 
-  const getSortedRecords = () => {
-    const records = [...category.records];
-    switch (sortType) {
-      case 'expensive':
-        return records.sort((a, b) => b.amount - a.amount);
-      case 'cheap':
-        return records.sort((a, b) => a.amount - b.amount);
-      case 'oldest':
-        return records.reverse();
-      case 'latest':
-      default:
-        return records;
-    }
-  };
+  const records = assetsData?.data ?? [];
+  const totalAmount = assetsData?.totalAmount ?? 0;
 
-  const records = getSortedRecords();
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col bg-white pb-30">
+        <PageHeader title="자산" backHref="/asset" />
+
+        <div className="flex flex-col gap-1.25 border-b-[5px] border-[#F7F8FA] px-4 pb-3.75">
+          <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
+          <div className="h-8 w-32 bg-gray-200 rounded animate-pulse mt-2" />
+        </div>
+
+        <div className="px-4 pt-5">
+          <div className="h-8 w-20 bg-gray-200 rounded animate-pulse mb-8" />
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center justify-between mb-5">
+              <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+              <div className="h-6 w-28 bg-gray-200 rounded animate-pulse" />
+            </div>
+          ))}
+        </div>
+
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-white pb-30">
@@ -63,7 +95,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
           {category.label}
         </p>
         <p className="text-[28px] font-semibold leading-normal tracking-[-0.7px] text-[#030303]">
-          {category.total.toLocaleString()}원
+          {totalAmount.toLocaleString()}원
         </p>
       </div>
 
@@ -87,7 +119,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
               <div key={idx} className="flex flex-col gap-0.75">
                 <div className="flex items-center justify-between">
                   <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
-                    {formatRecordDate(record.date)}
+                    {formatRecordDate(record.assetDate)}
                   </p>
                   <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
                     {record.amount.toLocaleString()}원
