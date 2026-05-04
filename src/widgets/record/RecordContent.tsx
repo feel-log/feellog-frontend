@@ -9,94 +9,153 @@ import Button from '@/shared/ui/Button';
 import SelectField from '@/shared/ui/SelectField';
 import { cn } from '@/shared/lib/utils';
 import KeyBoardUserExperience from '@/shared/ui/record/KeyBoardUserExperience';
+import { useToken, useUser } from '@/shared/store';
+import { useUserGetter } from '@/entities/user';
+import { useHouseHoldPost } from '@/features/post-house-hold/model/useHouseHoldPost';
+import { useUpdateExpense } from '@/features/update-expense/model/useUpdateExpense';
+import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
+import { evaluate } from 'mathjs';
 
 interface RecordState {
   amount: number;
   type: 'income' | 'expense';
   date: string;
-  category: string;
-  paymentMethod?: string;
-  emotion?: string[];
-  situationTags?: string[];
+  categoryId: number | null;
+  paymentMethodId: number | null;
+  emotionIds?: number[];
+  situationTagIds?: number[];
   memo: string;
 }
 
-const INCOME_CATEGORIES = ['급여', '용돈', '부수입', '상여금', '금융 수입', '기타'];
+const INCOME_CATEGORIES =
+[
+  {
+  name: '급여',
+  id: 1
+  },
+  {
+    name: '용돈',
+    id: 2
+  },
+  {
+    name: '부수입',
+    id: 3
+  },
+  {
+    name: '상여금',
+    id: 4
+  },
+  {
+    name: '금융 수입',
+    id: 5
+  },
+  {
+    name: '기타',
+    id: 6
+  }
+];
 
-const EXPENSE_CATEGORIES = [
+export const EXPENSE_CATEGORIES = [
   {
     group: '생활',
     items: [
-      { label: '식비', emoji: '🍔' },
-      { label: '카페', emoji: '☕' },
-      { label: '생필품', emoji: '🧼' },
+      { label: '식비', emoji: '🍔', id: 1, },
+      { label: '카페', emoji: '☕', id: 2, },
+      { label: '생필품', emoji: '🧼', id: 3 },
     ],
   },
   {
     group: '소비',
     items: [
-      { label: '의류', emoji: '👚' },
-      { label: '교통비', emoji: '🚌' },
-      { label: '의료', emoji: '🏥' },
-      { label: '교육', emoji: '✏️' },
-      { label: '경조사', emoji: '🎉' },
+      { label: '의류', emoji: '👚', id: 4 },
+      { label: '교통비', emoji: '🚌', id: 5 },
+      { label: '의료', emoji: '🏥', id: 6 },
+      { label: '교육', emoji: '✏️', id: 7 },
+      { label: '경조사', emoji: '🎉', id: 8 },
     ],
   },
   {
     group: '고정',
     items: [
-      { label: '공과금', emoji: '💸' },
-      { label: '주거', emoji: '🏠' },
-      { label: '보험료', emoji: '📄' },
-      { label: '저축', emoji: '💰' },
+      { label: '공과금', emoji: '💸', id: 9 },
+      { label: '주거', emoji: '🏠', id: 10 },
+      { label: '보험료', emoji: '📄', id: 11 },
+      { label: '저축', emoji: '💰', id: 12 },
     ],
   },
   {
     group: '여가',
     items: [
-      { label: '취미', emoji: '🎨' },
-      { label: '뷰티', emoji: '💅' },
-      { label: '문화생활', emoji: '🎭' },
+      { label: '취미', emoji: '🎨', id: 13 },
+      { label: '뷰티', emoji: '💅', id: 14 },
+      { label: '문화생활', emoji: '🎭', id: 15 },
     ],
   },
 ];
 
-const PAYMENT_METHODS = ['카드', '현금', '계좌', '기타'];
+export const PAYMENT_METHODS = [
+  {
+    name: '카드',
+    id: 1
+  },
+  {
+    name: '현금',
+    id: 2
+  },
+  {
+    name: '계좌',
+    id: 3
+  },
+  {
+    name: '기타',
+    id: 4
+  }
+];
 
-const EMOTIONS = [
+export const EMOTIONS = [
   {
     group: '긍정',
     items: [
-      { label: '기쁨', emoji: '/svg/emo/happy.svg' },
-      { label: '설렘', emoji: '/svg/emo/flut.svg' },
-      { label: '뿌듯함', emoji: '/svg/emo/proud.svg' },
-      { label: '고마움', emoji: '/svg/emo/thanks.svg' },
+      { label: '기쁨', emoji: '/svg/emo/happy.svg', id: 1 },
+      { label: '설렘', emoji: '/svg/emo/flut.svg', id: 2 },
+      { label: '뿌듯함', emoji: '/svg/emo/proud.svg', id: 3 },
+      { label: '고마움', emoji: '/svg/emo/thanks.svg', id: 4 },
     ],
   },
   {
     group: '부정',
     items: [
-      { label: '짜증', emoji: '/svg/emo/annoy.svg' },
-      { label: '화남', emoji: '/svg/emo/angry.svg' },
-      { label: '불안함', emoji: '/svg/emo/anxios.svg' },
-      { label: '슬픔', emoji: '/svg/emo/sad.svg' },
-      { label: '스트레스', emoji: '/svg/emo/stress.svg' },
-      { label: '우울함', emoji: '/svg/emo/depressed.svg' },
+      { label: '짜증', emoji: '/svg/emo/annoy.svg', id: 5 },
+      { label: '화남', emoji: '/svg/emo/angry.svg', id: 6 },
+      { label: '불안함', emoji: '/svg/emo/anxios.svg', id: 7 },
+      { label: '슬픔', emoji: '/svg/emo/sad.svg', id: 8 },
+      { label: '스트레스', emoji: '/svg/emo/stress.svg', id: 9 },
+      { label: '우울함', emoji: '/svg/emo/depressed.svg', id: 10 },
     ],
   },
   {
     group: '기타',
     items: [
-      { label: '심심함', emoji: '/svg/emo/boring.svg' },
-      { label: '피곤함', emoji: '/svg/emo/tired.svg' },
-      { label: '공허함', emoji: '/svg/emo/emptiness.svg' },
-      { label: '외로움', emoji: '/svg/emo/lonely.svg' },
-      { label: '충동', emoji: '/svg/emo/impulse.svg' },
+      { label: '심심함', emoji: '/svg/emo/boring.svg', id: 11 },
+      { label: '피곤함', emoji: '/svg/emo/tired.svg', id: 12 },
+      { label: '공허함', emoji: '/svg/emo/emptiness.svg', id: 13 },
+      { label: '외로움', emoji: '/svg/emo/lonely.svg', id: 14 },
+      { label: '충동', emoji: '/svg/emo/impulse.svg', id: 15 },
     ],
   },
 ];
 
-const SITUATION_TAGS = ['#피로회복', '#기분전환', '#보상심리', '#할인', '#충동소비', '#필요', '#약속', '#지각', '#기타'];
+export const SITUATION_TAGS = [
+  { label: '피로회복', id: 1 },
+  { label: '기분전환', id: 2 },
+  { label: '보상심리', id: 3 },
+  { label: '할인', id: 4 },
+  { label: '충동소비', id: 5 },
+  { label: '필요', id: 6 },
+  { label: '약속', id: 7 },
+  { label: '지각', id: 8 },
+  { label: '기타', id: 9 },
+];
 
 const DAY_OF_WEEK = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -107,29 +166,9 @@ function formatDateDisplay(dateString: string): string {
   return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
 }
 
-function getCategoryDisplay(category: string): string {
-  return category;
-}
-
-function renderSituationTagsDisplay(tags: string[], memo: string): React.ReactNode {
-  const cleanTags = (tags || []).map((tag) => tag.replace(/^#/, ''));
-  if (cleanTags.length === 0 && !memo) return '';
-
-  return (
-    <div className="flex min-w-0 flex-1 items-start gap-1.5">
-      {cleanTags.length > 0 && (
-        <span className="shrink-0 whitespace-nowrap text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
-          {cleanTags.join(' ')}
-        </span>
-      )}
-      {cleanTags.length > 0 && memo && <span className="mt-2 h-3 w-px shrink-0 bg-[#cacdd2]" />}
-      {memo && (
-        <span className="min-w-0 flex-1 wrap-break-word text-[17px] font-semibold tracking-[-0.025em] text-[#13278a]">
-          {memo}
-        </span>
-      )}
-    </div>
-  );
+function getCategoryDisplay (categoryId: number | null){
+  return EXPENSE_CATEGORIES.flatMap(g => g.items)
+    .find(item => item.id === categoryId)?.label ?? '';
 }
 
 export default function RecordContent() {
@@ -139,20 +178,56 @@ export default function RecordContent() {
   const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   const selectedDate = searchParams?.get('date') || today;
   const typeParam = searchParams?.get('type');
+  const expenseIdParam = searchParams?.get('expenseId');
+  const modeParam = searchParams?.get('mode');
+  const isEditMode = modeParam === 'edit' && expenseIdParam;
   const isAssetMode = typeParam === 'asset';
   const initialType: 'income' | 'expense' =
     typeParam === 'income' || isAssetMode ? 'income' : 'expense';
+
+  // Edit 모드일 때 기존 데이터 로드
+  const expenseYear = parseInt(selectedDate.split('-')[0]);
+  const expenseMonth = parseInt(selectedDate.split('-')[1]);
+  const expenseDay = parseInt(selectedDate.split('-')[2]);
+  const { data: dailyExpenseData = [] } = useDailyExpend(expenseYear, expenseMonth, expenseDay);
 
   const [record, setRecord] = useState<RecordState>({
     amount: 0,
     type: initialType,
     date: selectedDate,
-    category: '',
-    paymentMethod: '',
-    emotion: [],
-    situationTags: [],
+    categoryId: null,
+    paymentMethodId: null,
+    emotionIds: [],
+    situationTagIds: [],
     memo: '',
   });
+
+  // Edit 모드일 때 초기값 설정
+  useEffect(() => {
+    if (isEditMode && expenseIdParam && dailyExpenseData.length > 0) {
+      const expense = dailyExpenseData.find(
+        (e) => e.expenseId === parseInt(expenseIdParam)
+      );
+      if (expense) {
+        setRecord({
+          amount: expense.amount,
+          type: 'expense',
+          date: expense.expenseDate,
+          categoryId: expense.categoryId,
+          paymentMethodId: expense.paymentMethodId,
+          emotionIds: expense.emotionIds,
+          situationTagIds: expense.situationTagIds,
+          memo: expense.memo,
+        });
+        setAmountInput(expense.amount.toString());
+        setSelectedCategoryId(expense.categoryId);
+        setSelectedPaymentId(expense.paymentMethodId);
+        setSelectedEmotions(expense.emotionIds);
+        setTempTags(expense.situationTagIds);
+        setTempMemo(expense.memo);
+      }
+    }
+  }, [isEditMode, expenseIdParam, dailyExpenseData]);
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -161,57 +236,25 @@ export default function RecordContent() {
   const [isSituationOpen, setIsSituationOpen] = useState(false);
   const [isDateOpen, setIsDateOpen] = useState(false);
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedPayment, setSelectedPayment] = useState('');
-  const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedPaymentId, setSelectedPaymentId] = useState<number | null>(null);
+  const [selectedEmotions, setSelectedEmotions] = useState<number[]>([]);
   const [memoInput, setMemoInput] = useState('');
-  const [tempTags, setTempTags] = useState<string[]>([]);
+  const [tempTags, setTempTags] = useState<number[]>([]);
   const [tempMemo, setTempMemo] = useState('');
   const [isDateSelected, setIsDateSelected] = useState(false);
 
-  const [amountInput, setAmountInput] = useState('');
+
+  const [amountInput, setAmountInput] = useState(''); // amount 값
   const [isAmountEditing, setIsAmountEditing] = useState(false);
-  const [errors, setErrors] = useState<{ date?: string; category?: string; paymentMethod?: string }>({});
-  const [shakeKey, setShakeKey] = useState(0);
 
-  useEffect(() => {
-    if (record.category && errors.category) {
-      setErrors((prev) => ({ ...prev, category: undefined }));
-    }
-  }, [record.category, errors.category]);
+  // userId 가져오기
+  const { getAccessToken } = useToken();
+  const accessToken = getAccessToken();
+  useUserGetter(accessToken!)
+  const { getUser } = useUser();
+  const user = getUser();
 
-  useEffect(() => {
-    if (record.paymentMethod && errors.paymentMethod) {
-      setErrors((prev) => ({ ...prev, paymentMethod: undefined }));
-    }
-  }, [record.paymentMethod, errors.paymentMethod]);
-
-  useEffect(() => {
-    if (isDateSelected && errors.date) {
-      setErrors((prev) => ({ ...prev, date: undefined }));
-    }
-  }, [isDateSelected, errors.date]);
-
-  const handleSaveClick = () => {
-    const newErrors: typeof errors = {};
-    if (!isDateSelected) newErrors.date = '항목을 선택해주세요';
-    if (!record.category) newErrors.category = '항목을 선택해주세요';
-    if (record.type === 'expense' && !record.paymentMethod) {
-      newErrors.paymentMethod = '항목을 선택해주세요';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setShakeKey((prev) => prev + 1);
-      return;
-    }
-
-    if (isAssetMode) {
-      console.log('Asset saved:', record);
-    } else {
-      console.log('Record saved:', record);
-    }
-  };
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const [year, month] = selectedDate.split('-').map(Number);
     return { year, month };
@@ -224,8 +267,8 @@ export default function RecordContent() {
         return 0;
       }
       const normalized = expression.replace(/,00/g, '.00').replace(/,000/g, '.000');
-      // eslint-disable-next-line no-eval
-      const result = eval(normalized);
+
+      const result = evaluate(normalized);
       return Math.round((result || 0) * 100) / 100;
     } catch {
       // eval 에러 시 마지막 숫자만 추출
@@ -238,8 +281,7 @@ export default function RecordContent() {
     if (!amountInput) return 0;
     try {
       const normalized = amountInput.replace(/,00/g, '.00').replace(/,000/g, '.000');
-      // eslint-disable-next-line no-eval
-      const result = eval(normalized);
+      const result = evaluate(normalized);
       return Math.round((result || 0) * 100) / 100;
     } catch {
       // 에러 시 마지막 숫자 반환
@@ -286,42 +328,42 @@ export default function RecordContent() {
     }
   };
 
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category);
+  const handleCategorySelect = (category: number) => {
+    setSelectedCategoryId(category);
   };
 
   const handleCategorySave = () => {
     setRecord((prev) => ({
       ...prev,
-      category: selectedCategory,
+      categoryId: selectedCategoryId,
     }));
     setIsCategoryOpen(false);
-    setSelectedCategory('');
+    setSelectedCategoryId(null);
   };
 
   const handlePaymentSave = () => {
     setRecord((prev) => ({
       ...prev,
-      paymentMethod: selectedPayment,
+      paymentMethodId: selectedPaymentId,
     }));
     setIsPaymentOpen(false);
-    setSelectedPayment('');
+    setSelectedPaymentId(null);
   };
 
   const handleEmotionSave = () => {
     setRecord((prev) => ({
       ...prev,
-      emotion: selectedEmotions,
+      emotionIds: selectedEmotions,
     }));
     setIsEmotionOpen(false);
     setSelectedEmotions([]);
   };
 
-  const handleEmotionToggle = (emotion: string) => {
-    if (selectedEmotions.includes(emotion)) {
-      setSelectedEmotions(selectedEmotions.filter((e) => e !== emotion));
+  const handleEmotionToggle = (emotionId: number) => {
+    if (selectedEmotions.includes(emotionId)) {
+      setSelectedEmotions(selectedEmotions.filter((e) => e !== emotionId));
     } else if (selectedEmotions.length < 3) {
-      setSelectedEmotions([...selectedEmotions, emotion]);
+      setSelectedEmotions([...selectedEmotions, emotionId]);
     }
   };
 
@@ -345,7 +387,7 @@ export default function RecordContent() {
   const handleSituationSave = () => {
     setRecord((prev) => ({
       ...prev,
-      situationTags: tempTags,
+      situationTagIds: tempTags,
       memo: tempMemo,
     }));
     setIsSituationOpen(false);
@@ -353,11 +395,11 @@ export default function RecordContent() {
     setTempMemo('');
   };
 
-  const handleTagToggle = (tag: string) => {
-    if (tempTags.includes(tag)) {
-      setTempTags(tempTags.filter((t) => t !== tag));
+  const handleTagToggle = (tagId: number) => {
+    if (tempTags.includes(tagId)) {
+      setTempTags(tempTags.filter((t) => t !== tagId));
     } else if (tempTags.length < 2) {
-      setTempTags([...tempTags, tag]);
+      setTempTags([...tempTags, tagId]);
     }
   };
 
@@ -408,10 +450,60 @@ export default function RecordContent() {
     return days;
   };
 
+  const date = new Date(record.date);
+  const hhmm = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+
+  // API 호출
+  const { mutate: houseHoldPost } = useHouseHoldPost('expense', {
+    userId: user?.id ?? 0,
+    categoryId: record.categoryId ?? null,
+    paymentMethodId: record.paymentMethodId ?? null,
+    amount: record.amount ?? 0,
+    memo: record.memo ?? "",
+    merchantId: 0,
+    expenseDate: record.date,
+    expenseTime: hhmm,
+    emotionIds: record.emotionIds ?? [],
+    situationTagIds: record.situationTagIds ?? []
+  });
+
+  const updateExpenseMutation = useUpdateExpense();
+
+  const isFormValid = () => {
+    if (record.type === 'expense') {
+      return isDateSelected && record.paymentMethodId !== null && record.categoryId !== null;
+    }
+    return true;
+  };
+
+  const submitHouseHoldPost = () => {
+    if (isFormValid()) {
+      if (isEditMode && expenseIdParam) {
+        updateExpenseMutation.mutate({
+          expenseId: parseInt(expenseIdParam),
+          request: {
+            userId: user?.id ?? 0,
+            categoryId: record.categoryId ?? null,
+            paymentMethodId: record.paymentMethodId ?? null,
+            amount: record.amount ?? 0,
+            memo: record.memo ?? "",
+            merchantName: "",
+            expenseDate: record.date,
+            expenseTime: hhmm,
+            emotionIds: record.emotionIds ?? [],
+            situationTagIds: record.situationTagIds ?? []
+          },
+        });
+      } else {
+        houseHoldPost();
+      }
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-white">
-      <PageHeader title={isAssetMode ? '자산 추가' : '가계부'} />
+      <PageHeader title={isEditMode ? '지출 수정' : isAssetMode ? '자산 추가' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">
         {/* Amount Section */}
@@ -467,7 +559,6 @@ export default function RecordContent() {
                       memo: '',
                     }));
                     setIsDateSelected(false);
-                    setErrors({});
                   }}
                   className={cn(
                     'flex h-7.25 cursor-pointer items-center justify-center rounded-[20px] border px-5 py-1 text-[14px] font-medium tracking-[-0.025em] transition-colors',
@@ -496,40 +587,37 @@ export default function RecordContent() {
             });
             setIsDateOpen(true);
           }}
-          error={errors.date}
-          errorKey={shakeKey}
         />
 
         {/* Payment Method Section (Expense Only) */}
         {record.type === 'expense' && (
           <SelectField
             label="결제 수단"
-            value={record.paymentMethod || ''}
+            value={record.paymentMethodId ? PAYMENT_METHODS[record.paymentMethodId - 1].name : null}
             placeholder="결제 수단을 선택하세요"
             onClick={() => setIsPaymentOpen(true)}
-            error={errors.paymentMethod}
-            errorKey={shakeKey}
           />
         )}
 
         {/* Category Section */}
         <SelectField
           label="카테고리"
-          value={getCategoryDisplay(record.category)}
+          value={getCategoryDisplay(record.categoryId)}
           placeholder="카테고리를 선택하세요"
           onClick={() => setIsCategoryOpen(true)}
-          error={errors.category}
-          errorKey={shakeKey}
         />
 
         {/* Emotion Section (Expense Only) */}
         {record.type === 'expense' && (
           <SelectField
             label="감정"
-            value={record.emotion?.join(' ') || ''}
+            value={record.emotionIds?.map((emotionId: number) => {
+              const emotion = EMOTIONS.flatMap(g => g.items).find(item => item.id === emotionId);
+              return emotion ? `${emotion.label}` : '';
+            }).filter(Boolean).join(', ') ?? ''}
             placeholder="감정을 선택하세요"
             onClick={() => {
-              setSelectedEmotions(record.emotion || []);
+              setSelectedEmotions(record.emotionIds || []);
               setIsEmotionOpen(true);
             }}
           />
@@ -539,10 +627,12 @@ export default function RecordContent() {
         {record.type === 'expense' ? (
           <SelectField
             label="상황 태그 · 메모"
-            value={renderSituationTagsDisplay(record.situationTags || [], record.memo)}
+            value={`${record.situationTagIds?.map((tagId: number) => {
+              return SITUATION_TAGS.find(item => item.id === tagId)?.label;
+            }).filter(Boolean).join(', ') ?? ''}${record.situationTagIds && record.situationTagIds.length > 0 && record.memo ? ' / ' : ''}${record.memo ?? ''}`}
             placeholder="상황 태그·메모를 입력하세요"
             onClick={() => {
-              setTempTags([...(record.situationTags || [])]);
+              setTempTags([...(record.situationTagIds || [])]);
               setTempMemo(record.memo);
               setIsSituationOpen(true);
             }}
@@ -653,26 +743,26 @@ export default function RecordContent() {
         subtitle={record.type === 'expense' ? '한 가지만 선택할 수 있어요' : undefined}
         onClose={() => {
           setIsCategoryOpen(false);
-          setSelectedCategory('');
+          setSelectedCategoryId(null);
         }}
         onSave={handleCategorySave}
-        isSaveDisabled={selectedCategory === ''}
+        isSaveDisabled={selectedCategoryId === null}
         height={record.type === 'expense' ? 636 : 492}
       >
         {record.type === 'income' ? (
           <div className="flex flex-wrap gap-2">
             {INCOME_CATEGORIES.map((category) => (
               <button
-                key={category}
-                onClick={() => handleCategorySelect(category)}
+                key={category.id}
+                onClick={() => handleCategorySelect(category.id)}
                 className={cn(
                   'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
-                  selectedCategory === category
+                  selectedCategoryId === category.id
                     ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                     : 'border-[#e5e5e5] text-[#474c52]'
                 )}
               >
-                {category}
+                {category.name}
               </button>
             ))}
           </div>
@@ -684,11 +774,11 @@ export default function RecordContent() {
                 <div className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
                     <button
-                      key={item.label}
-                      onClick={() => handleCategorySelect(item.label)}
+                      key={item.id}
+                      onClick={() => handleCategorySelect(item.id)}
                       className={cn(
                         'flex h-9.5 w-26.25 cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
-                        selectedCategory === item.label
+                        selectedCategoryId === item.id
                           ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                           : 'border-[#e5e5e5] text-[#474c52]'
                       )}
@@ -711,25 +801,25 @@ export default function RecordContent() {
           title="결제 수단을 선택해주세요"
           onClose={() => {
             setIsPaymentOpen(false);
-            setSelectedPayment('');
+            setSelectedPaymentId(null);
           }}
           onSave={handlePaymentSave}
-          isSaveDisabled={selectedPayment === ''}
+          isSaveDisabled={selectedPaymentId === null}
           height={492}
         >
           <div className="flex flex-wrap gap-2">
             {PAYMENT_METHODS.map((method) => (
               <button
-                key={method}
-                onClick={() => setSelectedPayment(method)}
+                key={method.id}
+                onClick={() => setSelectedPaymentId(method.id)}
                 className={cn(
                   'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
-                  selectedPayment === method
+                  selectedPaymentId === method.id
                     ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                     : 'border-[#e5e5e5] text-[#474c52]'
                 )}
               >
-                {method}
+                {method.name}
               </button>
             ))}
           </div>
@@ -757,11 +847,11 @@ export default function RecordContent() {
                 <div className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
                     <button
-                      key={item.label}
-                      onClick={() => handleEmotionToggle(item.label)}
+                      key={item.id}
+                      onClick={() => handleEmotionToggle(item.id)}
                       className={cn(
                         'flex h-9.5 w-26.25 cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
-                        selectedEmotions.includes(item.label)
+                        selectedEmotions.includes(item.id)
                           ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                           : 'border-[#e5e5e5] text-[#27282c]'
                       )}
@@ -816,16 +906,16 @@ export default function RecordContent() {
               <div className="flex flex-wrap gap-x-2 gap-y-2.5">
                 {SITUATION_TAGS.map((tag) => (
                   <button
-                    key={tag}
-                    onClick={() => handleTagToggle(tag)}
+                    key={tag.id}
+                    onClick={() => handleTagToggle(tag.id)}
                     className={cn(
                       'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
-                      tempTags.includes(tag)
+                      tempTags.includes(tag.id)
                         ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                         : 'border-[#e5e5e5] text-[#27282c]'
                     )}
                   >
-                    {tag}
+                    #{tag.label}
                   </button>
                 ))}
               </div>
@@ -853,13 +943,9 @@ export default function RecordContent() {
         {!isAmountEditing && (
           <div className="px-4 pt-6 pb-12">
             <Button
-              onClick={handleSaveClick}
               size="lg"
-              disabled={
-                !record.category ||
-                !isDateSelected ||
-                (record.type === 'expense' && !record.paymentMethod)
-              }
+              onClick={submitHouseHoldPost}
+              disabled={!isFormValid()}
             >
               저장
             </Button>

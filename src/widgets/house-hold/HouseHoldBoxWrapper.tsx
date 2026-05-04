@@ -38,7 +38,7 @@ export default function HouseHoldBoxWrapper() {
         <div className={'mb-4.5 flex items-center justify-between'}>
           <div className={'flex flex-col'}>
             <span className={'text-[16px] font-medium tracking-[-0.025em] text-[#73787e]'}>이번 주 지출 비용</span>
-            <span className={'text-[24px] font-semibold tracking-[-0.025em] text-[#030303]'}>{query.data?.totalExpense ? query.data.totalExpense + "원" : '0원' }</span>
+            <span className={'text-[24px] font-semibold tracking-[-0.025em] text-[#030303]'}>{query.data?.totalExpense ? query.data.totalExpense.toLocaleString() + "원" : '0원' }</span>
           </div>
           <Image src={'/svg/icon_arrow_right.svg'} alt={'arrow_button'} width={24} height={24} />
         </div>
