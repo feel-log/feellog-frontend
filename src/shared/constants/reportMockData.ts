@@ -1,6 +1,8 @@
 export interface Insight {
-  id: string;
-  imageSrc: string;
+  type: 'categoryChange' | 'emotionTrend' | 'situationTrend';
+  message: string;
+  targetName?: string | null;
+  direction?: 'up' | 'down' | null;
 }
 
 export interface CategoryItem {
@@ -40,10 +42,9 @@ export const reportMockData: ReportData = {
   income: 1_000_000,
   expense: 1_500_000,
   insights: [
-    //임시
-    { id: 'insight-1', imageSrc: '/implements/Frame 1597881824.svg' },
-    { id: 'insight-2', imageSrc: '/implements/Frame 1597881825.svg' },
-    { id: 'insight-3', imageSrc: '/implements/Frame 1597881826.svg' },
+    { type: 'categoryChange', message: '이번 달은 식비에 돈을 가장 많이 지출했어요', targetName: '식비', direction: 'up' },
+    { type: 'emotionTrend', message: '심심할수록 무료함을 채우기 위한 소비가 늘었어요', targetName: '심심함', direction: null },
+    { type: 'situationTrend', message: '몸과 마음을 달래는 시간이 필요했던 한 달이었어요', targetName: null, direction: null },
   ],
   categorySummary: '이번 달은 식비에 돈을 가장 많이 지출했어요',
   categories: [
