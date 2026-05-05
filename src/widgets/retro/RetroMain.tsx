@@ -3,34 +3,48 @@
 import { useRouter } from 'next/navigation';
 import useEmblaCarousel from 'embla-carousel-react';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
+import type { DailyEmotionItem, DailyReport } from '@/entities/report';
 
-interface ExpenseCategory {
-  name: string;
-  amount: number;
-  ratio: number;
-}
-
-interface Emotion {
-  name: string;
-}
+type ExpenseGraph = DailyReport['expenseGraph'];
 
 interface RetroMainProps {
-  totalExpense: number;
-  topCategory: string;
-  topCategoryRatio: number;
-  categories: ExpenseCategory[];
-  emotions: Emotion[];
+  expenseGraph: ExpenseGraph;
+  emotions: DailyEmotionItem[];
+  isEmotionsEmpty: boolean;
 }
 
 export default function RetroMain({
-  topCategory,
-  topCategoryRatio,
-  categories,
+  expenseGraph,
   emotions,
+  isEmotionsEmpty,
 }: RetroMainProps) {
   const router = useRouter();
-  const maxAmount = Math.max(...categories.map((c) => c.amount));
   const [emblaRef] = useEmblaCarousel({ align: 'start', dragFree: true });
+
+  const { mainMessage, subMessage, topCategories, secondCategory, extraCount } =
+    expenseGraph;
+
+  const barItems = [
+    ...topCategories.slice(0, 2).map((c) => ({
+      label: c.label,
+      amount: c.amount,
+      isTop: true,
+    })),
+    ...(secondCategory && topCategories.length === 1
+      ? [{ label: secondCategory.label, amount: secondCategory.amount, isTop: false }]
+      : []),
+    ...(extraCount > 0
+      ? [
+          {
+            label: `외 ${extraCount}개`,
+            amount: topCategories[0]?.amount ?? 0,
+            isTop: false,
+          },
+        ]
+      : []),
+  ].slice(0, 3);
+
+  const maxAmount = Math.max(...barItems.map((b) => b.amount), 1);
 
   const handleDetailClick = () => {
     const today = new Date();
@@ -40,30 +54,22 @@ export default function RetroMain({
 
   return (
     <div className="flex w-full flex-col gap-5">
-
       <div className="relative flex h-90 w-full flex-col items-center rounded-[12px] bg-[#F7F8FA] px-5">
         <div className="mt-7.5 flex flex-col items-center gap-0.5">
-          <p className="text-[18px] font-bold text-[#1C1D1F]">
-            오늘은 {topCategory}에 가장 많이 지출했어요
-          </p>
-          <p className="text-[14px] font-medium text-[#474C52]">
-            {topCategory} 지출이 전체의 {topCategoryRatio}%를 차지해요
-          </p>
+          <p className="text-[18px] font-bold text-[#1C1D1F]">{mainMessage}</p>
+          <p className="text-[14px] font-medium text-[#474C52]">{subMessage}</p>
         </div>
 
-        {/* 막대 차트 */}
         <div className="mt-6 flex items-end gap-6.5">
-          {categories.slice(0, 2).map((cat) => (
-            <div key={cat.name} className="flex flex-col items-center gap-0.5">
+          {barItems.map((item) => (
+            <div key={item.label} className="flex flex-col items-center gap-0.5">
               <p className="text-[14px] font-semibold text-[#1C1D1F]">
-                {cat.name}
+                {item.label}
               </p>
               <div
-                className={`w-10 rounded-t-sm ${
-                  cat.name === topCategory ? 'bg-[#6B9CE5]' : 'bg-[#CACDD2]'
-                }`}
+                className={`w-10 rounded-t-sm ${item.isTop ? 'bg-[#6B9CE5]' : 'bg-[#CACDD2]'}`}
                 style={{
-                  height: `${Math.max((cat.amount / maxAmount) * 140, 40)}px`,
+                  height: `${Math.max((item.amount / maxAmount) * 140, 40)}px`,
                 }}
               />
             </div>
@@ -80,26 +86,34 @@ export default function RetroMain({
         </button>
       </div>
 
-      <div className="-mx-4 overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-1.5">
-          {emotions.map((emotion) => (
-            <div
-              key={emotion.name}
-              className="flex h-21.25 w-37 shrink-0 flex-col items-center justify-center rounded-[12px] bg-[#F7F8FA] px-4 py-3.5"
-            >
-              <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
-                오늘의 소비 감정
-              </p>
-              <div className="mt-1.5 flex items-center gap-1.5">
-                <EmotionIcon name={emotion.name} size={25} />
-                <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
-                  {emotion.name}
-                </p>
-              </div>
-            </div>
-          ))}
+      {isEmotionsEmpty || emotions.length === 0 ? (
+        <div className="flex h-21.25 w-full items-center justify-center rounded-[12px] bg-[#F7F8FA]">
+          <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
+            아직 기록된 감정이 없어요
+          </p>
         </div>
-      </div>
+      ) : (
+        <div className="-mx-4 overflow-hidden" ref={emblaRef}>
+          <div className="flex gap-1.5">
+            {emotions.map((emotion) => (
+              <div
+                key={emotion.emotionId}
+                className="flex h-21.25 w-37 shrink-0 flex-col items-center justify-center rounded-[12px] bg-[#F7F8FA] px-4 py-3.5"
+              >
+                <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
+                  오늘의 소비 감정
+                </p>
+                <div className="mt-1.5 flex items-center gap-1.5">
+                  <EmotionIcon name={emotion.emotionName} size={25} />
+                  <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
+                    {emotion.emotionName}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
