@@ -45,7 +45,7 @@ async function refreshAccessToken(): Promise<string> {
 async function performRequest<T>(
   endpoint: string,
   options?: RequestInit,
-  accessToken?: string
+  accessToken?: string | null
 ): Promise<{ data: T; status: number }> {
   const headers = {
     'Content-Type': 'application/json',
