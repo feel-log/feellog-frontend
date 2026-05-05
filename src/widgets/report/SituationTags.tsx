@@ -1,7 +1,6 @@
 import type { SituationTag } from '@/shared/constants/reportMockData';
 
 interface SituationTagsProps {
-  summary: string;
   situations: SituationTag[];
 }
 
@@ -73,17 +72,12 @@ const BUBBLE_CONFIGS: Record<
   },
 };
 
-export default function SituationTags({ summary, situations }: SituationTagsProps) {
+export default function SituationTags({ situations }: SituationTagsProps) {
   return (
     <div className="flex flex-col gap-2.5 rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] py-5">
-      <div className="flex flex-col gap-0.5 px-4">
-        <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
-          자주 선택한 상황 태그
-        </h2>
-        <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#73787E]">
-          {summary}
-        </p>
-      </div>
+      <h2 className="px-4 text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
+        자주 선택한 상황 태그
+      </h2>
 
       <div className="relative mx-auto h-66.5 w-80">
         {situations.map((situation) => {

@@ -7,7 +7,6 @@ import type { CategoryItem } from '@/shared/constants/reportMockData';
 type CategoryChartCategory = CategoryItem & { id?: number };
 
 interface CategoryChartProps {
-  summary: string;
   categories: CategoryChartCategory[];
   year?: number;
   month?: number;
@@ -55,36 +54,18 @@ function DonutChart({ categories }: { categories: CategoryChartCategory[] }) {
   );
 }
 
-export default function CategoryChart({ summary, categories, year, month }: CategoryChartProps) {
+export default function CategoryChart({ categories, year, month }: CategoryChartProps) {
   const [expanded, setExpanded] = useState(false);
 
   if (categories.length === 0) return null;
 
-  const topCategory = [...categories].sort((a, b) => b.percentage - a.percentage)[0];
   const visibleCategories = expanded ? categories.slice(0, 5) : categories.slice(0, 3);
 
   return (
     <div className="flex flex-col gap-5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
-      <div className="flex flex-col gap-0.5">
-        <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-          카테고리별 지출 항목
-        </h2>
-        <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#73787E]">
-          {(() => {
-            const parts = summary.split(topCategory.name);
-            return parts.map((part, i) => (
-              <span key={i}>
-                {part}
-                {i < parts.length - 1 && (
-                  <span className="font-semibold text-[#474C52]">
-                    {topCategory.name}
-                  </span>
-                )}
-              </span>
-            ));
-          })()}
-        </p>
-      </div>
+      <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+        카테고리별 지출 항목
+      </h2>
 
 
       <DonutChart categories={categories} />

@@ -5,31 +5,33 @@ import Link from 'next/link';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
 import type { EmotionItem } from '@/shared/constants/reportMockData';
 
+type EmotionListItem = EmotionItem & { id?: number };
+
 interface EmotionListProps {
-  summary: string;
-  emotions: EmotionItem[];
+  emotions: EmotionListItem[];
+  year?: number;
+  month?: number;
 }
 
-export default function EmotionList({ summary, emotions }: EmotionListProps) {
+export default function EmotionList({ emotions, year, month }: EmotionListProps) {
   const [expanded, setExpanded] = useState(false);
   const visibleEmotions = expanded ? emotions.slice(0, 5) : emotions.slice(0, 3);
 
   return (
     <div className="flex flex-col gap-7.5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
-      <div className="flex flex-col gap-0.5">
-        <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
-          감정별 지출 항목
-        </h2>
-        <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#73787E]">
-          {summary}
-        </p>
-      </div>
+      <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
+        감정별 지출 항목
+      </h2>
 
       <div className="flex flex-col gap-3.75">
         {visibleEmotions.map((item, index) => (
           <Link
             key={`${item.rank}-${item.name}-${index}`}
-            href={`/report/emotion/${encodeURIComponent(item.name)}`}
+            href={
+              item.id != null && year != null && month != null
+                ? `/report/emotion/${item.id}?year=${year}&month=${month}`
+                : `/report/emotion/${encodeURIComponent(item.name)}`
+            }
             className="flex items-center justify-between"
           >
             <div className="flex items-center gap-3.75">
