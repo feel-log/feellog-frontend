@@ -73,6 +73,24 @@ const BUBBLE_CONFIGS: Record<
 };
 
 export default function SituationTags({ situations }: SituationTagsProps) {
+  if (situations.length === 0) {
+    return (
+      <div className="flex flex-col rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] pt-5 pb-24.75 px-4">
+        <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
+          자주 선택한 상황 태그
+        </h2>
+        <div className="mt-21.5 flex flex-col items-center gap-0.5">
+          <p className="text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#73787E]">
+            이번달 상황별 소비가 아직 없어요
+          </p>
+          <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
+            소비를 기록하면 오늘을 돌아볼 수 있어요
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-2.5 rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] py-5">
       <h2 className="px-4 text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">

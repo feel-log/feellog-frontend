@@ -17,6 +17,24 @@ export default function EmotionList({ emotions, year, month }: EmotionListProps)
   const [expanded, setExpanded] = useState(false);
   const visibleEmotions = expanded ? emotions.slice(0, 5) : emotions.slice(0, 3);
 
+  if (emotions.length === 0) {
+    return (
+      <div className="flex flex-col rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] pt-5 pb-19.75 px-4">
+        <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+          감정별 지출 항목
+        </h2>
+        <div className="mt-14.75 flex flex-col items-center gap-0.5">
+          <p className="text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#73787E]">
+            이번달 감정별 소비가 아직 없어요
+          </p>
+          <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
+            소비를 기록하면 오늘을 돌아볼 수 있어요
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-7.5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
       <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
