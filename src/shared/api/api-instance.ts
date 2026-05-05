@@ -96,8 +96,9 @@ export async function apiClient<T>(
     const result = await performRequest<T>(endpoint, options, accessToken);
     return result.data;
   } catch (error: any) {
-    // 401 Unauthorized - try to refresh token
-    if (error?.status === 401) {
+    // 401 Unauthorized or 403 Forbidden - try to refresh token
+    // (403 can occur when token is expired)
+    if (error?.status === 401 || error?.status === 403) {
       try {
         accessToken = await refreshAccessToken();
         const result = await performRequest<T>(endpoint, options, accessToken);
