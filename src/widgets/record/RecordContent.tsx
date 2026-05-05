@@ -14,6 +14,7 @@ import { useUserGetter } from '@/entities/user';
 import { useHouseHoldPost } from '@/features/post-house-hold/model/useHouseHoldPost';
 import { useUpdateExpense } from '@/features/update-expense/model/useUpdateExpense';
 import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
+import { usePostAsset } from '@/features/post-asset/model/usePostAsset';
 import { evaluate } from 'mathjs';
 
 interface RecordState {
@@ -47,6 +48,33 @@ const INCOME_CATEGORIES =
   },
   {
     name: '금융 수입',
+    id: 5
+  },
+  {
+    name: '기타',
+    id: 6
+  }
+];
+
+const ASSET_CATEGORIES = [
+  {
+    name: '급여',
+    id: 1
+  },
+  {
+    name: '용돈',
+    id: 2
+  },
+  {
+    name: '부수입',
+    id: 3
+  },
+  {
+    name: '상여금',
+    id: 4
+  },
+  {
+    name: '금융수입',
     id: 5
   },
   {
@@ -166,7 +194,13 @@ function formatDateDisplay(dateString: string): string {
   return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
 }
 
-function getCategoryDisplay (categoryId: number | null){
+function getCategoryDisplay (categoryId: number | null, type?: 'income' | 'expense' | 'asset'){
+  if (type === 'asset') {
+    return ASSET_CATEGORIES.find(c => c.id === categoryId)?.name ?? '';
+  }
+  if (type === 'income') {
+    return INCOME_CATEGORIES.find(c => c.id === categoryId)?.name ?? '';
+  }
   return EXPENSE_CATEGORIES.flatMap(g => g.items)
     .find(item => item.id === categoryId)?.label ?? '';
 }
@@ -468,17 +502,28 @@ export default function RecordContent() {
   });
 
   const updateExpenseMutation = useUpdateExpense();
+  const postAssetMutation = usePostAsset();
 
   const isFormValid = () => {
     if (record.type === 'expense') {
       return isDateSelected && record.paymentMethodId !== null && record.categoryId !== null;
     }
-    return true;
+    if (isAssetMode) {
+      return isDateSelected && record.amount > 0 && record.categoryId !== null;
+    }
+    return record.amount > 0 && record.categoryId !== null;
   };
 
   const submitHouseHoldPost = () => {
     if (isFormValid()) {
-      if (isEditMode && expenseIdParam) {
+      if (isAssetMode) {
+        postAssetMutation.mutate({
+          assetCategoryId: record.categoryId ?? 0,
+          amount: record.amount ?? 0,
+          assetDate: record.date,
+          memo: record.memo ?? ""
+        });
+      } else if (isEditMode && expenseIdParam) {
         updateExpenseMutation.mutate({
           expenseId: parseInt(expenseIdParam),
           request: {
@@ -602,7 +647,7 @@ export default function RecordContent() {
         {/* Category Section */}
         <SelectField
           label="카테고리"
-          value={getCategoryDisplay(record.categoryId)}
+          value={getCategoryDisplay(record.categoryId, isAssetMode ? 'asset' : record.type)}
           placeholder="카테고리를 선택하세요"
           onClick={() => setIsCategoryOpen(true)}
         />
@@ -749,7 +794,24 @@ export default function RecordContent() {
         isSaveDisabled={selectedCategoryId === null}
         height={record.type === 'expense' ? 636 : 492}
       >
-        {record.type === 'income' ? (
+        {isAssetMode ? (
+          <div className="flex flex-wrap gap-2">
+            {ASSET_CATEGORIES.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => handleCategorySelect(category.id)}
+                className={cn(
+                  'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
+                  selectedCategoryId === category.id
+                    ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
+                    : 'border-[#e5e5e5] text-[#474c52]'
+                )}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        ) : record.type === 'income' ? (
           <div className="flex flex-wrap gap-2">
             {INCOME_CATEGORIES.map((category) => (
               <button

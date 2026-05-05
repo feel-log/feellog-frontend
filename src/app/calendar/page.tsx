@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import CalendarHeader from '@/widgets/calendar/CalendarHeader';
 import CalendarGrid from '@/widgets/calendar/CalendarGrid';
@@ -19,27 +19,23 @@ export default function CalendarPage() {
   const [month, setMonth] = useState(today.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
-  const dailyAmounts = getDailyAmounts();
-  const dayData = getCalendarDailyData(selectedDay);
-  const monthlyTotals = getMonthlyTotals();
+  const dailyAmounts = useMemo(() => getDailyAmounts(), [year, month]);
+  const dayData = useMemo(() => getCalendarDailyData(selectedDay), [selectedDay]);
+  const monthlyTotals = useMemo(() => getMonthlyTotals(), [year, month]);
 
-  const handlePrevMonth = () => {
-    if (month === 0) {
-      setYear(year - 1);
-      setMonth(11);
-    } else {
-      setMonth(month - 1);
-    }
-  };
+  const handlePrevMonth = useCallback(() => {
+    setMonth((prev) => (prev === 0 ? 11 : prev - 1));
+    setYear((prev) => (month === 0 ? prev - 1 : prev));
+  }, [month]);
 
-  const handleNextMonth = () => {
-    if (month === 11) {
-      setYear(year + 1);
-      setMonth(0);
-    } else {
-      setMonth(month + 1);
-    }
-  };
+  const handleNextMonth = useCallback(() => {
+    setMonth((prev) => (prev === 11 ? 0 : prev + 1));
+    setYear((prev) => (month === 11 ? prev + 1 : prev));
+  }, [month]);
+
+  const handleDateClick = useCallback((day: number) => {
+    setSelectedDay(day);
+  }, []);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -61,7 +57,7 @@ export default function CalendarPage() {
         <CalendarGrid
           year={year}
           month={month}
-          onDateClick={(day) => setSelectedDay(day)}
+          onDateClick={handleDateClick}
           dailyAmounts={dailyAmounts}
           selectedDay={selectedDay}
         />

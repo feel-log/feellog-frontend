@@ -106,7 +106,7 @@ function InsightCard({ insight }: { insight: InsightItem }) {
   return (
     <div className="flex items-center justify-between gap-2.5 rounded-[8px] bg-white p-4">
       <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
-        {renderMessageWithTarget(insight.message, insight.targetName)}
+        {renderMessageWithTarget(insight.message, insight.targetName ?? undefined)}
       </p>
       <div className="size-8 shrink-0">
         {insight.type === 'categoryChange' && insight.direction === 'up' && <CategoryUpIcon />}
@@ -129,8 +129,8 @@ export default function ReportInsights({ userName, insights }: ReportInsightsPro
         이번 달 {userName}님은
       </h2>
       <div className="flex flex-col gap-2 rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] py-3.5 px-4">
-        {insights.map((insight) => (
-          <InsightCard key={insight.type} insight={insight} />
+        {insights.map((insight, idx) => (
+          <InsightCard key={`${insight.type}-${insight.targetName}-${idx}`} insight={insight} />
         ))}
       </div>
     </div>

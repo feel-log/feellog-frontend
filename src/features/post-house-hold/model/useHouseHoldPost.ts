@@ -17,9 +17,14 @@ export function useHouseHoldPost(
       const month = houseHoldPostRequest.expenseDate.split('-')[1];
 
       // 데이터 fetch 완료 후 페이지 이동
-      await queryClient.refetchQueries({
-        queryKey: ['today-expend', Number(year), Number(month)]
-      });
+      await Promise.all([
+        queryClient.refetchQueries({
+          queryKey: ['today-expend', Number(year), Number(month)]
+        }),
+        queryClient.refetchQueries({
+          queryKey: ['week_expend_queries']
+        })
+      ]);
 
       router.push('/');
     },

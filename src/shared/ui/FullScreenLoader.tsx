@@ -3,23 +3,32 @@
 import { useEffect } from 'react';
 
 export default function FullScreenLoader({ isLoading }: { isLoading: boolean }) {
-
   useEffect(() => {
     if (isLoading) {
-      document.documentElement.style.overflowY = 'hidden';
+      document.documentElement.style.height = '100vh';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+      document.body.style.overflow = 'hidden';
     } else {
-      document.documentElement.style.overflowY = 'auto';
+      document.documentElement.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.overflow = '';
     }
     return () => {
-      document.documentElement.style.overflowY = 'auto';
+      document.documentElement.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.overflow = '';
     };
   }, [isLoading]);
 
   if (!isLoading) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-90 pointer-events-auto">
-      <div className="flex flex-col items-center gap-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-auto">
+      <div className="absolute inset-0 bg-white/90" />
+      <div className="relative z-10 flex flex-col items-center gap-4">
         {/* 스피너 */}
         <div className="relative w-12 h-12">
           <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
