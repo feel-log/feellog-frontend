@@ -22,9 +22,6 @@ export function getMonthlyReportApi({
     `/api/v1/reports/monthly?year=${year}&month=${month}`,
     {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }
   );
 }
@@ -65,9 +62,6 @@ export function getCategoryDetailApi({
     `/api/v1/reports/categories/${categoryId}/expenses?${query}`,
     {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }
   );
 }
@@ -102,9 +96,6 @@ export function getEmotionDetailApi({
     `/api/v1/reports/emotions/${emotionId}/expenses?${query}`,
     {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }
   );
 }
@@ -137,9 +128,6 @@ export function getMonthlyExpenseDetailApi({
     `/api/v1/reports/monthly/expenses?${query}`,
     {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }
   );
 }

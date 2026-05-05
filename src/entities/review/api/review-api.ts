@@ -8,7 +8,6 @@ import {
 export function getReviewOptionsApi(token: string): Promise<ReviewOptions> {
   return apiClient<ReviewOptions>('/api/v1/reviews/options', {
     method: 'GET',
-    headers: { Authorization: `Bearer ${token}` },
   });
 }
 
@@ -21,7 +20,6 @@ export function getReviewByDateApi({
 }): Promise<ReviewResponse> {
   return apiClient<ReviewResponse>(`/api/v1/reviews/${reviewDate}`, {
     method: 'GET',
-    headers: { Authorization: `Bearer ${token}` },
   });
 }
 
@@ -36,7 +34,6 @@ export function upsertReviewApi({
 }): Promise<ReviewResponse> {
   return apiClient<ReviewResponse>(`/api/v1/reviews/${reviewDate}`, {
     method: 'PUT',
-    headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify(body),
   });
 }
