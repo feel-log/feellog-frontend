@@ -2,6 +2,7 @@ import { queryOptions } from '@tanstack/react-query';
 import {
   CategoryDetailSort,
   getCategoryDetailApi,
+  getDailyReportApi,
   getEmotionDetailApi,
   getMonthlyExpenseDetailApi,
   getMonthlyReportApi,
@@ -72,5 +73,11 @@ export const reportQueries = {
       queryFn: () =>
         getMonthlyExpenseDetailApi({ year, month, token, sort }),
       staleTime: 1000 * 60,
+    }),
+  daily: (token: string) =>
+    queryOptions({
+      queryKey: [...reportQueries.all(), 'daily'],
+      queryFn: () => getDailyReportApi(token),
+      staleTime: 1000 * 30,
     }),
 };

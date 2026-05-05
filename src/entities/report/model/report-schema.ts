@@ -130,6 +130,47 @@ export const MonthlyExpenseDetailSchema = z.object({
   expenses: z.array(MonthlyExpenseItemSchema).nullable(),
 });
 
+const DailyPeriodSchema = z.object({
+  date: z.string(),
+  dayOfWeek: z.string(),
+});
+
+const DailySummarySchema = z.object({
+  totalExpenseAmount: z.number(),
+});
+
+const DailyTopCategorySchema = z.object({
+  label: z.string(),
+  amount: z.number(),
+});
+
+const DailyExpenseGraphSchema = z.object({
+  displayType: z.string(),
+  mainMessage: z.string(),
+  subMessage: z.string(),
+  topRatio: z.number(),
+  topCategories: z.array(DailyTopCategorySchema),
+  secondCategory: DailyTopCategorySchema.nullable(),
+  extraCount: z.number(),
+});
+
+const DailyEmotionItemSchema = z.object({
+  emotionId: z.number(),
+  emotionName: z.string(),
+  emotionCount: z.number(),
+  rank: z.number(),
+});
+
+export const DailyReportSchema = z.object({
+  period: DailyPeriodSchema,
+  summary: DailySummarySchema,
+  expenseGraph: DailyExpenseGraphSchema,
+  emotions: z.object({
+    list: z.array(DailyEmotionItemSchema),
+    isEmpty: z.boolean(),
+  }),
+});
+
 export type MonthlyReport = z.infer<typeof MonthlyReportSchema>;
 export type ReportComment = z.infer<typeof CommentSchema>;
 export type ReportCategoryItem = z.infer<typeof CategoryItemSchema>;
@@ -141,3 +182,5 @@ export type CategoryDailyLog = z.infer<typeof DailyLogSchema>;
 export type EmotionDetail = z.infer<typeof EmotionDetailSchema>;
 export type MonthlyExpenseDetail = z.infer<typeof MonthlyExpenseDetailSchema>;
 export type MonthlyExpenseItem = z.infer<typeof MonthlyExpenseItemSchema>;
+export type DailyReport = z.infer<typeof DailyReportSchema>;
+export type DailyEmotionItem = z.infer<typeof DailyEmotionItemSchema>;
