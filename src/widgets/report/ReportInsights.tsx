@@ -92,21 +92,30 @@ function renderMessageWithTarget(message: string, target: string | null | undefi
 
 function InsightCard({ insight }: { insight: InsightItem }) {
   const hasTarget = !!insight.targetName;
+
+  if (!hasTarget) {
+    return (
+      <div className="rounded-[8px] bg-white py-3.5 px-4">
+        <p className="break-keep text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
+          {insight.message}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center justify-between gap-2.5 rounded-[8px] bg-white p-4">
       <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
         {renderMessageWithTarget(insight.message, insight.targetName)}
       </p>
-      {hasTarget && (
-        <div className="size-8 shrink-0">
-          {insight.type === 'categoryChange' && insight.direction === 'up' && <CategoryUpIcon />}
-          {insight.type === 'categoryChange' && insight.direction === 'down' && <CategoryDownIcon />}
-          {insight.type === 'emotionTrend' && (
-            <EmotionIcon name={insight.targetName!} size={28} />
-          )}
-          {insight.type === 'situationTrend' && <ShoppingBagIcon />}
-        </div>
-      )}
+      <div className="size-8 shrink-0">
+        {insight.type === 'categoryChange' && insight.direction === 'up' && <CategoryUpIcon />}
+        {insight.type === 'categoryChange' && insight.direction === 'down' && <CategoryDownIcon />}
+        {insight.type === 'emotionTrend' && (
+          <EmotionIcon name={insight.targetName!} size={28} />
+        )}
+        {insight.type === 'situationTrend' && <ShoppingBagIcon />}
+      </div>
     </div>
   );
 }
