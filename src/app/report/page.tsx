@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import ReportContent from '@/widgets/report/ReportContent';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -22,6 +24,10 @@ const SituationTags = dynamic(() => import('@/widgets/report/SituationTags'), {
 });
 
 export default function ReportPage() {
+  return (
+    <Suspense fallback={<div>로딩중...</div>}>
+      <ReportContent />
+    </Suspense>
   const router = useRouter();
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());

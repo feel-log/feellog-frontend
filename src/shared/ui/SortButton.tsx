@@ -18,7 +18,7 @@ const sortOptions: DropdownOption<SortType>[] = [
 
 export default function SortButton({ sortType, onSortChange }: SortButtonProps) {
   return (
-    <div className="relative mb-8 flex justify-end">
+    <div className="relative flex justify-end">
       <Dropdown options={sortOptions} value={sortType} onChange={onSortChange} />
     </div>
   );
