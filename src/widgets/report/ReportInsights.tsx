@@ -129,8 +129,8 @@ export default function ReportInsights({ userName, insights }: ReportInsightsPro
         이번 달 {userName}님은
       </h2>
       <div className="flex flex-col gap-2 rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] py-3.5 px-4">
-        {insights.map((insight) => (
-          <InsightCard key={insight.type} insight={insight} />
+        {insights.map((insight, idx) => (
+          <InsightCard key={`${insight.type}-${insight.targetName}-${idx}`} insight={insight} />
         ))}
       </div>
     </div>
