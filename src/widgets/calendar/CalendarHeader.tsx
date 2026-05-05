@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface CalendarHeaderProps {
   year: number;
   month: number;
@@ -40,7 +38,7 @@ export default function CalendarHeader({
     <div className="flex w-full flex-col items-center gap-3.5">
       <div className="flex items-center justify-center gap-2.5">
         <button onClick={onPrevMonth}>
-          <Image
+          <img
             src="/svg/icon_arrow_left_fill.svg"
             alt="이전 달"
             width={26}
@@ -52,7 +50,7 @@ export default function CalendarHeader({
           {label}
         </span>
         <button onClick={onNextMonth} disabled={isNextDisabled}>
-          <Image
+          <img
             src="/svg/icon_arrow_right_fill.svg"
             alt="다음 달"
             width={26}

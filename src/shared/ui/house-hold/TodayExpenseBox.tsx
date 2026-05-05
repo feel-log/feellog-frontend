@@ -9,8 +9,12 @@ import { useMonthExpendStore } from '@/shared/store/month-expend-store';
 import { useTodayExpend } from '@/entities/today-expenditure/model/useTodayExpend';
 import { EMOTIONS } from '@/widgets/record/RecordContent';
 
-const TODAY = new Date('2026-05-08');
-const MIN_DATE = new Date('2026-04-08');
+const TODAY = new Date();
+const MIN_DATE = (() => {
+  const date = new Date(TODAY);
+  date.setMonth(date.getMonth() - 1);
+  return date;
+})();
 
 export default function TodayExpenseBox() {
   const router = useRouter();

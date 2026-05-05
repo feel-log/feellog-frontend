@@ -24,7 +24,7 @@ export default function MyPage() {
         secondary={user?.nickname.startsWith('guest') ? '로그인하기' : '로그아웃'}
         changeLogoutModal={(bool: boolean) =>  setIsLogoutModalOpen(bool)}
       />
-      {isLogoutModalOpen && <LogoutModal changeLogoutModalOpen={(bool: boolean) => setIsLogoutModalOpen(bool)} />}
+      <LogoutModal isOpen={isLogoutModalOpen} onClose={setIsLogoutModalOpen} />
     </AuthGuard>
   );
 }
