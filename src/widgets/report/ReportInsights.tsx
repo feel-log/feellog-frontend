@@ -106,7 +106,7 @@ function InsightCard({ insight }: { insight: InsightItem }) {
   return (
     <div className="flex items-center justify-between gap-2.5 rounded-[8px] bg-white p-4">
       <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
-        {renderMessageWithTarget(insight.message, insight.targetName)}
+        {renderMessageWithTarget(insight.message, insight.targetName ?? undefined)}
       </p>
       <div className="size-8 shrink-0">
         {insight.type === 'categoryChange' && insight.direction === 'up' && <CategoryUpIcon />}

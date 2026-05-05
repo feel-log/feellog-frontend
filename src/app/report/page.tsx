@@ -10,6 +10,7 @@ import Footer from '@/shared/ui/Footer';
 import PageHeader from '@/shared/ui/PageHeader';
 import FullScreenLoader from '@/shared/ui/FullScreenLoader';
 import { reportMockData } from '@/shared/constants/reportMockData';
+import { useIsMounted } from '@/shared/hooks';
 
 const CategoryChart = dynamic(() => import('@/widgets/report/CategoryChart'), {
   loading: () => <div className="h-64 bg-gray-200 rounded animate-pulse" />,
@@ -26,11 +27,8 @@ export default function ReportPage() {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsMounted();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const { income, expense, insights, categorySummary, categories, emotionSummary, emotions, situationSummary, situations } = reportMockData;
   const hasData = income > 0 || expense > 0;
