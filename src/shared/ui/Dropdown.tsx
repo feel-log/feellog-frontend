@@ -41,7 +41,7 @@ export default function Dropdown<T extends string>({
     <div
       ref={wrapperRef}
       className={cn(
-        'relative w-27.25',
+        'relative w-27.25 z-50',
         open && 'filter drop-shadow-[0px_2px_8px_rgba(98,98,98,0.22)]',
         className
       )}
@@ -64,7 +64,7 @@ export default function Dropdown<T extends string>({
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 left-0 flex flex-col">
+        <div className="absolute top-full right-0 left-0 z-50 flex flex-col">
           {otherOptions.map((option, idx) => (
             <button
               key={option.value}

@@ -1,18 +1,24 @@
 'use client';
 
-import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRef, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { getDailyExpense } from '@/shared/constants/dailyExpense';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton from '@/shared/ui/SortButton';
+import BottomSheet from '@/shared/ui/BottomSheet';
+import Button from '@/shared/ui/Button';
 import { useFormattedDate } from '@/shared/hooks';
+import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
+import { DailyExpendType } from '@/entities/daily-expend/model/daily-expend-type';
+import { EXPENSE_CATEGORIES, EMOTIONS } from '@/widgets/record/RecordContent';
+import { PAYMENT_METHODS, SITUATION_TAGS } from '@/widgets/record/RecordContent';
+import { useDeleteExpense } from '@/features/delete-expense/model/useDeleteExpense';
+import { Trash2 } from 'lucide-react';
 
 type SortType = 'latest' | 'oldest' | 'expensive' | 'cheap';
 
-const TODAY = '2026-04-21';
-
 interface ExpenseItem {
+  expenseId: number;
   name: string;
   category: string;
   amount: number;
@@ -20,15 +26,52 @@ interface ExpenseItem {
   memo?: string;
   paymentMethod: string;
   tag: string[];
+  expenseTime: string;
 }
 
 export default function ExportContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [sortType, setSortType] = useState<SortType>('latest');
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  const [swipedId, setSwipedId] = useState<number | null>(null);
 
-  const selectedDate = searchParams?.get('date') || TODAY;
-  const expenseData = getDailyExpense(selectedDate);
-  const totalAmount = expenseData?.totalAmount ?? 0;
+  const touchStartX = useRef(0);
+
+  const selectedDate = searchParams?.get('date') || new Date().toISOString().split('T')[0];
+  const [year, month, day] = selectedDate.split('-').map(Number);
+
+  const { data = [], isLoading } = useDailyExpend(year, month, day);
+  const deleteExpenseMutation = useDeleteExpense(year, month, day);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    touchStartX.current = e.clientX;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent, expenseId: number) => {
+    const touchEndX = e.clientX;
+    const diff = touchStartX.current - touchEndX;
+
+    // 왼쪽으로 스와이프 (diff > 30)
+    if (diff > 30) {
+      setSwipedId(expenseId);
+      e.preventDefault();
+    }
+    // 오른쪽으로 스와이프 또는 작은 이동 (diff < -30)
+    else if (diff < -30) {
+      setSwipedId(null);
+    }
+  };
+
+  const handleExpenseClick = (e: React.MouseEvent, expenseId: number) => {
+    const diff = Math.abs(touchStartX.current - e.clientX);
+    // 스와이프 거리가 작을 때만 클릭 처리 (30px 이상 차이가 나면 스와이프로 간주)
+    if (diff < 30) {
+      router.push(
+        `/record?expenseId=${expenseId}&date=${selectedDate}&mode=edit`
+      );
+    }
+  };
 
   const formattedDate = useFormattedDate(selectedDate, {
     year: undefined,
@@ -37,18 +80,37 @@ export default function ExportContent() {
     weekday: 'long',
   });
 
-  const getExpenses = (): ExpenseItem[] => {
-    if (!expenseData || expenseData.categories.length === 0) return [];
+  const convertToExpenseItem = (expense: DailyExpendType): ExpenseItem => {
+    const category = EXPENSE_CATEGORIES.flatMap((g) => g.items).find(
+      (item) => item.id === expense.categoryId
+    )?.label || '';
 
-    const items: ExpenseItem[] = expenseData.categories.map((category, idx) => ({
-      name: category.name,
-      category: category.name,
-      amount: category.amount,
-      emotions: category.emotions,
-      tag: category.tag,
-      memo: category.memo,
-      paymentMethod: idx % 2 === 0 ? '카드' : '현금',
-    }));
+    const paymentMethod =
+      PAYMENT_METHODS.find((m) => m.id === expense.paymentMethodId)?.name || '';
+
+    const emotions = EMOTIONS.flatMap((g) => g.items)
+      .filter((e) => expense.emotionIds.includes(e.id))
+      .map((e) => ({ emoji: e.emoji, label: e.label }));
+
+    const tags = SITUATION_TAGS.filter((t) => expense.situationTagIds.includes(t.id)).map(
+      (t) => '#' + t.label
+    );
+
+    return {
+      expenseId: expense.expenseId,
+      name: category,
+      category,
+      amount: expense.amount,
+      emotions,
+      tag: tags,
+      memo: expense.memo,
+      paymentMethod,
+      expenseTime: expense.expenseTime,
+    };
+  };
+
+  const getExpenses = (): ExpenseItem[] => {
+    const items = data.map(convertToExpenseItem);
 
     switch (sortType) {
       case 'expensive':
@@ -56,14 +118,36 @@ export default function ExportContent() {
       case 'cheap':
         return [...items].sort((a, b) => a.amount - b.amount);
       case 'oldest':
-        return [...items].reverse();
+        return [...items].sort((a, b) => a.expenseTime.localeCompare(b.expenseTime));
       case 'latest':
       default:
-        return items;
+        return [...items].sort((a, b) => b.expenseTime.localeCompare(a.expenseTime));
     }
   };
 
+  const totalAmount = data.reduce((sum, item) => sum + item.amount, 0);
   const expenses = getExpenses();
+
+  const handleDeleteConfirm = () => {
+    if (deleteTargetId !== null) {
+      deleteExpenseMutation.mutate(deleteTargetId, {
+        onSuccess: () => {
+          setDeleteTargetId(null);
+        },
+      });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div>
+        <PageHeader title="오늘의 지출 비용" />
+        <div className="flex justify-center items-center py-20">
+          <div className="text-[16px] text-[#9fa4a8]">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -78,7 +162,7 @@ export default function ExportContent() {
       </div>
 
       {/* 정렬 셀렉터 + 본문 */}
-      <div className="px-4 pt-5">
+      <div className="overflow-y-auto px-4 pt-5 pb-12">
         <div className="flex justify-end">
           <SortButton sortType={sortType} onSortChange={setSortType} />
         </div>
@@ -93,7 +177,7 @@ export default function ExportContent() {
             </p>
           </div>
         ) : (
-          <>
+          <div>
             {/* 날짜 라벨 */}
             <p className="mb-2.5 text-[14px] font-medium tracking-[-0.025em] text-[#474c52]">
               {formattedDate}
@@ -101,67 +185,128 @@ export default function ExportContent() {
 
             {/* 항목 리스트 */}
             <div className="flex flex-col gap-5">
-              {expenses.map((expense, idx) => (
-                <div key={idx} className="flex flex-col gap-1.25">
-                  {/* 카테고리명 + 금액 */}
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">
-                      {expense.name}
-                    </h4>
-                    <p className="text-[20px] font-semibold tracking-[-0.025em] text-[#030303]">
-                      {expense.amount.toLocaleString()}원
-                    </p>
+              {expenses.map((expense) => (
+                <div
+                  key={expense.expenseId}
+                  className="relative overflow-hidden rounded-lg"
+                  onPointerDown={handlePointerDown}
+                  onPointerUp={(e) => handlePointerUp(e, expense.expenseId)}
+                  style={{ touchAction: 'pan-y' }}
+                >
+                  {/* 삭제 버튼 배경 */}
+                  <div className="absolute inset-y-0 right-0 z-0 flex items-center justify-end pr-4">
+                    <button
+                      onClick={() => setDeleteTargetId(expense.expenseId)}
+                      className="bg-[#eb1c1c] text-white w-10 h-10 flex justify-center items-center rounded-full"
+                      aria-label="삭제"
+                    >
+                      <Trash2 size={24} />
+                    </button>
                   </div>
 
-                  {/* 태그 + 감정 + 결제수단 */}
-                  <div className="flex items-center justify-between gap-1.25">
-                    <div className="flex items-center gap-2">
-                      {expense.tag && expense.tag.length > 0 && (
-                        <div className="flex items-center gap-1.5">
-                          {expense.tag.map((tag, tagIdx) => (
-                            <span
-                              key={tagIdx}
-                              className="text-[16px] font-medium tracking-[-0.025em] text-[#13278a]"
-                            >
-                              {tag}
-                            </span>
-                          ))}
+                  {/* 컨텐츠 */}
+                  <div
+                    className={`relative z-10 bg-white transition-transform duration-300 cursor-pointer ${
+                      swipedId === expense.expenseId ? 'translate-x-[-80px]' : ''
+                    }`}
+                    onClick={(e) => handleExpenseClick(e, expense.expenseId)}
+                  >
+                    <div className="flex flex-col gap-1.25 pb-3.75">
+                      {/* 카테고리명 + 금액 */}
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">
+                          {expense.name}
+                        </h4>
+                        <p className="text-[20px] font-semibold tracking-[-0.025em] text-[#030303]">
+                          {expense.amount.toLocaleString()}원
+                        </p>
+                      </div>
+
+                      {/* 태그 + 감정 + 결제수단 */}
+                      <div className="flex items-center justify-between gap-1.25">
+                        <div className="flex items-center gap-2">
+                          {expense.tag && expense.tag.length > 0 && (
+                            <div className="flex items-center gap-1.5">
+                              {expense.tag.map((tag, tagIdx) => (
+                                <span
+                                  key={tagIdx}
+                                  className="text-[16px] font-medium tracking-[-0.025em] text-[#13278a]"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          {expense.emotions.length > 0 && (
+                            <>
+                              <span className="h-3.5 w-px shrink-0 bg-[#e5e5e5]" />
+                              <div className="flex items-center gap-1.5">
+                                {expense.emotions.map((emotion) => (
+                                  <Image
+                                    key={emotion.label}
+                                    src={emotion.emoji}
+                                    alt={emotion.label}
+                                    width={20}
+                                    height={20}
+                                  />
+                                ))}
+                              </div>
+                            </>
+                          )}
                         </div>
-                      )}
-                      {expense.emotions.length > 0 && (
-                        <>
-                          <span className="h-3.5 w-px shrink-0 bg-[#e5e5e5]" />
-                          <div className="flex items-center gap-1.5">
-                            {expense.emotions.map((emotion) => (
-                              <Image
-                                key={emotion.label}
-                                src={emotion.emoji}
-                                alt={emotion.label}
-                                width={20}
-                                height={20}
-                              />
-                            ))}
-                          </div>
-                        </>
+                        <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
+                          {expense.paymentMethod}
+                        </span>
+                      </div>
+
+                      {/* 메모 */}
+                      {expense.memo && (
+                        <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
+                          {expense.memo}
+                        </span>
                       )}
                     </div>
-                    <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
-                      {expense.paymentMethod}
-                    </span>
                   </div>
-
-                  {/* 메모 */}
-                  {expense.memo && (
-                    <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
-                      {expense.memo}
-                    </span>
-                  )}
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )}
       </div>
+
+      {/* 삭제 확인 BottomSheet */}
+      <BottomSheet
+        isOpen={deleteTargetId !== null}
+        title="지출 삭제"
+        onClose={() => setDeleteTargetId(null)}
+        height={280}
+      >
+        <div className="flex flex-col gap-6 py-8 text-center">
+          <p className="text-[18px] font-semibold text-[#27282c]">정말 삭제하시겠어요?</p>
+          <p className="text-[14px] leading-relaxed text-[#9fa4a8]">이 작업은 되돌릴 수 없어요.</p>
+        </div>
+      </BottomSheet>
+
+      {/* 삭제 확인 버튼 영역 */}
+      {deleteTargetId !== null && (
+        <div className="fixed right-0 bottom-0 left-0 z-50 mx-auto max-w-md bg-white px-4 pb-12">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setDeleteTargetId(null)}
+              className="flex-1 rounded-lg bg-[#f7f8fa] px-4 py-3 text-[16px] font-semibold text-[#9fa4a8] transition-colors hover:bg-[#e5e5e5]"
+            >
+              취소
+            </button>
+            <button
+              onClick={handleDeleteConfirm}
+              disabled={deleteExpenseMutation.isPending}
+              className="flex-1 rounded-lg bg-[#eb1c1c] px-4 py-3 text-[16px] font-semibold text-white transition-colors hover:bg-[#d41c1c] disabled:bg-[#ccc]"
+            >
+              {deleteExpenseMutation.isPending ? '삭제 중...' : '삭제하기'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

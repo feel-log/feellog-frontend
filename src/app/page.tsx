@@ -1,23 +1,43 @@
+'use client';
+
 import React from 'react';
-import type { Viewport } from 'next';
+import dynamic from 'next/dynamic';
 import { Header } from '@/shared/ui';
-import HouseHoldWrapper from '@/widgets/house-hold/HouseHoldWrapper';
 import Footer from '@/shared/ui/Footer';
+import FullScreenLoader from '@/shared/ui/FullScreenLoader';
 import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
+import HouseHoldBoxSkeleton from '@/widgets/house-hold/HouseHoldBoxSkeleton';
+import { useToken } from '@/shared/store';
+import { useIsMounted } from '@/shared/hooks';
 
-export const viewport: Viewport = {
-  themeColor: '#cce1ff',
-};
+const HouseHoldWrapper = dynamic(() => import('@/widgets/house-hold/HouseHoldWrapper'), {
+  loading: () => <HouseHoldBoxSkeleton />,
+});
 
-export default function Home() {
+function HomeContent() {
+  const { isLoaded } = useToken();
+  const isMounted = useIsMounted();
+
+  const isLoading = !isMounted || !isLoaded;
 
   return (
-    <AuthGuard>
-      <div className="main__content__wrapper">
-        <Header />
-        <HouseHoldWrapper />
-        <Footer />
+    <>
+      <FullScreenLoader isLoading={isLoading} />
+      <div className={isLoading ? 'pointer-events-none' : ''}>
+        <div className="main__content__wrapper">
+          <Header />
+          <HouseHoldWrapper />
+          <Footer />
+        </div>
       </div>
+    </>
+  );
+}
+
+export default function Home() {
+  return (
+    <AuthGuard>
+      <HomeContent />
     </AuthGuard>
   );
 }
