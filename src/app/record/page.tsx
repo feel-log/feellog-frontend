@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import FullScreenLoader from '@/shared/ui/FullScreenLoader';
 import { useIsMounted } from '@/shared/hooks';
+import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
 
 const RecordContent = dynamic(() => import('@/widgets/record/RecordContent'), {
   loading: () => (
@@ -18,11 +19,11 @@ export default function RecordPage() {
   const isMounted = useIsMounted();
 
   return (
-    <>
+    <AuthGuard>
       <FullScreenLoader isLoading={!isMounted} />
       <div className={!isMounted ? 'pointer-events-none' : ''}>
         <RecordContent />
       </div>
-    </>
+    </AuthGuard>
   );
 }

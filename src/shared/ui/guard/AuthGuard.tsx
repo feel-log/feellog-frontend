@@ -2,8 +2,9 @@
 
 import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useToken } from '@/shared/store';
+import { useToken, useUser } from '@/shared/store';
 import { useRefreshToken } from '@/features/refresh/model/useRefreshToken';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 
 interface IAuthGuard {
   children: React.ReactNode
@@ -12,7 +13,7 @@ interface IAuthGuard {
 export function AuthGuard({ children }: IAuthGuard) {
   const router = useRouter();
   const pathname = usePathname();
-  const { getAccessToken, getRefreshToken } = useToken();
+  const { getAccessToken, getRefreshToken, errorBox, setErrorBox, clearTokens } = useToken();
   const { mutate: refreshMutate } = useRefreshToken();
 
   const accessToken = getAccessToken();
@@ -45,5 +46,10 @@ export function AuthGuard({ children }: IAuthGuard) {
     }
   },[pathname])
 
-  return <>{children}</>
+  return (
+    <>
+      <ConfirmModal type={"loginCheck"} isOpen={errorBox} title={"로그인 후 이용 가능합니다."} secondary={"로그인 하시겠습니까?"} onCancel={() => { setErrorBox(false)}} onConfirm={() => { setErrorBox(false); router.push('/login'); clearTokens(); }} />
+      {children}
+    </>
+  )
 }

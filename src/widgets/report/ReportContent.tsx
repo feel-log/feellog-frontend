@@ -74,8 +74,10 @@ export default function ReportContent() {
   }));
 
   const situations = (data?.situations.list ?? []).map((s) => ({
+    situationTagId: s.situationTagId,
+    situationName: s.situationName,
+    occurrenceCount: s.occurrenceCount,
     rank: s.rank,
-    name: s.situationName,
   }));
 
   const categoryDirection = (() => {

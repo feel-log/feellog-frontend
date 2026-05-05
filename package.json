@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "analyze": "ANALYZE=true npm run build",
     "lint": "eslint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.1.2",
+    "@next/bundle-analyzer": "^16.2.4",
     "@storybook/addon-a11y": "^10.3.6",
     "@storybook/addon-docs": "^10.3.6",
     "@storybook/addon-onboarding": "^10.3.6",

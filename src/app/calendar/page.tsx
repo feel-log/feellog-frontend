@@ -1,5 +1,6 @@
 import CalendarContent from '@/widgets/calendar/CalendarContent';
+import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
 
 export default function CalendarPage() {
-  return <CalendarContent />;
+  return <AuthGuard><CalendarContent /></AuthGuard>;
 }
