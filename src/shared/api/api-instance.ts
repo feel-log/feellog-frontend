@@ -42,6 +42,13 @@ async function refreshAccessToken(): Promise<string> {
   return refreshPromise;
 }
 
+class APIError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+    this.name = 'APIError';
+  }
+}
+
 async function performRequest<T>(
   endpoint: string,
   options?: RequestInit,
@@ -58,10 +65,21 @@ async function performRequest<T>(
     headers,
   });
 
-  const data = await res.json();
+  let data: T;
+  const contentType = res.headers.get('content-type');
+
+  if (contentType?.includes('application/json')) {
+    try {
+      data = await res.json();
+    } catch (e) {
+      throw new APIError(res.status, `Failed to parse JSON response: ${e}`);
+    }
+  } else {
+    data = {} as T;
+  }
 
   if (!res.ok) {
-    throw new Error(`API Error: ${res.status}`);
+    throw new APIError(res.status, `API Error: ${res.status}`);
   }
 
   return { data, status: res.status };
@@ -78,7 +96,7 @@ export async function apiClient<T>(
     const result = await performRequest<T>(endpoint, options, accessToken);
     return result.data;
   } catch (error: any) {
-    if (error.message.includes('401') || error.message.includes('403')) {
+    if (error instanceof APIError && error.status === 401) {
       try {
         accessToken = await refreshAccessToken();
         const result = await performRequest<T>(endpoint, options, accessToken);
