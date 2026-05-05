@@ -17,7 +17,7 @@ export function useUpdateExpense() {
   const mutation = useMutation<void, unknown, UseUpdateExpenseParams>({
     mutationFn: async ({ expenseId, request }) => updateExpenseApi(expenseId, request),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['daily-expend'] });
+      await queryClient.refetchQueries({ queryKey: ['today-expend'] });
       router.push('/');
     },
     onError: (error: unknown) => {
