@@ -7,18 +7,11 @@ export function Header() {
       <Link href="/" style={{ width: '91px', height: '26.81px', position: 'relative' }}>
         <Image src={'/svg/feel_log_logo.svg'} alt={'logo'} loading={'eager'} fill />
       </Link>
-      <div className={'flex items-center gap-3.5'}>
-        <button
-          className={"h-7.5 w-7.5 cursor-pointer bg-[url('/svg/icon_search.svg')] bg-cover bg-center"}
-        >
-          <span className={'sr-only'}>검색 버튼</span>
-        </button>
-        <button
-          className={"h-7.5 w-7.5 cursor-pointer bg-[url('/svg/icon_bell.svg')] bg-cover bg-center"}
-        >
-          <span className={'sr-only'}>알림 버튼</span>
-        </button>
-      </div>
+      <button
+        className={"h-7.5 w-7.5 cursor-pointer bg-[url('/svg/icon_bell.svg')] bg-cover bg-center"}
+      >
+        <span className={'sr-only'}>알림 버튼</span>
+      </button>
     </div>
   );
 }

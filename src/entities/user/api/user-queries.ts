@@ -7,8 +7,8 @@ export const userQueries = {
   all: () => ["user"] as const,
   userByToken: (token: string) =>
     queryOptions({
-      queryKey: [...userQueries.all(), "token"],
+      queryKey: [...userQueries.all(), token],
       queryFn: () => getUserByTokenApi(token),
-      staleTime: 1000 * 60
+      staleTime: 1000 * 60 * 30
     })
 }

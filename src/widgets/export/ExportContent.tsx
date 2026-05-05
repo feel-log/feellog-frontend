@@ -5,8 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton from '@/shared/ui/SortButton';
-import BottomSheet from '@/shared/ui/BottomSheet';
-import Button from '@/shared/ui/Button';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { useFormattedDate } from '@/shared/hooks';
 import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
 import { DailyExpendType } from '@/entities/daily-expend/model/daily-expend-type';
@@ -274,39 +273,17 @@ export default function ExportContent() {
         )}
       </div>
 
-      {/* 삭제 확인 BottomSheet */}
-      <BottomSheet
+      {/* 삭제 확인 모달 */}
+      <ConfirmModal
         isOpen={deleteTargetId !== null}
-        title="지출 삭제"
-        onClose={() => setDeleteTargetId(null)}
-        height={280}
-      >
-        <div className="flex flex-col gap-6 py-8 text-center">
-          <p className="text-[18px] font-semibold text-[#27282c]">정말 삭제하시겠어요?</p>
-          <p className="text-[14px] leading-relaxed text-[#9fa4a8]">이 작업은 되돌릴 수 없어요.</p>
-        </div>
-      </BottomSheet>
-
-      {/* 삭제 확인 버튼 영역 */}
-      {deleteTargetId !== null && (
-        <div className="fixed right-0 bottom-0 left-0 z-50 mx-auto max-w-md bg-white px-4 pb-12">
-          <div className="flex gap-2">
-            <button
-              onClick={() => setDeleteTargetId(null)}
-              className="flex-1 rounded-lg bg-[#f7f8fa] px-4 py-3 text-[16px] font-semibold text-[#9fa4a8] transition-colors hover:bg-[#e5e5e5]"
-            >
-              취소
-            </button>
-            <button
-              onClick={handleDeleteConfirm}
-              disabled={deleteExpenseMutation.isPending}
-              className="flex-1 rounded-lg bg-[#eb1c1c] px-4 py-3 text-[16px] font-semibold text-white transition-colors hover:bg-[#d41c1c] disabled:bg-[#ccc]"
-            >
-              {deleteExpenseMutation.isPending ? '삭제 중...' : '삭제하기'}
-            </button>
-          </div>
-        </div>
-      )}
+        title="지출을 삭제하시겠어요?"
+        message="이 작업은 되돌릴 수 없습니다."
+        confirmText="삭제"
+        cancelText="취소"
+        isDangerous={true}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteTargetId(null)}
+      />
     </div>
   );
 }

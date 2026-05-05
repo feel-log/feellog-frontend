@@ -1,3 +1,7 @@
+'use client';
+
+import { memo } from 'react';
+
 const DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 function getCellAmountSize(amount: number): string {
@@ -45,7 +49,7 @@ interface CalendarGridProps {
   selectedDay?: number | null;
 }
 
-export default function CalendarGrid({
+function CalendarGrid({
   year,
   month,
   onDateClick,
@@ -127,3 +131,5 @@ export default function CalendarGrid({
     </div>
   );
 }
+
+export default memo(CalendarGrid);
