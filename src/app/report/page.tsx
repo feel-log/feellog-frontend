@@ -60,9 +60,9 @@ export default function ReportPage() {
           {hasData ? (
             <>
               <ReportInsights userName={userName} insights={insights} />
-              <CategoryChart summary={categorySummary} categories={categories} />
-              <EmotionList summary={emotionSummary} emotions={emotions} />
-              <SituationTags summary={situationSummary} situations={situations} />
+              <CategoryChart categories={categories} year={year} month={month} />
+              <EmotionList emotions={emotions} year={year} month={month} />
+              <SituationTags situations={situations} />
             </>
           ) : (
             <ReportEmpty />
