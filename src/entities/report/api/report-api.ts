@@ -1,6 +1,7 @@
 import { apiClient } from '@/shared/api/api-instance';
 import {
   CategoryDetail,
+  DailyReport,
   EmotionDetail,
   MonthlyExpenseDetail,
   MonthlyReport,
@@ -141,4 +142,11 @@ export function getMonthlyExpenseDetailApi({
       },
     }
   );
+}
+
+export function getDailyReportApi(token: string): Promise<DailyReport> {
+  return apiClient<DailyReport>('/api/v1/reports/daily', {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
 }
