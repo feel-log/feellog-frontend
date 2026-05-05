@@ -14,7 +14,6 @@ export function getMonthlyExpensesApi({
     `/api/v1/expenses/monthly?year=${year}&month=${month}`,
     {
       method: 'GET',
-      headers: { Authorization: `Bearer ${token}` },
     },
   );
 }
@@ -34,7 +33,6 @@ export function getDailyExpensesApi({
     `/api/v1/expenses/daily?year=${year}&month=${month}&day=${day}`,
     {
       method: 'GET',
-      headers: { Authorization: `Bearer ${token}` },
     },
   );
 }

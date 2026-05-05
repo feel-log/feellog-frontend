@@ -4,8 +4,5 @@ import { WeekExpendType } from '@/entities/week-expenditure/model/week-expend-ty
 export function weekExpendApi(accessToken: string) {
   return apiClient<WeekExpendType>("/api/v1/reports/weekly", {
     method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    }
   })
 }

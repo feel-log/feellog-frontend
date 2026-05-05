@@ -2,7 +2,6 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { useMemo } from 'react';
 import { useToken, useUser } from '@/shared/store';
 
 const navItems = [
