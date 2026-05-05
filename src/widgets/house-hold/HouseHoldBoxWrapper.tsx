@@ -5,13 +5,26 @@ import HouseHoldBox from '@/shared/ui/house-hold/HouseHoldBox';
 import ThisWeekBox from '@/shared/ui/house-hold/ThisWeekBox';
 import TodayExpenseBox from '@/shared/ui/house-hold/TodayExpenseBox';
 import HouseHoldBoxSkeleton from './HouseHoldBoxSkeleton';
+import { greetingMessages } from '@/shared/constants/greetingMessages';
+import { type GreetingMessage } from '@/shared/constants/greetingMessages';
 import { useWeekExpend } from '@/entities/week-expenditure/model/useWeekExpend';
 import { useToken } from '@/shared/store';
+import { useMemo } from 'react';
+
+const getRandomNumberByDate = (): number => {
+  const today = new Date().toISOString().split('T')[0];
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = today.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash) % 4;
+};
 
 export default function HouseHoldBoxWrapper() {
   const { getAccessToken, isLoaded } = useToken();
   const accessToken = getAccessToken();
   const query = useWeekExpend(accessToken || '');
+  const randomNumber = useMemo(() => getRandomNumberByDate(), []);
 
   if (!isLoaded || !accessToken || query.isLoading) {
     return <HouseHoldBoxSkeleton />;
@@ -25,13 +38,14 @@ export default function HouseHoldBoxWrapper() {
     <div className={'house__hold__box__wrapper'}>
       <HouseHoldBox className={'flex items-center px-4 py-2 bg-[linear-gradient(93.67deg,#fff_0.95%,#eaf5ff_100%)]'}>
         <div className={'flex flex-1 flex-col gap-0.5'}>
-          <h2 className={'text-[18px] font-semibold tracking-[-0.025em] text-[#030303]'}>지갑 대신 마음을 채워봐요</h2>
-          <h3 className={'text-[14px] font-medium tracking-[-0.025em] text-[#474c52]'}>공원을 산책하며 여유를 가져볼까요?</h3>
+          <h2 className={'text-[18px] font-semibold tracking-[-0.025em] text-[#030303]'}>{greetingMessages[randomNumber].title}</h2>
+          <h3 className={'text-[14px] font-medium tracking-[-0.025em] text-[#474c52]'}>{greetingMessages[randomNumber].secondary}</h3>
         </div>
         <div
           className={
-            "clover h-19 w-19 shrink-0 bg-[url('/svg/icon_fourLeafLover.png')] bg-cover bg-center"
+            `h-19 w-19 shrink-0 bg-cover bg-center`
           }
+          style={{ backgroundImage: `url(${greetingMessages[randomNumber].image})` }}
         ></div>
       </HouseHoldBox>
       <HouseHoldBox isAnchor anchor={'/calendar'}>
