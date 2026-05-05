@@ -13,6 +13,13 @@ import FullScreenLoader from '@/shared/ui/FullScreenLoader';
 import { useIsMounted } from '@/shared/hooks';
 import { useToken } from '@/shared/store';
 import { reportQueries } from '@/entities/report/api/report-queries';
+import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
+import { EMOTIONS } from '@/widgets/record/RecordContent';
+
+const CHART_COLORS = [
+  '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
+  '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B195', '#C7CEEA',
+];
 
 const CategoryChart = dynamic(() => import('@/widgets/report/CategoryChart'), {
   loading: () => <div className="h-64 bg-gray-200 rounded animate-pulse" />,
@@ -40,15 +47,35 @@ export default function ReportPage() {
   const hasData = reportData && (reportData.summary.totalIncome > 0 || reportData.summary.totalExpense > 0);
 
   const insightsArray = reportData?.comments ? [
-    { type: 'categoryChange' as const, ...reportData.comments.categoryChange },
-    { type: 'emotionTrend' as const, ...reportData.comments.emotionTrend },
-    { type: 'situationTrend' as const, ...reportData.comments.situationTrend },
+    { type: 'categoryChange' as const, message: reportData.comments.categoryChange.message, targetName: reportData.comments.categoryChange.targetName },
+    { type: 'emotionTrend' as const, message: reportData.comments.emotionTrend.message, targetName: reportData.comments.emotionTrend.targetName },
+    { type: 'situationTrend' as const, message: reportData.comments.situationTrend.message, targetName: reportData.comments.situationTrend.targetName },
   ] : [];
+
+  const categoriesForChart = reportData?.categories.list.map((cat, idx) => ({
+    ...cat,
+    id: cat.categoryId,
+    name: cat.categoryName,
+    amount: cat.totalAmount,
+    percentage: Math.round(cat.shareRateDisplay),
+    color: CHART_COLORS[idx % CHART_COLORS.length],
+  })) ?? [];
+
+  const emotionsForList = reportData?.emotions.list.map(emotion => {
+    const emotionData = EMOTIONS.flatMap(g => g.items).find(e => e.id === emotion.emotionId);
+    return {
+      ...emotion,
+      id: emotion.emotionId,
+      name: emotion.emotionName,
+      amount: emotion.linkedAmount,
+      emoji: emotionData?.emoji ?? '',
+    };
+  }) ?? [];
 
   const isLoadingData = !isMounted || !isLoaded || isLoading;
 
   return (
-    <>
+    <AuthGuard>
       <FullScreenLoader isLoading={isLoadingData} />
       <div className={`flex flex-1 flex-col bg-white ${isLoadingData ? 'pointer-events-none' : ''}`}>
         <PageHeader title="리포트" showBack={false} />
@@ -71,8 +98,8 @@ export default function ReportPage() {
           {hasData && reportData ? (
             <>
               <ReportInsights userName="사용자" insights={insightsArray} />
-              <CategoryChart categories={reportData.categories.list} year={year} month={month} />
-              <EmotionList emotions={reportData.emotions.list} year={year} month={month} />
+              <CategoryChart categories={categoriesForChart} year={year} month={month} />
+              <EmotionList emotions={emotionsForList} year={year} month={month} />
               <SituationTags situations={reportData.situations.list} />
             </>
           ) : (
@@ -82,6 +109,6 @@ export default function ReportPage() {
           <Footer />
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 }

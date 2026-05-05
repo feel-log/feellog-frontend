@@ -8,6 +8,7 @@ import { cn } from '@/shared/lib/utils';
 import { useMonthExpendStore } from '@/shared/store/month-expend-store';
 import { useTodayExpend } from '@/entities/today-expenditure/model/useTodayExpend';
 import { EMOTIONS } from '@/widgets/record/RecordContent';
+import { useToken, useUser } from '@/shared/store';
 
 const TODAY = new Date();
 const MIN_DATE = (() => {
@@ -19,6 +20,9 @@ const MIN_DATE = (() => {
 export default function TodayExpenseBox() {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
+  const { getUser } = useUser();
+  const { setErrorBox } = useToken();
+  const user = getUser();
 
   const canGoPrev = selectedDate > MIN_DATE;
   const canGoNext = selectedDate < TODAY;
@@ -161,7 +165,13 @@ export default function TodayExpenseBox() {
             아직 지출이 없어요
           </p>
           <button
-            onClick={() => router?.push(`/record?date=${dateString}`)}
+            onClick={() => {
+              if(!user?.nickname || user?.nickname.startsWith('guest')) {
+                setErrorBox(true);
+                return;
+              }
+              router?.push(`/record?date=${dateString}`);
+            }}
             className="w-full rounded-[10px] border border-[#e5e5e5] py-3 text-center text-[16px] font-medium text-[#27282c] transition-colors hover:bg-gray-50"
           >
             오늘의 지출 기록하러가기

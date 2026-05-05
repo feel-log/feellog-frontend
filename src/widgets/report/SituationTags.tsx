@@ -1,7 +1,7 @@
-import type { SituationTag } from '@/shared/constants/reportMockData';
+import type { ReportSituationItem } from '@/entities/report/model/report-schema';
 
 interface SituationTagsProps {
-  situations: SituationTag[];
+  situations: ReportSituationItem[];
 }
 
 const BUBBLE_CONFIGS: Record<
@@ -103,7 +103,7 @@ export default function SituationTags({ situations }: SituationTagsProps) {
           if (!config) return null;
           return (
             <div
-              key={situation.name}
+              key={situation.situationTagId}
               className="absolute flex flex-col items-center justify-center rounded-full"
               style={{
                 width: config.size,
@@ -123,7 +123,7 @@ export default function SituationTags({ situations }: SituationTagsProps) {
                 className="font-semibold tracking-[-0.025em]"
                 style={{ fontSize: config.labelSize, color: config.labelColor }}
               >
-                {situation.name}
+                {situation.situationName}
               </span>
             </div>
           );

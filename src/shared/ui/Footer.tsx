@@ -2,6 +2,8 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { useMemo } from 'react';
+import { useToken, useUser } from '@/shared/store';
 
 const navItems = [
   { id: 'household', label: '가계부', path: '/', icon: 'household' },
@@ -156,16 +158,22 @@ function FooterIcon({ icon }: { icon: string }) {
 export default function Footer() {
   let router: ReturnType<typeof useRouter> | null = null;
   let pathname = '/';
+  const { setErrorBox } = useToken();
+  const isLoaded = useUser((state) => state.isLoaded);
+  const id = useUser((state) => state.id);
+  const nickname = useUser((state) => state.nickname);
 
-  try {
-    router = useRouter();
-    pathname = usePathname();
-  } catch {
-    // Storybook environment without router
-  }
+  router = useRouter();
+  pathname = usePathname();
+
+  const condition = isLoaded && (!id || nickname.startsWith('guest'));
 
   const handleNavigation = (path: string) => {
     if (router) {
+      if(condition && (path === '/my-page' || path === '/record')) {
+        setErrorBox(condition)
+        return;
+      }
       router.push(path);
     }
   };
