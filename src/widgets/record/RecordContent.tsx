@@ -16,6 +16,7 @@ import { useHouseHoldPost } from '@/features/post-house-hold/model/useHouseHoldP
 import { useUpdateExpense } from '@/features/update-expense/model/useUpdateExpense';
 import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
 import { usePostAsset } from '@/features/post-asset/model/usePostAsset';
+import { usePostIncome } from '@/features/post-income/model/usePostIncome';
 import { evaluate } from 'mathjs';
 
 interface RecordState {
@@ -410,6 +411,7 @@ export default function RecordContent() {
 
   const updateExpenseMutation = useUpdateExpense();
   const postAssetMutation = usePostAsset();
+  const postIncomeMutation = usePostIncome();
 
   const isFormValid = () => {
     if (record.type === 'expense') {
@@ -428,6 +430,14 @@ export default function RecordContent() {
           assetCategoryId: record.categoryId ?? 0,
           amount: record.amount ?? 0,
           assetDate: record.date,
+          memo: record.memo ?? ""
+        });
+      } else if (record.type === 'income') {
+        postIncomeMutation.mutate({
+          userId: user?.id ?? 0,
+          amount: record.amount ?? 0,
+          incomeCategoryId: record.categoryId ?? 0,
+          incomeDate: record.date,
           memo: record.memo ?? ""
         });
       } else if (isEditMode && expenseIdParam) {
