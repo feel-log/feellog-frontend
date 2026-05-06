@@ -1,13 +1,10 @@
-import { Suspense } from 'react';
-import ReportContent from '@/widgets/report/ReportContent';
-
-export default function ReportPage() {
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import ReportContent from '@/widgets/report/ReportContent';
 import ReportMonthCard from '@/widgets/report/ReportMonthCard';
 import ReportEmpty from '@/widgets/report/ReportEmpty';
 import ReportInsights from '@/widgets/report/ReportInsights';
