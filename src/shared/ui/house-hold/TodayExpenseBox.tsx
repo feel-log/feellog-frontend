@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { cn } from '@/shared/lib/utils';
 import { useMonthExpendStore } from '@/shared/store/month-expend-store';
 import { useTodayExpend } from '@/entities/today-expenditure/model/useTodayExpend';
-import { EMOTIONS } from '@/widgets/record/RecordContent';
+import { useMasterData } from '@/entities/master-data';
 import { useToken, useUser } from '@/shared/store';
 
 const TODAY = new Date();
@@ -18,6 +18,7 @@ const MIN_DATE = (() => {
 })();
 
 export default function TodayExpenseBox() {
+  const { emotions } = useMasterData();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
   const { getUser } = useUser();
@@ -74,8 +75,8 @@ export default function TodayExpenseBox() {
       // emotionIds를 사용해서 emotion 정보 추가
       if (expense.emotionIds && expense.emotionIds.length > 0) {
         expense.emotionIds.forEach((emotionId) => {
-          const emotion = EMOTIONS.flatMap(g => g.items).find(item => item.id === emotionId);
-          if (emotion && !category.emotions.find(e => e.id === emotion.id)) {
+          const emotion = emotions.flatMap((g) => g.items).find((item) => item.id === emotionId);
+          if (emotion && !category.emotions.find((e) => e.id === emotion.id)) {
             category.emotions.push(emotion);
           }
         });

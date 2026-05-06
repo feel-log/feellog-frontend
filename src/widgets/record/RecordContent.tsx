@@ -11,6 +11,7 @@ import { cn } from '@/shared/lib/utils';
 import KeyBoardUserExperience from '@/shared/ui/record/KeyBoardUserExperience';
 import { useToken, useUser } from '@/shared/store';
 import { useUserGetter } from '@/entities/user';
+import { useMasterData } from '@/entities/master-data';
 import { useHouseHoldPost } from '@/features/post-house-hold/model/useHouseHoldPost';
 import { useUpdateExpense } from '@/features/update-expense/model/useUpdateExpense';
 import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
@@ -28,161 +29,77 @@ interface RecordState {
   memo: string;
 }
 
-const INCOME_CATEGORIES =
-[
+const INCOME_CATEGORIES = [
   {
-  name: '급여',
-  id: 1
+    name: '급여',
+    id: 1,
   },
   {
     name: '용돈',
-    id: 2
+    id: 2,
   },
   {
     name: '부수입',
-    id: 3
+    id: 3,
   },
   {
     name: '상여금',
-    id: 4
+    id: 4,
   },
   {
     name: '금융 수입',
-    id: 5
+    id: 5,
   },
   {
     name: '기타',
-    id: 6
-  }
+    id: 6,
+  },
 ];
 
 const ASSET_CATEGORIES = [
   {
     name: '급여',
-    id: 1
+    id: 1,
   },
   {
     name: '용돈',
-    id: 2
+    id: 2,
   },
   {
     name: '부수입',
-    id: 3
+    id: 3,
   },
   {
     name: '상여금',
-    id: 4
+    id: 4,
   },
   {
     name: '금융수입',
-    id: 5
+    id: 5,
   },
   {
     name: '기타',
-    id: 6
-  }
-];
-
-export const EXPENSE_CATEGORIES = [
-  {
-    group: '생활',
-    items: [
-      { label: '식비', emoji: '🍔', id: 1, },
-      { label: '카페', emoji: '☕', id: 2, },
-      { label: '생필품', emoji: '🧼', id: 3 },
-    ],
-  },
-  {
-    group: '소비',
-    items: [
-      { label: '의류', emoji: '👚', id: 4 },
-      { label: '교통비', emoji: '🚌', id: 5 },
-      { label: '의료', emoji: '🏥', id: 6 },
-      { label: '교육', emoji: '✏️', id: 7 },
-      { label: '경조사', emoji: '🎉', id: 8 },
-    ],
-  },
-  {
-    group: '고정',
-    items: [
-      { label: '공과금', emoji: '💸', id: 9 },
-      { label: '주거', emoji: '🏠', id: 10 },
-      { label: '보험료', emoji: '📄', id: 11 },
-      { label: '저축', emoji: '💰', id: 12 },
-    ],
-  },
-  {
-    group: '여가',
-    items: [
-      { label: '취미', emoji: '🎨', id: 13 },
-      { label: '뷰티', emoji: '💅', id: 14 },
-      { label: '문화생활', emoji: '🎭', id: 15 },
-    ],
+    id: 6,
   },
 ];
 
-export const PAYMENT_METHODS = [
+const PAYMENT_METHODS = [
   {
     name: '카드',
-    id: 1
+    id: 1,
   },
   {
     name: '현금',
-    id: 2
+    id: 2,
   },
   {
     name: '계좌',
-    id: 3
+    id: 3,
   },
   {
     name: '기타',
-    id: 4
-  }
-];
-
-export const EMOTIONS = [
-  {
-    group: '긍정',
-    items: [
-      { label: '기쁨', emoji: '/svg/emo/happy.svg', id: 1 },
-      { label: '설렘', emoji: '/svg/emo/flut.svg', id: 2 },
-      { label: '뿌듯함', emoji: '/svg/emo/proud.svg', id: 3 },
-      { label: '고마움', emoji: '/svg/emo/thanks.svg', id: 4 },
-    ],
+    id: 4,
   },
-  {
-    group: '부정',
-    items: [
-      { label: '짜증', emoji: '/svg/emo/annoy.svg', id: 5 },
-      { label: '화남', emoji: '/svg/emo/angry.svg', id: 6 },
-      { label: '불안함', emoji: '/svg/emo/anxios.svg', id: 7 },
-      { label: '슬픔', emoji: '/svg/emo/sad.svg', id: 8 },
-      { label: '스트레스', emoji: '/svg/emo/stress.svg', id: 9 },
-      { label: '우울함', emoji: '/svg/emo/depressed.svg', id: 10 },
-    ],
-  },
-  {
-    group: '기타',
-    items: [
-      { label: '심심함', emoji: '/svg/emo/boring.svg', id: 11 },
-      { label: '피곤함', emoji: '/svg/emo/tired.svg', id: 12 },
-      { label: '공허함', emoji: '/svg/emo/emptiness.svg', id: 13 },
-      { label: '외로움', emoji: '/svg/emo/lonely.svg', id: 14 },
-      { label: '충동', emoji: '/svg/emo/impulse.svg', id: 15 },
-    ],
-  },
-];
-
-export const SITUATION_TAGS = [
-  { label: '피로회복', id: 1 },
-  { label: '기분전환', id: 2 },
-  { label: '보상심리', id: 3 },
-  { label: '할인', id: 4 },
-  { label: '충동소비', id: 5 },
-  { label: '필요', id: 6 },
-  { label: '약속', id: 7 },
-  { label: '지각', id: 8 },
-  { label: '기타', id: 9 },
 ];
 
 const DAY_OF_WEEK = ['일', '월', '화', '수', '목', '금', '토'];
@@ -194,18 +111,8 @@ function formatDateDisplay(dateString: string): string {
   return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
 }
 
-function getCategoryDisplay (categoryId: number | null, type?: 'income' | 'expense' | 'asset'){
-  if (type === 'asset') {
-    return ASSET_CATEGORIES.find(c => c.id === categoryId)?.name ?? '';
-  }
-  if (type === 'income') {
-    return INCOME_CATEGORIES.find(c => c.id === categoryId)?.name ?? '';
-  }
-  return EXPENSE_CATEGORIES.flatMap(g => g.items)
-    .find(item => item.id === categoryId)?.label ?? '';
-}
-
 export default function RecordContent() {
+  const { expenseCategories, emotions, situationTags } = useMasterData();
   const searchParams = useSearchParams();
 
   const now = new Date();
@@ -647,7 +554,15 @@ export default function RecordContent() {
         {/* Category Section */}
         <SelectField
           label="카테고리"
-          value={getCategoryDisplay(record.categoryId, isAssetMode ? 'asset' : record.type)}
+          value={
+            isAssetMode
+              ? ASSET_CATEGORIES.find((c) => c.id === record.categoryId)?.name ?? ''
+              : record.type === 'income'
+              ? INCOME_CATEGORIES.find((c) => c.id === record.categoryId)?.name ?? ''
+              : expenseCategories
+                .flatMap((g) => g.items)
+                .find((item) => item.id === record.categoryId)?.label ?? ''
+          }
           placeholder="카테고리를 선택하세요"
           onClick={() => setIsCategoryOpen(true)}
         />
@@ -657,7 +572,7 @@ export default function RecordContent() {
           <SelectField
             label="감정"
             value={record.emotionIds?.map((emotionId: number) => {
-              const emotion = EMOTIONS.flatMap(g => g.items).find(item => item.id === emotionId);
+              const emotion = emotions.flatMap((g) => g.items).find((item) => item.id === emotionId);
               return emotion ? `${emotion.label}` : '';
             }).filter(Boolean).join(', ') ?? ''}
             placeholder="감정을 선택하세요"
@@ -673,7 +588,7 @@ export default function RecordContent() {
           <SelectField
             label="상황 태그 · 메모"
             value={`${record.situationTagIds?.map((tagId: number) => {
-              return SITUATION_TAGS.find(item => item.id === tagId)?.label;
+              return situationTags.find((item) => item.id === tagId)?.label;
             }).filter(Boolean).join(', ') ?? ''}${record.situationTagIds && record.situationTagIds.length > 0 && record.memo ? ' / ' : ''}${record.memo ?? ''}`}
             placeholder="상황 태그·메모를 입력하세요"
             onClick={() => {
@@ -830,7 +745,7 @@ export default function RecordContent() {
           </div>
         ) : (
           <div className="flex flex-col gap-10">
-            {EXPENSE_CATEGORIES.map((group) => (
+            {expenseCategories.map((group) => (
               <div key={group.group} className="flex flex-col gap-3">
                 <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
                 <div className="flex flex-wrap gap-2">
@@ -903,7 +818,7 @@ export default function RecordContent() {
           height={636}
         >
           <div className="flex flex-col gap-10">
-            {EMOTIONS.map((group) => (
+            {emotions.map((group) => (
               <div key={group.group} className="flex flex-col gap-3">
                 <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
                 <div className="flex flex-wrap gap-2">
@@ -966,7 +881,7 @@ export default function RecordContent() {
             <div className="flex flex-col gap-3">
               <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">상황 태그</h3>
               <div className="flex flex-wrap gap-x-2 gap-y-2.5">
-                {SITUATION_TAGS.map((tag) => (
+                {situationTags.map((tag) => (
                   <button
                     key={tag.id}
                     onClick={() => handleTagToggle(tag.id)}
