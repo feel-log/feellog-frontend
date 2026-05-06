@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
 
 export type InsightType = 'categoryChange' | 'emotionTrend' | 'situationTrend';
@@ -90,14 +91,38 @@ function renderMessageWithTarget(message: string, target: string | null | undefi
   });
 }
 
-function InsightCard({ insight }: { insight: InsightItem }) {
-  const hasTarget = !!insight.targetName;
+function isFallbackMessage(message: string): boolean {
+  return /기록하면|다음 달부터/.test(message);
+}
 
-  if (!hasTarget) {
+function renderFallbackMessage(message: string): ReactNode {
+  if (message.includes('감정을 기록하면')) {
+    return (
+      <>
+        감정을 기록하면 이번 달 소비와
+        <br />
+        연결된 마음을 알려드릴게요
+      </>
+    );
+  }
+  if (message.includes('상황을 기록하면')) {
+    return (
+      <>
+        상황을 기록하면 어떤 이유의 소비가
+        <br />
+        많았는지 보여드릴게요
+      </>
+    );
+  }
+  return message;
+}
+
+function InsightCard({ insight }: { insight: InsightItem }) {
+  if (isFallbackMessage(insight.message)) {
     return (
       <div className="rounded-[8px] bg-white py-3.5 px-4">
-        <p className="break-keep text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
-          {insight.message}
+        <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
+          {renderFallbackMessage(insight.message)}
         </p>
       </div>
     );
@@ -105,14 +130,14 @@ function InsightCard({ insight }: { insight: InsightItem }) {
 
   return (
     <div className="flex items-center justify-between gap-2.5 rounded-[8px] bg-white p-4">
-      <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
+      <p className="whitespace-nowrap text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
         {renderMessageWithTarget(insight.message, insight.targetName ?? undefined)}
       </p>
       <div className="size-8 shrink-0">
-        {insight.type === 'categoryChange' && insight.direction === 'up' && <CategoryUpIcon />}
-        {insight.type === 'categoryChange' && insight.direction === 'down' && <CategoryDownIcon />}
-        {insight.type === 'emotionTrend' && (
-          <EmotionIcon name={insight.targetName!} size={28} />
+        {insight.type === 'categoryChange' &&
+          (insight.direction === 'down' ? <CategoryDownIcon /> : <CategoryUpIcon />)}
+        {insight.type === 'emotionTrend' && insight.targetName && (
+          <EmotionIcon name={insight.targetName} size={28} />
         )}
         {insight.type === 'situationTrend' && <ShoppingBagIcon />}
       </div>

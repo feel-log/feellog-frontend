@@ -4,19 +4,18 @@ interface SituationTagsProps {
   situations: ReportSituationItem[];
 }
 
-const BUBBLE_CONFIGS: Record<
-  number,
-  {
-    size: number;
-    left: number;
-    top: number;
-    bgStyle: React.CSSProperties;
-    rankSize: number;
-    rankColor: string;
-    labelSize: number;
-    labelColor: string;
-  }
-> = {
+interface SlotConfig {
+  size: number;
+  left: number;
+  top: number;
+  bgStyle: React.CSSProperties;
+  rankSize: number;
+  rankColor: string;
+  labelSize: number;
+  labelColor: string;
+}
+
+const BUBBLE_CONFIGS: Record<number, SlotConfig> = {
   1: {
     size: 144,
     left: 85,
@@ -72,6 +71,70 @@ const BUBBLE_CONFIGS: Record<
   },
 };
 
+interface RenderInfo {
+  size: number;
+  left: number;
+  top: number;
+  bgStyle: React.CSSProperties;
+  rankSize: number;
+  rankColor: string;
+  labelSize: number;
+  labelColor: string;
+  displayRank: number;
+}
+
+const MIN_BUBBLE_SIZE = 60;
+const MAX_BUBBLE_SIZE = 144;
+
+function buildRenderInfos(items: ReportSituationItem[]): (RenderInfo | null)[] {
+  const groupsByRank = new Map<number, number[]>();
+  items.forEach((item, idx) => {
+    const list = groupsByRank.get(item.rank) ?? [];
+    list.push(idx);
+    groupsByRank.set(item.rank, list);
+  });
+
+  const maxCount = Math.max(...items.map((i) => i.occurrenceCount), 1);
+
+  return items.map((item, idx) => {
+    const slot = idx + 1;
+    const slotConfig = BUBBLE_CONFIGS[slot];
+    if (!slotConfig) return null;
+
+    const groupIndices = groupsByRank.get(item.rank) ?? [idx];
+
+    // 1) 비율 기반 size (선택 건수 비율)
+    const ratioSize =
+      MIN_BUBBLE_SIZE +
+      (item.occurrenceCount / maxCount) * (MAX_BUBBLE_SIZE - MIN_BUBBLE_SIZE);
+
+    // 2) 그룹 내 슬롯 size 최소값 (안 겹치도록 제한)
+    const groupSlotMin = Math.min(
+      ...groupIndices.map((i) => BUBBLE_CONFIGS[i + 1]?.size ?? 82),
+    );
+
+    const size = Math.min(ratioSize, groupSlotMin);
+
+    // 위치는 본인 슬롯 중심 기준 + size 변경분만큼 보정
+    const centerX = slotConfig.left + slotConfig.size / 2;
+    const centerY = slotConfig.top + slotConfig.size / 2;
+    const left = centerX - size / 2;
+    const top = centerY - size / 2;
+
+    return {
+      size,
+      left,
+      top,
+      bgStyle: slotConfig.bgStyle,
+      rankSize: slotConfig.rankSize,
+      rankColor: slotConfig.rankColor,
+      labelSize: slotConfig.labelSize,
+      labelColor: slotConfig.labelColor,
+      displayRank: item.rank,
+    };
+  });
+}
+
 export default function SituationTags({ situations }: SituationTagsProps) {
   if (situations.length === 0) {
     return (
@@ -91,6 +154,9 @@ export default function SituationTags({ situations }: SituationTagsProps) {
     );
   }
 
+  const items = situations.slice(0, 5);
+  const renderInfos = buildRenderInfos(items);
+
   return (
     <div className="flex flex-col gap-2.5 rounded-[12px] border border-[#F0F0F0] bg-[#F7F8FA] py-5">
       <h2 className="px-4 text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
@@ -98,30 +164,30 @@ export default function SituationTags({ situations }: SituationTagsProps) {
       </h2>
 
       <div className="relative mx-auto h-66.5 w-80">
-        {situations.map((situation) => {
-          const config = BUBBLE_CONFIGS[situation.rank];
-          if (!config) return null;
+        {items.map((situation, index) => {
+          const info = renderInfos[index];
+          if (!info) return null;
           return (
             <div
               key={situation.situationTagId}
               className="absolute flex flex-col items-center justify-center rounded-full"
               style={{
-                width: config.size,
-                height: config.size,
-                left: config.left,
-                top: config.top,
-                ...config.bgStyle,
+                width: info.size,
+                height: info.size,
+                left: info.left,
+                top: info.top,
+                ...info.bgStyle,
               }}
             >
               <span
                 className="font-medium tracking-[-0.025em]"
-                style={{ fontSize: config.rankSize, color: config.rankColor }}
+                style={{ fontSize: info.rankSize, color: info.rankColor }}
               >
-                {situation.rank}위
+                {info.displayRank}위
               </span>
               <span
                 className="font-semibold tracking-[-0.025em]"
-                style={{ fontSize: config.labelSize, color: config.labelColor }}
+                style={{ fontSize: info.labelSize, color: info.labelColor }}
               >
                 {situation.situationName}
               </span>

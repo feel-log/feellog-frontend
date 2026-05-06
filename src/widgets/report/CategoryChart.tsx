@@ -87,7 +87,7 @@ export default function CategoryChart({ categories, year, month }: CategoryChart
                 className="block size-2 rounded-full"
                 style={{
                   backgroundColor: cat.color,
-                  border: cat.color === '#F7F8FA' ? '0.5px solid #CACDD2' : undefined,
+                  border: cat.color === '#FFFFFF' ? '0.5px solid #CACDD2' : undefined,
                 }}
               />
               <div className="flex items-center gap-2">
