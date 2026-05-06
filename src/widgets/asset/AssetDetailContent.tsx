@@ -114,7 +114,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
             </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-5 mt-4">
             {records.map((record, idx) => (
               <div key={idx} className="flex flex-col gap-0.75">
                 <div className="flex items-center justify-between">
