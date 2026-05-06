@@ -6,13 +6,13 @@ import { useToken, useUser } from '@/shared/store';
 import { useIsMounted } from '@/shared/hooks';
 import { useUserGetter } from '@/entities/user';
 import { reportQueries } from '@/entities/report';
+import { useMasterData } from '@/entities/master-data';
 import ReportMonthCard from '@/widgets/report/ReportMonthCard';
 import ReportEmpty from '@/widgets/report/ReportEmpty';
 import ReportInsights from '@/widgets/report/ReportInsights';
 import CategoryChart from '@/widgets/report/CategoryChart';
 import EmotionList from '@/widgets/report/EmotionList';
 import SituationTags from '@/widgets/report/SituationTags';
-import { EMOTIONS } from '@/widgets/record/RecordContent';
 import Footer from '@/shared/ui/Footer';
 import PageHeader from '@/shared/ui/PageHeader';
 import FullScreenLoader from '@/shared/ui/FullScreenLoader';
@@ -23,6 +23,7 @@ const CATEGORY_COLORS = ['#13278A', '#1BC590', '#FFDB72', '#E5E5E5', '#FFFFFF'];
 export default function ReportContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { emotions: masterEmotions } = useMasterData();
   const today = new Date();
   const year = Number(searchParams?.get('year') ?? today.getFullYear());
   const month = Number(searchParams?.get('month') ?? today.getMonth() + 1);
@@ -67,7 +68,7 @@ export default function ReportContent() {
   }));
 
   const emotions = (data?.emotions.list ?? []).map((e) => {
-    const emotionData = EMOTIONS.flatMap((g) => g.items).find(
+    const emotionData = masterEmotions.flatMap((g) => g.items).find(
       (item) => item.id === e.emotionId,
     );
     return {
