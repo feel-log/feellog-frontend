@@ -5,7 +5,12 @@ import { useRouter } from 'next/navigation';
 import { usePostDeviceToken } from '@/features/post-device-token';
 
 export default function CommonFeature({ title, secondary, changeLogoutModal }: { title: string; secondary: string; changeLogoutModal?: (isOpen: boolean) => void; }) {
-  const [isPushedNotification, setIsPushedNotification] = useState(false);
+  const [isPushedNotification, setIsPushedNotification] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('isPushNotificationEnabled') === 'true';
+    }
+    return false;
+  });
   const [isLoading, setIsLoading] = useState(false);
   const { clearTokens } = useToken();
   const { clearUser } = useUser();
@@ -19,13 +24,14 @@ export default function CommonFeature({ title, secondary, changeLogoutModal }: {
 
       if (nextState) {
         const token = localStorage.getItem('fcmToken') || 'temp-token';
-        const deviceType = 'web';
+        const deviceType = 'WEB';
 
         registerDeviceToken(
           { token, deviceType },
           {
             onSuccess: () => {
               setIsPushedNotification(true);
+              localStorage.setItem('isPushNotificationEnabled', 'true');
             },
             onError: () => {
               console.error('Failed to register device token');
@@ -37,6 +43,7 @@ export default function CommonFeature({ title, secondary, changeLogoutModal }: {
         );
       } else {
         setIsPushedNotification(false);
+        localStorage.setItem('isPushNotificationEnabled', 'false');
         setIsLoading(false);
       }
     } catch (error) {
