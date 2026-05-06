@@ -74,10 +74,10 @@ export const reportQueries = {
         getMonthlyExpenseDetailApi({ year, month, token, sort }),
       staleTime: 1000 * 60,
     }),
-  daily: (token: string) =>
+  daily: (token: string, year: number, month: number, day: number) =>
     queryOptions({
-      queryKey: [...reportQueries.all(), 'daily'],
-      queryFn: () => getDailyReportApi(token),
+      queryKey: [...reportQueries.all(), 'daily', year, month, day],
+      queryFn: () => getDailyReportApi({ year, month, day, token }),
       staleTime: 1000 * 30,
     }),
 };

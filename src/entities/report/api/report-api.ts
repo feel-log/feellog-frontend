@@ -132,9 +132,22 @@ export function getMonthlyExpenseDetailApi({
   );
 }
 
-export function getDailyReportApi(token: string): Promise<DailyReport> {
-  return apiClient<DailyReport>('/api/v1/reports/daily', {
-    method: 'GET',
-    headers: { Authorization: `Bearer ${token}` },
-  });
+export function getDailyReportApi({
+  year,
+  month,
+  day,
+  token,
+}: {
+  year: number;
+  month: number;
+  day: number;
+  token: string;
+}): Promise<DailyReport> {
+  return apiClient<DailyReport>(
+    `/api/v1/reports/daily?year=${year}&month=${month}&day=${day}`,
+    {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
 }
