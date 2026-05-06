@@ -142,7 +142,7 @@ export default function SituationTags({ situations }: SituationTagsProps) {
         <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
           자주 선택한 상황 태그
         </h2>
-        <div className="mt-21.5 flex flex-col items-center gap-0.5">
+        <div className="mt-21.5 flex flex-col items-center">
           <p className="text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#73787E]">
             이번달 상황별 소비가 아직 없어요
           </p>
