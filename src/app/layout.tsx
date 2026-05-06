@@ -21,6 +21,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Feel-Log",
   description: "감정에 따른 소비 패턴을 분석하고 추적하는 웹 앱",
+  openGraph: {
+    title: "Feel-Log",
+    description: "감정에 따른 소비 패턴을 분석하고 추적하는 웹 앱",
+    url: "https://feellog.xyz",
+    siteName: "Feel-Log",
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Feel-Log",
+    description: "감정에 따른 소비 패턴을 분석하고 추적하는 웹 앱",
+  },
 };
 
 export const viewport: Viewport = {
