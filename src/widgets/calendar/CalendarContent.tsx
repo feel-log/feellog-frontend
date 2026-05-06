@@ -70,8 +70,10 @@ export default function CalendarContent() {
   }, [expenses]);
 
   const monthlyTotals = useMemo(() => {
+    const income = 0;
     const expense = (expenses ?? []).reduce((acc, e) => acc + e.amount, 0);
-    return { income: 0, expense, balance: -expense };
+    const balance = income - expense;
+    return { income, expense, balance: balance || 0 };
   }, [expenses]);
 
   const dayData = useMemo(() => {

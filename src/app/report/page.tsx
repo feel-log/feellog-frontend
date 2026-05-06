@@ -1,3 +1,7 @@
+import { Suspense } from 'react';
+import ReportContent from '@/widgets/report/ReportContent';
+
+export default function ReportPage() {
 'use client';
 
 import { useState } from 'react';
@@ -78,40 +82,8 @@ export default function ReportPage() {
   const isLoadingData = !isMounted || !isLoaded || isLoading;
 
   return (
-    <AuthGuard>
-      <FullScreenLoader isLoading={isLoadingData} />
-      <div className={`flex flex-1 flex-col bg-white ${isLoadingData ? 'pointer-events-none' : ''}`}>
-        <PageHeader title="리포트" showBack={false} />
-
-        <div className="flex flex-col gap-6.25 px-4 pt-5 pb-30">
-          <ReportMonthCard
-            year={year}
-            month={month}
-            income={reportData?.summary.totalIncome ?? 0}
-            expense={reportData?.summary.totalExpense ?? 0}
-            onYearMonthChange={(ym) => {
-              setYear(ym.year);
-              setMonth(ym.month);
-            }}
-            onExpenseDetailClick={() =>
-              router.push(hasData ? '/report/monthly' : '/record?type=expense')
-            }
-          />
-
-          {hasData && reportData ? (
-            <>
-              <ReportInsights userName="사용자" insights={insightsArray} />
-              <CategoryChart categories={categoriesForChart} year={year} month={month} />
-              <EmotionList emotions={emotionsForList} year={year} month={month} />
-              <SituationTags situations={reportData.situations.list} />
-            </>
-          ) : (
-            <ReportEmpty />
-          )}
-
-          <Footer />
-        </div>
-      </div>
-    </AuthGuard>
+    <Suspense fallback={<div>로딩중...</div>}>
+      <ReportContent />
+    </Suspense>
   );
 }

@@ -1,7 +1,28 @@
 const SECTIONS = [
-  { id: 'category', title: '카테고리별 지출 항목', height: 'h-58.25', titleColor: 'text-[#030303]' },
-  { id: 'emotion', title: '감정별 지출 항목', height: 'h-58.25', titleColor: 'text-[#030303]' },
-  { id: 'situation', title: '자주 선택한 상황 태그', height: 'h-70', titleColor: 'text-[#1C1D1F]' },
+  {
+    id: 'category',
+    title: '카테고리별 주요 지출 항목',
+    height: 'h-58.25',
+    pb: 'pb-19.75',
+    mt: 'mt-14.75',
+    titleColor: 'text-[#030303]',
+  },
+  {
+    id: 'emotion',
+    title: '감정별 주요 지출 항목',
+    height: 'h-58.25',
+    pb: 'pb-19.75',
+    mt: 'mt-14.75',
+    titleColor: 'text-[#030303]',
+  },
+  {
+    id: 'situation',
+    title: '자주 선택한 상황 태그',
+    height: 'h-70',
+    pb: 'pb-24.75',
+    mt: 'mt-21.5',
+    titleColor: 'text-[#1C1D1F]',
+  },
 ];
 
 export default function ReportEmpty() {
@@ -10,12 +31,14 @@ export default function ReportEmpty() {
       {SECTIONS.map((section) => (
         <div
           key={section.id}
-          className={`flex ${section.height} w-full flex-col rounded-xl border border-[#F0F0F0] bg-[#F7F8FA] px-4 pt-5 pb-19.75`}
+          className={`flex ${section.height} w-full flex-col rounded-xl border border-[#F0F0F0] bg-[#F7F8FA] px-4 pt-5 ${section.pb}`}
         >
-          <p className={`text-[20px] font-semibold leading-normal tracking-[-0.5px] ${section.titleColor}`}>
+          <p
+            className={`text-[20px] font-semibold leading-normal tracking-[-0.5px] ${section.titleColor}`}
+          >
             {section.title}
           </p>
-          <div className="flex flex-1 flex-col items-center justify-center">
+          <div className={`${section.mt} flex flex-col items-center`}>
             <p className="text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#73787E]">
               이번 달 소비가 아직 없어요
             </p>

@@ -78,6 +78,15 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
       )}
 
       <div className="flex items-center justify-between">
+        <span className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#27282C]">
+          {item.categoryName ?? ''}
+        </span>
+        <span className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+          {item.amount.toLocaleString()}원
+        </span>
+      </div>
+
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
             {item.situationTags.map((tag) => (
@@ -91,7 +100,7 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
           </div>
           {item.emotions && item.emotions.length > 0 && (
             <>
-              <span className="h-3.5 w-px bg-[#D9D9D9]" />
+              {item.situationTags.length > 0 && <span className="h-3.5 w-px bg-[#D9D9D9]" />}
               <div className="flex items-center gap-1.5">
                 {item.emotions.map((emotion) => (
                   <EmotionIcon key={emotion.emotionId} name={emotion.emotionName} size={20} />
@@ -100,19 +109,16 @@ function ExpenseItemRow({ item, showDate }: { item: FlatItem; showDate: boolean 
             </>
           )}
         </div>
-        <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-          {item.amount.toLocaleString()}원
-        </p>
+        <span className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
+          {item.paymentMethod}
+        </span>
       </div>
 
-      <div className="flex items-center justify-between">
+      {item.memo && (
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
-          {item.memo ?? ''}
+          {item.memo}
         </p>
-        <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#9FA4A8]">
-          {item.paymentMethod}
-        </p>
-      </div>
+      )}
     </div>
   );
 }

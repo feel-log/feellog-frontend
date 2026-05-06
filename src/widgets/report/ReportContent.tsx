@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useToken, useUser } from '@/shared/store';
+import { useIsMounted } from '@/shared/hooks';
 import { useUserGetter } from '@/entities/user';
 import { reportQueries } from '@/entities/report';
 import ReportMonthCard from '@/widgets/report/ReportMonthCard';
@@ -12,10 +12,13 @@ import ReportInsights from '@/widgets/report/ReportInsights';
 import CategoryChart from '@/widgets/report/CategoryChart';
 import EmotionList from '@/widgets/report/EmotionList';
 import SituationTags from '@/widgets/report/SituationTags';
+import { EMOTIONS } from '@/widgets/record/RecordContent';
 import Footer from '@/shared/ui/Footer';
 import PageHeader from '@/shared/ui/PageHeader';
+import FullScreenLoader from '@/shared/ui/FullScreenLoader';
+import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
 
-const CATEGORY_COLORS = ['#13278A', '#58E1B6', '#FFDB72', '#CACDD2', '#F7F8FA'];
+const CATEGORY_COLORS = ['#13278A', '#1BC590', '#FFDB72', '#E5E5E5', '#FFFFFF'];
 
 export default function ReportContent() {
   const router = useRouter();
@@ -31,27 +34,25 @@ export default function ReportContent() {
     router.replace(`/report?${params.toString()}`, { scroll: false });
   };
 
-  const { getAccessToken } = useToken();
+  const isMounted = useIsMounted();
+  const { getAccessToken, isLoaded } = useToken();
   const token = getAccessToken();
   useUserGetter(token);
   const nickname = useUser((s) => s.nickname);
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
   const { data, isLoading } = useQuery({
     ...reportQueries.monthly(token || '', year, month),
-    enabled: !!token,
+    enabled: !!token && isMounted,
   });
 
   const prevYear = month === 1 ? year - 1 : year;
   const prevMonth = month === 1 ? 12 : month - 1;
   const { data: prevData } = useQuery({
     ...reportQueries.monthly(token || '', prevYear, prevMonth),
-    enabled: !!token,
+    enabled: !!token && isMounted,
   });
 
-  const userName = mounted ? nickname || '회원' : '회원';
+  const userName = isMounted ? nickname || '회원' : '회원';
 
   const income = data?.summary.totalIncome ?? 0;
   const expense = data?.summary.totalExpense ?? 0;
@@ -65,13 +66,18 @@ export default function ReportContent() {
     color: CATEGORY_COLORS[idx % CATEGORY_COLORS.length],
   }));
 
-  const emotions = (data?.emotions.list ?? []).map((e) => ({
-    id: e.emotionId,
-    rank: e.rank,
-    emoji: '',
-    name: e.emotionName,
-    amount: e.linkedAmount,
-  }));
+  const emotions = (data?.emotions.list ?? []).map((e) => {
+    const emotionData = EMOTIONS.flatMap((g) => g.items).find(
+      (item) => item.id === e.emotionId,
+    );
+    return {
+      id: e.emotionId,
+      rank: e.rank,
+      emoji: emotionData?.emoji ?? '',
+      name: e.emotionName,
+      amount: e.linkedAmount,
+    };
+  });
 
   const situations = (data?.situations.list ?? []).map((s) => ({
     situationTagId: s.situationTagId,
@@ -83,8 +89,10 @@ export default function ReportContent() {
   const categoryDirection = (() => {
     const target = data?.comments.categoryChange.targetName;
     if (!target || !prevData) return null;
-    const current = data.categories.list.find((c) => c.categoryName === target)?.totalAmount ?? 0;
-    const previous = prevData.categories.list.find((c) => c.categoryName === target)?.totalAmount ?? 0;
+    const current =
+      data.categories.list.find((c) => c.categoryName === target)?.totalAmount ?? 0;
+    const previous =
+      prevData.categories.list.find((c) => c.categoryName === target)?.totalAmount ?? 0;
     if (current > previous) return 'up' as const;
     if (current < previous) return 'down' as const;
     return null;
@@ -111,51 +119,46 @@ export default function ReportContent() {
       ])
     : [];
 
+  const isLoadingData = !isMounted || !isLoaded || isLoading;
+
   return (
-    <div className="flex flex-1 flex-col bg-white">
-      <PageHeader title="리포트" showBack={false} />
+    <AuthGuard>
+      <FullScreenLoader isLoading={isLoadingData} />
+      <div
+        className={`flex flex-1 flex-col bg-white ${isLoadingData ? 'pointer-events-none' : ''}`}
+      >
+        <PageHeader title="리포트" showBack={false} />
 
-      <div className="flex flex-col gap-6.25 px-4 pt-5 pb-30">
-        <ReportMonthCard
-          year={year}
-          month={month}
-          income={income}
-          expense={expense}
-          onYearMonthChange={handleYearMonthChange}
-          onExpenseDetailClick={() =>
-            router.push(
-              hasData
-                ? `/report/monthly?year=${year}&month=${month}`
-                : '/record?type=expense',
-            )
-          }
-        />
+        <div className="flex flex-col gap-6.25 px-4 pt-5 pb-30">
+          <ReportMonthCard
+            year={year}
+            month={month}
+            income={income}
+            expense={expense}
+            onYearMonthChange={handleYearMonthChange}
+            onExpenseDetailClick={() =>
+              router.push(
+                hasData
+                  ? `/report/monthly?year=${year}&month=${month}`
+                  : '/record?type=expense',
+              )
+            }
+          />
 
-        {isLoading ? (
-          <div className="flex flex-1 items-center justify-center py-20">
-            <p className="text-[14px] text-[#9FA4A8]">불러오는 중...</p>
-          </div>
-        ) : hasData ? (
-          <>
-            <ReportInsights userName={userName} insights={insights} />
-            <CategoryChart
-              categories={categories}
-              year={year}
-              month={month}
-            />
-            <EmotionList
-              emotions={emotions}
-              year={year}
-              month={month}
-            />
-            <SituationTags situations={situations} />
-          </>
-        ) : (
-          <ReportEmpty />
-        )}
+          {hasData ? (
+            <>
+              <ReportInsights userName={userName} insights={insights} />
+              <CategoryChart categories={categories} year={year} month={month} />
+              <EmotionList emotions={emotions} year={year} month={month} />
+              <SituationTags situations={situations} />
+            </>
+          ) : (
+            <ReportEmpty />
+          )}
+
+          <Footer />
+        </div>
       </div>
-
-      <Footer />
-    </div>
+    </AuthGuard>
   );
 }

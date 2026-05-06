@@ -23,7 +23,7 @@ export default function EmotionList({ emotions, year, month }: EmotionListProps)
         <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
           감정별 지출 항목
         </h2>
-        <div className="mt-14.75 flex flex-col items-center gap-0.5">
+        <div className="mt-14.75 flex flex-col items-center">
           <p className="text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#73787E]">
             이번달 감정별 소비가 아직 없어요
           </p>

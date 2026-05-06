@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useToken } from '@/shared/store';
@@ -8,19 +9,22 @@ import RetroEmpty from '@/widgets/retro/RetroEmpty';
 import RetroMain from '@/widgets/retro/RetroMain';
 import PageHeader from '@/shared/ui/PageHeader';
 
-function todayLabel(): string {
-  const d = new Date();
-  return `${d.getMonth() + 1}월 ${d.getDate()}일 지출`;
-}
-
 export default function RetroContent() {
   const router = useRouter();
   const { getAccessToken } = useToken();
   const token = getAccessToken();
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+
   const { data, isLoading } = useQuery({
-    ...reportQueries.daily(token || ''),
-    enabled: !!token,
+    ...reportQueries.daily(token || '', year, month, day),
+    enabled: !!token && mounted,
   });
 
   const totalExpense = data?.summary.totalExpenseAmount ?? 0;
@@ -32,7 +36,7 @@ export default function RetroContent() {
 
       <div className="px-4 pt-5">
         <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#73787E]">
-          {todayLabel()}
+          {mounted ? `${month}월 ${day}일 지출` : ''}
         </p>
         <p className="text-[28px] font-semibold leading-normal tracking-[-0.7px] text-[#030303]">
           {totalExpense.toLocaleString()}원
@@ -40,7 +44,7 @@ export default function RetroContent() {
       </div>
 
       <div className="flex flex-1 items-start justify-center px-4 pt-5 pb-6">
-        {isLoading ? (
+        {!mounted || isLoading ? (
           <p className="py-10 text-[14px] text-[#9FA4A8]">불러오는 중...</p>
         ) : hasData && data ? (
           <RetroMain
