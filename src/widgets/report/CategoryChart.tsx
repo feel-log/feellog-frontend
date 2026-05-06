@@ -15,41 +15,96 @@ interface CategoryChartProps {
 function DonutChart({ categories }: { categories: CategoryChartCategory[] }) {
   const radius = 70;
   const strokeWidth = 30;
+  const topStrokeWidth = 38;
   const circumference = 2 * Math.PI * radius;
-  const totalPercent = categories.reduce((sum, c) => sum + c.percentage, 0);
-  const sortedCategories = [...categories].sort((a, b) => b.percentage - a.percentage);
+  const totalPercent =
+    categories.reduce((sum, c) => sum + c.percentage, 0) || 1;
 
-  let accumulatedDeg = 0;
+  const sortedCategories = [...categories].sort(
+    (a, b) => b.percentage - a.percentage,
+  );
+
+  let cumulative = 0;
+  const segments = sortedCategories.map((cat) => {
+    const startDeg = cumulative;
+    const segDeg = (cat.percentage / totalPercent) * 360;
+    cumulative += segDeg;
+    return { ...cat, startDeg, segDeg, dashStartDeg: startDeg, dashDeg: segDeg };
+  });
+
+  // 1위 segment의 1/3 지점에 떠있는 라벨 배치
+  const topSegment = segments[0];
+  const topMidDeg = topSegment
+    ? topSegment.startDeg + topSegment.segDeg / 3
+    : 0;
+  const topMidRad = (topMidDeg * Math.PI) / 180;
+  const containerPx = 198;
+  const center = containerPx / 2;
+  const labelOrbit = 105;
+  // 1위 segment가 12시→왼쪽으로 진행하므로 sin 부호 반전
+  const labelX = center - Math.sin(topMidRad) * labelOrbit;
+  const labelY = center - Math.cos(topMidRad) * labelOrbit;
 
   return (
-    <div className="relative mx-auto h-42.5 w-42.5">
+    <div className="relative mx-auto h-49.5 w-49.5">
       <svg
-        width="170"
-        height="170"
-        viewBox="0 0 170 170"
-        style={{ transform: 'rotate(90deg) scaleX(-1)' }}
+        width="198"
+        height="198"
+        viewBox="-4 -4 178 178"
+        style={{ transform: 'scaleX(-1) rotate(-90deg)' }}
       >
-        {sortedCategories.map((cat) => {
-          const segDeg = (cat.percentage / totalPercent) * 360;
-          const dash = (segDeg / 360) * circumference;
-          const offset = -(accumulatedDeg / 360) * circumference;
-          accumulatedDeg += segDeg;
-
+        <defs>
+          <linearGradient
+            id="rank1-gradient"
+            x1="78.2%"
+            y1="91.2%"
+            x2="21.8%"
+            y2="8.8%"
+          >
+            <stop offset="39.57%" stopColor="#13278A" />
+            <stop offset="84.9%" stopColor="#566BD1" />
+          </linearGradient>
+        </defs>
+        {/* 작은 것부터 그려서 큰 segment(1위)가 위에 오도록 */}
+        {[...segments].reverse().map((seg) => {
+          const dash = (seg.dashDeg / 360) * circumference;
+          const offset = -(seg.dashStartDeg / 360) * circumference;
+          const isTop = topSegment && seg.name === topSegment.name;
           return (
             <circle
-              key={cat.name}
+              key={seg.name}
               cx="85"
               cy="85"
               r={radius}
               fill="transparent"
-              stroke={cat.color}
-              strokeWidth={strokeWidth}
+              stroke={isTop ? 'url(#rank1-gradient)' : seg.color}
+              strokeWidth={isTop ? topStrokeWidth : strokeWidth}
+              strokeLinecap="round"
               strokeDasharray={`${dash} ${circumference - dash}`}
               strokeDashoffset={offset}
             />
           );
         })}
       </svg>
+
+      {topSegment && (
+        <div
+          className="absolute flex size-15.5 flex-col items-center justify-center rounded-full bg-white"
+          style={{
+            left: labelX,
+            top: labelY,
+            transform: 'translate(-50%, -50%)',
+            boxShadow: '3.32px 3.32px 6.64px 1.1px rgba(55, 55, 55, 0.2)',
+          }}
+        >
+          <span className="text-[12px] font-medium leading-normal tracking-[-0.3px] text-[#474C52]">
+            {topSegment.name}
+          </span>
+          <span className="text-[14px] font-semibold leading-normal tracking-[-0.35px] text-[#13278A]">
+            {Math.round(topSegment.percentage)}%
+          </span>
+        </div>
+      )}
     </div>
   );
 }
