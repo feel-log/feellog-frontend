@@ -88,7 +88,7 @@ export default function RetroMain({
 
       {!isEmotionsEmpty && emotions.length > 0 && (
         <div className="-mx-4 overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-1.5">
+          <div className="flex gap-1.5 px-4">
             {emotions.map((emotion) => (
               <div
                 key={emotion.emotionId}
