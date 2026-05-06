@@ -14,7 +14,7 @@ import { useIsMounted } from '@/shared/hooks';
 import { useToken } from '@/shared/store';
 import { reportQueries } from '@/entities/report/api/report-queries';
 import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
-import { EMOTIONS } from '@/widgets/record/RecordContent';
+import { useMasterData } from '@/entities/master-data';
 
 const CHART_COLORS = [
   '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
@@ -32,6 +32,7 @@ const SituationTags = dynamic(() => import('@/widgets/report/SituationTags'), {
 });
 
 export default function ReportPage() {
+  const { emotions } = useMasterData();
   const router = useRouter();
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
@@ -61,8 +62,10 @@ export default function ReportPage() {
     color: CHART_COLORS[idx % CHART_COLORS.length],
   })) ?? [];
 
-  const emotionsForList = reportData?.emotions.list.map(emotion => {
-    const emotionData = EMOTIONS.flatMap(g => g.items).find(e => e.id === emotion.emotionId);
+  const emotionsForList = reportData?.emotions.list.map((emotion) => {
+    const emotionData = emotions
+      .flatMap((g) => g.items)
+      .find((e) => e.id === emotion.emotionId);
     return {
       ...emotion,
       id: emotion.emotionId,

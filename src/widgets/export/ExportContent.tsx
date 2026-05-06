@@ -9,12 +9,18 @@ import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { useFormattedDate } from '@/shared/hooks';
 import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
 import { DailyExpendType } from '@/entities/daily-expend/model/daily-expend-type';
-import { EXPENSE_CATEGORIES, EMOTIONS } from '@/widgets/record/RecordContent';
-import { PAYMENT_METHODS, SITUATION_TAGS } from '@/widgets/record/RecordContent';
+import { useMasterData } from '@/entities/master-data';
 import { useDeleteExpense } from '@/features/delete-expense/model/useDeleteExpense';
 import { Trash2 } from 'lucide-react';
 
 type SortType = 'latest' | 'oldest' | 'expensive' | 'cheap';
+
+const PAYMENT_METHODS = [
+  { name: '카드', id: 1 },
+  { name: '현금', id: 2 },
+  { name: '계좌', id: 3 },
+  { name: '기타', id: 4 },
+];
 
 interface ExpenseItem {
   expenseId: number;
@@ -29,6 +35,7 @@ interface ExpenseItem {
 }
 
 export default function ExportContent() {
+  const { expenseCategories, emotions, situationTags } = useMasterData();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [sortType, setSortType] = useState<SortType>('latest');
@@ -80,27 +87,29 @@ export default function ExportContent() {
   });
 
   const convertToExpenseItem = (expense: DailyExpendType): ExpenseItem => {
-    const category = EXPENSE_CATEGORIES.flatMap((g) => g.items).find(
-      (item) => item.id === expense.categoryId
-    )?.label || '';
+    const category =
+      expenseCategories
+        .flatMap((g) => g.items)
+        .find((item) => item.id === expense.categoryId)?.label || '';
 
     const paymentMethod =
       PAYMENT_METHODS.find((m) => m.id === expense.paymentMethodId)?.name || '';
 
-    const emotions = EMOTIONS.flatMap((g) => g.items)
+    const emotionList = emotions
+      .flatMap((g) => g.items)
       .filter((e) => expense.emotionIds.includes(e.id))
       .map((e) => ({ emoji: e.emoji, label: e.label }));
 
-    const tags = SITUATION_TAGS.filter((t) => expense.situationTagIds.includes(t.id)).map(
-      (t) => '#' + t.label
-    );
+    const tags = situationTags
+      .filter((t) => expense.situationTagIds.includes(t.id))
+      .map((t) => '#' + t.label);
 
     return {
       expenseId: expense.expenseId,
       name: category,
       category,
       amount: expense.amount,
-      emotions,
+      emotions: emotionList,
       tag: tags,
       memo: expense.memo,
       paymentMethod,
