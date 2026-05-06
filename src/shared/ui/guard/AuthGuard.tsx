@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useToken, useUser } from '@/shared/store';
 import { useRefreshToken } from '@/features/refresh/model/useRefreshToken';
+import { notificationTestApi } from '@/features/notification-test/api/notification-test-api';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
 
 interface IAuthGuard {
@@ -15,6 +16,7 @@ export function AuthGuard({ children }: IAuthGuard) {
   const pathname = usePathname();
   const { getAccessToken, getRefreshToken, errorBox, setErrorBox, clearTokens } = useToken();
   const { mutate: refreshMutate } = useRefreshToken();
+  const notificationTestCalled = useRef(false);
 
   const accessToken = getAccessToken();
   const refreshToken = getRefreshToken();
@@ -24,15 +26,30 @@ export function AuthGuard({ children }: IAuthGuard) {
   };
 
   useEffect(() => {
-    if(!accessToken || !refreshToken) {
+    if (!accessToken || !refreshToken) {
       router.replace('/login');
-    }
-    else {
-      if(pathname === '/login') {
+    } else {
+      if (pathname === '/login') {
         router.replace('/');
       }
     }
-  },[accessToken, refreshToken, pathname]);
+  }, [accessToken, refreshToken, pathname]);
+
+  // 테스트 API는 '/' 라우트에서만 한 번 호출
+  useEffect(() => {
+    if (pathname === '/' && accessToken && refreshToken && !notificationTestCalled.current) {
+      const isPushEnabled =
+        typeof window !== 'undefined' &&
+        localStorage.getItem('isPushNotificationEnabled') === 'true';
+
+      if (isPushEnabled) {
+        notificationTestCalled.current = true;
+        notificationTestApi().catch((error) => {
+          console.debug('Notification test API:', error?.message);
+        });
+      }
+    }
+  }, [pathname, accessToken, refreshToken]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;

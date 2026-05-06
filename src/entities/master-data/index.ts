@@ -7,3 +7,4 @@ export {
   type Emotion,
   type SituationTag,
 } from './model/master-data-schema';
+export { useMasterData } from './model/useMasterData';
