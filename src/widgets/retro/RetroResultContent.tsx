@@ -95,7 +95,7 @@ export default function RetroResultContent() {
           <div className="flex w-full flex-col gap-3.75">
             <div className="flex items-center gap-1">
               <span className="text-[20px]">💡</span>
-              <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#030303]">
+              <p className="whitespace-nowrap text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#030303]">
                 {data.result.feedbackTitle}
               </p>
             </div>
@@ -110,7 +110,7 @@ export default function RetroResultContent() {
           <div className="flex w-full flex-col gap-3.75">
             <div className="flex items-center gap-1">
               <span className="text-[20px]">📋</span>
-              <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#030303]">
+              <p className="whitespace-nowrap text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#030303]">
                 {data.result.guideTitle}
               </p>
             </div>

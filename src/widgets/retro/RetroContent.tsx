@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useToken } from '@/shared/store';
@@ -18,9 +19,12 @@ export default function RetroContent() {
   const { getAccessToken } = useToken();
   const token = getAccessToken();
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const { data, isLoading } = useQuery({
     ...reportQueries.daily(token || ''),
-    enabled: !!token,
+    enabled: !!token && mounted,
   });
 
   const totalExpense = data?.summary.totalExpenseAmount ?? 0;
@@ -40,7 +44,7 @@ export default function RetroContent() {
       </div>
 
       <div className="flex flex-1 items-start justify-center px-4 pt-5 pb-6">
-        {isLoading ? (
+        {!mounted || isLoading ? (
           <p className="py-10 text-[14px] text-[#9FA4A8]">불러오는 중...</p>
         ) : hasData && data ? (
           <RetroMain

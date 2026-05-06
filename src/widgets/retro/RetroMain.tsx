@@ -56,8 +56,8 @@ export default function RetroMain({
     <div className="flex w-full flex-col gap-5">
       <div className="relative flex h-90 w-full flex-col items-center rounded-[12px] bg-[#F7F8FA] px-5">
         <div className="mt-7.5 flex flex-col items-center gap-0.5">
-          <p className="text-[18px] font-bold text-[#1C1D1F]">{mainMessage}</p>
-          <p className="text-[14px] font-medium text-[#474C52]">{subMessage}</p>
+          <p className="whitespace-nowrap text-[18px] font-bold text-[#1C1D1F]">{mainMessage}</p>
+          <p className="whitespace-nowrap text-[14px] font-medium text-[#474C52]">{subMessage}</p>
         </div>
 
         <div className="mt-6 flex items-end gap-6.5">
@@ -86,13 +86,7 @@ export default function RetroMain({
         </button>
       </div>
 
-      {isEmotionsEmpty || emotions.length === 0 ? (
-        <div className="flex h-21.25 w-full items-center justify-center rounded-[12px] bg-[#F7F8FA]">
-          <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#73787E]">
-            아직 기록된 감정이 없어요
-          </p>
-        </div>
-      ) : (
+      {!isEmotionsEmpty && emotions.length > 0 && (
         <div className="-mx-4 overflow-hidden" ref={emblaRef}>
           <div className="flex gap-1.5">
             {emotions.map((emotion) => (
