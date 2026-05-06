@@ -1,14 +1,15 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import Picker from 'react-mobile-picker';
 
 const ITEM_HEIGHT = 40;
 const VISIBLE_BUFFER = 3;
-const SPACER_HEIGHT = ITEM_HEIGHT * VISIBLE_BUFFER;
 const CONTAINER_HEIGHT = ITEM_HEIGHT * (VISIBLE_BUFFER * 2 + 1);
 const ANIMATION_DURATION = 300;
-const SELECTABLE_MONTHS = 36;
+const START_YEAR = 2023;
+const START_MONTH = 1;
 
 export interface YearMonth {
   year: number;
@@ -26,22 +27,12 @@ interface MonthPickerBottomSheetProps {
 
 function getRange() {
   const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth() + 1;
-  const startDate = new Date(currentYear, currentMonth - 1 - (SELECTABLE_MONTHS - 1), 1);
   return {
-    currentYear,
-    currentMonth,
-    startYear: startDate.getFullYear(),
-    startMonth: startDate.getMonth() + 1,
+    currentYear: today.getFullYear(),
+    currentMonth: today.getMonth() + 1,
+    startYear: START_YEAR,
+    startMonth: START_MONTH,
   };
-}
-
-function generateYearList(): number[] {
-  const { currentYear, startYear } = getRange();
-  const result: number[] = [];
-  for (let y = startYear; y <= currentYear; y++) result.push(y);
-  return result;
 }
 
 function isYearMonthDisabled(year: number, month: number): boolean {
@@ -52,6 +43,28 @@ function isYearMonthDisabled(year: number, month: number): boolean {
   return false;
 }
 
+function getStyleByDistance(distance: number): string {
+  const sizeClass =
+    distance === 0
+      ? 'text-[22px] font-semibold tracking-[-0.55px]'
+      : distance === 1
+        ? 'text-[20px] font-semibold tracking-[-0.5px]'
+        : 'text-[18px] font-medium tracking-[-0.45px]';
+
+  const colorClass =
+    distance === 0
+      ? 'text-[#1C1D1F]'
+      : distance === 1
+        ? 'text-[#474C52]'
+        : distance === 2
+          ? 'text-[#9FA4A8]'
+          : distance === 3
+            ? 'text-[#CACDD2]'
+            : 'text-transparent';
+
+  return `${colorClass} ${sizeClass}`;
+}
+
 export default function MonthPickerBottomSheet({
   isOpen,
   selectedYear,
@@ -60,143 +73,79 @@ export default function MonthPickerBottomSheet({
   onConfirm,
   onClose,
 }: MonthPickerBottomSheetProps) {
-  const yearScrollRef = useRef<HTMLDivElement>(null);
-  const monthScrollRef = useRef<HTMLDivElement>(null);
-  const isProgrammaticYearScroll = useRef(false);
-  const isProgrammaticMonthScroll = useRef(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-  const [yearIndex, setYearIndex] = useState(0);
-  const [monthIndex, setMonthIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isShowing, setIsShowing] = useState(false);
 
-  const yearList = useMemo(() => generateYearList(), []);
-  const monthList = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
+  const yearList = useMemo(() => {
+    const { startYear, currentYear } = getRange();
+    const result: number[] = [];
+    for (let y = startYear; y <= currentYear; y++) result.push(y);
+    return result;
+  }, []);
 
-  const initialYearIndex = useMemo(
-    () => Math.max(0, yearList.indexOf(selectedYear)),
-    [yearList, selectedYear],
+  const monthList = useMemo(
+    () => Array.from({ length: 12 }, (_, i) => i + 1),
+    [],
   );
-  const initialMonthIndex = useMemo(
-    () => Math.max(0, monthList.indexOf(selectedMonth)),
-    [monthList, selectedMonth],
-  );
+
+  const selectedYearIdx = yearList.indexOf(selectedYear);
+  const selectedMonthIdx = monthList.indexOf(selectedMonth);
+
+  const pickerValue = {
+    year: String(selectedYear),
+    month: String(selectedMonth),
+  };
 
   useEffect(() => {
-    if (!isOpen) return;
-    document.body.style.overflow = 'hidden';
-    requestAnimationFrame(() => setIsVisible(true));
+    if (isOpen) {
+      setIsMounted(true);
+      requestAnimationFrame(() => setIsShowing(true));
+      document.body.style.overflow = 'hidden';
+    } else if (isMounted) {
+      setIsShowing(false);
+      const timer = setTimeout(() => {
+        setIsMounted(false);
+      }, ANIMATION_DURATION);
+      document.body.style.overflow = '';
+      return () => clearTimeout(timer);
+    }
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    if (yearScrollRef.current) {
-      isProgrammaticYearScroll.current = true;
-      yearScrollRef.current.scrollTop = initialYearIndex * ITEM_HEIGHT;
-      setYearIndex(initialYearIndex);
-      setTimeout(() => {
-        isProgrammaticYearScroll.current = false;
-      }, 100);
-    }
-    if (monthScrollRef.current) {
-      isProgrammaticMonthScroll.current = true;
-      monthScrollRef.current.scrollTop = initialMonthIndex * ITEM_HEIGHT;
-      setMonthIndex(initialMonthIndex);
-      setTimeout(() => {
-        isProgrammaticMonthScroll.current = false;
-      }, 100);
-    }
-  }, [isOpen, initialYearIndex, initialMonthIndex]);
+  }, [isOpen, isMounted]);
 
   const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsVisible(false);
-      setIsClosing(false);
-      onClose();
-    }, ANIMATION_DURATION);
+    setIsShowing(false);
+    setTimeout(() => onClose(), ANIMATION_DURATION);
+  };
+
+  const handlePickerChange = (newValue: { year: string; month: string }) => {
+    onChange({
+      year: Number(newValue.year),
+      month: Number(newValue.month),
+    });
   };
 
   const handleConfirm = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsVisible(false);
-      setIsClosing(false);
-      onConfirm();
-    }, ANIMATION_DURATION);
+    if (isYearMonthDisabled(selectedYear, selectedMonth)) return;
+    setIsShowing(false);
+    setTimeout(() => onConfirm(), ANIMATION_DURATION);
   };
 
-  const handleYearScroll = () => {
-    if (!yearScrollRef.current || isProgrammaticYearScroll.current) return;
-    const idx = Math.round(yearScrollRef.current.scrollTop / ITEM_HEIGHT);
-    if (idx < 0 || idx >= yearList.length) return;
-    setYearIndex(idx);
-    const newYear = yearList[idx];
-    const newMonth = monthList[monthIndex];
-    if (!isYearMonthDisabled(newYear, newMonth)) {
-      onChange({ year: newYear, month: newMonth });
-    }
-  };
+  const isConfirmDisabled = isYearMonthDisabled(selectedYear, selectedMonth);
 
-  const handleMonthScroll = () => {
-    if (!monthScrollRef.current || isProgrammaticMonthScroll.current) return;
-    const idx = Math.round(monthScrollRef.current.scrollTop / ITEM_HEIGHT);
-    if (idx < 0 || idx >= monthList.length) return;
-    setMonthIndex(idx);
-    const newYear = yearList[yearIndex];
-    const newMonth = monthList[idx];
-    if (!isYearMonthDisabled(newYear, newMonth)) {
-      onChange({ year: newYear, month: newMonth });
-    }
-  };
-
-  const getStyleByDistance = (distance: number): string => {
-    const sizeClass =
-      distance === 0
-        ? 'text-[22px] font-semibold tracking-[-0.55px]'
-        : distance === 1
-          ? 'text-[20px] font-semibold tracking-[-0.5px]'
-          : 'text-[18px] font-medium tracking-[-0.45px]';
-
-    const colorClass =
-      distance === 0
-        ? 'text-[#1C1D1F]'
-        : distance === 1
-          ? 'text-[#474C52]'
-          : distance === 2
-            ? 'text-[#9FA4A8]'
-            : distance === 3
-              ? 'text-[#CACDD2]'
-              : 'text-transparent';
-
-    return `${colorClass} ${sizeClass}`;
-  };
-
-  if (!isOpen) return null;
-
-  const isShowing = isVisible && !isClosing;
-  const centeredYear = yearList[yearIndex];
-  const centeredMonth = monthList[monthIndex];
-  const isCenteredDisabled =
-    centeredYear === undefined ||
-    centeredMonth === undefined ||
-    isYearMonthDisabled(centeredYear, centeredMonth);
+  if (!isMounted) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center"
-      onClick={handleClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
       <div
-        className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+        className={`absolute inset-0 bg-black/30 transition-opacity duration-300 ${
           isShowing ? 'opacity-100' : 'opacity-0'
         }`}
+        onClick={handleClose}
       />
 
       <div
-        onClick={(e) => e.stopPropagation()}
         className={`relative flex w-full max-w-md flex-col rounded-t-[20px] bg-white transition-transform duration-300 ease-out ${
           isShowing ? 'translate-y-0' : 'translate-y-full'
         }`}
@@ -211,69 +160,49 @@ export default function MonthPickerBottomSheet({
         </div>
 
         <div className="relative mx-4 mt-13.5">
-          <div
-            className="pointer-events-none absolute left-0 right-0 top-1/2 h-8.75 -translate-y-1/2 rounded-[50px] bg-[#ECF2FB]"
-          />
+          <div className="pointer-events-none absolute left-0 right-0 top-1/2 h-8.75 -translate-y-1/2 rounded-[50px] bg-[#ECF2FB]" />
 
-          <div className="relative flex justify-center gap-9.75">
-            <div
-              ref={yearScrollRef}
-              onScroll={handleYearScroll}
-              className="overflow-y-scroll snap-y snap-mandatory [&::-webkit-scrollbar]:hidden"
-              style={{
-                height: CONTAINER_HEIGHT,
-                scrollbarWidth: 'none',
-              }}
-            >
-              <div style={{ height: SPACER_HEIGHT }} />
-              {yearList.map((y, i) => {
-                const distance = Math.abs(i - yearIndex);
+          <Picker
+            value={pickerValue}
+            onChange={handlePickerChange}
+            wheelMode="natural"
+            height={CONTAINER_HEIGHT}
+            itemHeight={ITEM_HEIGHT}
+            className="bg-transparent!"
+          >
+            <Picker.Column name="year">
+              {yearList.map((y, idx) => {
+                const distance = Math.abs(idx - selectedYearIdx);
                 return (
-                  <div
-                    key={y}
-                    className={`flex w-18 snap-center items-center justify-center leading-normal ${getStyleByDistance(distance)}`}
-                    style={{ height: ITEM_HEIGHT }}
-                  >
-                    {y}년
-                  </div>
+                  <Picker.Item key={y} value={String(y)}>
+                    <span className={`select-none ${getStyleByDistance(distance)}`}>
+                      {y}년
+                    </span>
+                  </Picker.Item>
                 );
               })}
-              <div style={{ height: SPACER_HEIGHT }} />
-            </div>
-
-            <div
-              ref={monthScrollRef}
-              onScroll={handleMonthScroll}
-              className="overflow-y-scroll snap-y snap-mandatory [&::-webkit-scrollbar]:hidden"
-              style={{
-                height: CONTAINER_HEIGHT,
-                scrollbarWidth: 'none',
-              }}
-            >
-              <div style={{ height: SPACER_HEIGHT }} />
-              {monthList.map((m, i) => {
-                const distance = Math.abs(i - monthIndex);
+            </Picker.Column>
+            <Picker.Column name="month">
+              {monthList.map((m, idx) => {
+                const distance = Math.abs(idx - selectedMonthIdx);
                 return (
-                  <div
-                    key={m}
-                    className={`flex w-13 snap-center items-center justify-center leading-normal ${getStyleByDistance(distance)}`}
-                    style={{ height: ITEM_HEIGHT }}
-                  >
-                    {m}월
-                  </div>
+                  <Picker.Item key={m} value={String(m)}>
+                    <span className={`select-none ${getStyleByDistance(distance)}`}>
+                      {m}월
+                    </span>
+                  </Picker.Item>
                 );
               })}
-              <div style={{ height: SPACER_HEIGHT }} />
-            </div>
-          </div>
+            </Picker.Column>
+          </Picker>
         </div>
 
         <div className="px-4.25 pt-6 pb-9">
           <button
             onClick={handleConfirm}
-            disabled={isCenteredDisabled}
+            disabled={isConfirmDisabled}
             className={`flex h-13.5 w-full items-center justify-center rounded-[10px] ${
-              isCenteredDisabled ? 'bg-[#CACDD2]' : 'bg-[#13278A]'
+              isConfirmDisabled ? 'bg-[#CACDD2]' : 'bg-[#13278A]'
             }`}
           >
             <span className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-white">
