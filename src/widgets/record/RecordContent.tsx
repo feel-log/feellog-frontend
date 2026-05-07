@@ -115,7 +115,7 @@ function formatDateDisplay(dateString: string): string {
 }
 
 export default function RecordContent() {
-  const { expenseCategories, emotions, situationTags } = useMasterData();
+  const { expenseCategories, emotions, situationTags, isLoading } = useMasterData();
   const searchParams = useSearchParams();
 
   const now = new Date();
@@ -137,12 +137,15 @@ export default function RecordContent() {
   const expenseDay = parseInt(selectedDate.split('-')[2]);
   const { data: dailyExpenseData = [] } = useDailyExpend(expenseYear, expenseMonth, expenseDay);
 
-  // 자산 edit 모드일 때 자산 데이터 로드
-  const { data: assetsData } = useGetAssets({
-    sort: 'LATEST',
-    page: 0,
-    size: 1000,
-  });
+  // 자산 edit 모드일 때만 자산 데이터 로드
+  const { data: assetsData } = useGetAssets(
+    {
+      sort: 'LATEST',
+      page: 0,
+      size: 1000,
+    },
+    isAssetEditMode
+  );
 
   const [record, setRecord] = useState<RecordState>({
     amount: 0,
@@ -649,10 +652,14 @@ export default function RecordContent() {
         {record.type === 'expense' && (
           <SelectField
             label="감정"
-            value={record.emotionIds?.map((emotionId: number) => {
-              const emotion = emotions.flatMap((g) => g.items).find((item) => item.id === emotionId);
-              return emotion ? `${emotion.label}` : '';
-            }).filter(Boolean).join(', ') ?? ''}
+            value={
+              record.emotionIds && record.emotionIds.length > 0
+                ? record.emotionIds.map((emotionId: number) => {
+                    const emotion = emotions.flatMap((g) => g.items).find((item) => item.id === emotionId);
+                    return emotion ? `${emotion.label}` : '';
+                  }).filter(Boolean).join(', ')
+                : ''
+            }
             placeholder="감정을 선택하세요"
             onClick={() => {
               setSelectedEmotions(record.emotionIds || []);
@@ -665,9 +672,15 @@ export default function RecordContent() {
         {record.type === 'expense' ? (
           <SelectField
             label="상황 태그 · 메모"
-            value={`${record.situationTagIds?.map((tagId: number) => {
-              return situationTags.find((item) => item.id === tagId)?.label;
-            }).filter(Boolean).join(', ') ?? ''}${record.situationTagIds && record.situationTagIds.length > 0 && record.memo ? ' / ' : ''}${record.memo ?? ''}`}
+            value={
+              `${
+                record.situationTagIds && record.situationTagIds.length > 0
+                  ? record.situationTagIds.map((tagId: number) => {
+                      return situationTags.find((item) => item.id === tagId)?.label;
+                    }).filter(Boolean).join(', ')
+                  : ''
+              }${record.situationTagIds && record.situationTagIds.length > 0 && record.memo ? ' / ' : ''}${record.memo ?? ''}`
+            }
             placeholder="상황 태그·메모를 입력하세요"
             onClick={() => {
               setTempTags([...(record.situationTagIds || [])]);
@@ -907,28 +920,34 @@ export default function RecordContent() {
           height={636}
         >
           <div className="flex flex-col gap-10">
-            {emotions.map((group) => (
-              <div key={group.group} className="flex flex-col gap-3">
-                <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
-                <div className="flex flex-wrap gap-2.5">
-                  {group.items.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => handleEmotionToggle(item.id)}
-                      className={cn(
-                        'flex h-8 px-4 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
-                        selectedEmotions.includes(item.id)
-                          ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
-                          : 'border-[#e5e5e5] text-[#27282c]'
-                      )}
-                    >
-                      {item.emoji && <Image src={item.emoji} alt={item.label} width={18} height={18} />}
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
+            {isLoading ? (
+              <div className="text-center py-10 text-[#9fa4a8]">데이터를 불러오는 중입니다...</div>
+            ) : emotions.length === 0 ? (
+              <div className="text-center py-10 text-[#9fa4a8]">감정 데이터를 불러올 수 없습니다.</div>
+            ) : (
+              emotions.map((group) => (
+                <div key={group.group} className="flex flex-col gap-3">
+                  <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
+                  <div className="flex flex-wrap gap-2.5">
+                    {group.items.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => handleEmotionToggle(item.id)}
+                        className={cn(
+                          'flex h-8 px-4 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
+                          selectedEmotions.includes(item.id)
+                            ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
+                            : 'border-[#e5e5e5] text-[#27282c]'
+                        )}
+                      >
+                        {item.emoji && <Image src={item.emoji} alt={item.label} width={18} height={18} />}
+                        <span>{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </BottomSheet>
       )}
@@ -970,20 +989,26 @@ export default function RecordContent() {
             <div className="flex flex-col gap-3">
               <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">상황 태그</h3>
               <div className="flex flex-wrap gap-2.5">
-                {situationTags.map((tag) => (
-                  <button
-                    key={tag.id}
-                    onClick={() => handleTagToggle(tag.id)}
-                    className={cn(
-                      'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
-                      tempTags.includes(tag.id)
-                        ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
-                        : 'border-[#e5e5e5] text-[#27282c]'
-                    )}
-                  >
-                    #{tag.label}
-                  </button>
-                ))}
+                {isLoading ? (
+                  <div className="text-[#9fa4a8]">데이터를 불러오는 중입니다...</div>
+                ) : situationTags.length === 0 ? (
+                  <div className="text-[#9fa4a8]">상황 태그 데이터를 불러올 수 없습니다.</div>
+                ) : (
+                  situationTags.map((tag) => (
+                    <button
+                      key={tag.id}
+                      onClick={() => handleTagToggle(tag.id)}
+                      className={cn(
+                        'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
+                        tempTags.includes(tag.id)
+                          ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
+                          : 'border-[#e5e5e5] text-[#27282c]'
+                      )}
+                    >
+                      #{tag.label}
+                    </button>
+                  ))
+                )}
               </div>
             </div>
 
