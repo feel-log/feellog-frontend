@@ -144,7 +144,7 @@ export default function RecordFieldsSection({
           label="메모"
           value={record.memo}
           placeholder="내용을 입력하세요"
-          onClick={onMemoClick}
+          onClick={onMemoClick || (() => {})}
         />
       )}
     </div>
