@@ -42,7 +42,7 @@ export default function RetroMain({
           },
         ]
       : []),
-  ].slice(0, 3);
+  ].slice(0, 2);
 
   const maxAmount = Math.max(...barItems.map((b) => b.amount), 1);
 

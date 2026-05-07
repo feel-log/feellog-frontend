@@ -32,11 +32,9 @@ function DonutChart({ categories }: { categories: CategoryChartCategory[] }) {
     return { ...cat, startDeg, segDeg, dashStartDeg: startDeg, dashDeg: segDeg };
   });
 
-  // 1위 segment의 1/3 지점에 떠있는 라벨 배치
+  // 1위 라벨은 항상 9시 방향(왼쪽 가운데)에 고정
   const topSegment = segments[0];
-  const topMidDeg = topSegment
-    ? topSegment.startDeg + topSegment.segDeg / 3
-    : 0;
+  const topMidDeg = 90;
   const topMidRad = (topMidDeg * Math.PI) / 180;
   const containerPx = 198;
   const center = containerPx / 2;

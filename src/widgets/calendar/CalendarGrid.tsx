@@ -60,6 +60,9 @@ function CalendarGrid({
   const isCurrentMonth =
     year === today.getFullYear() && month === today.getMonth();
   const todayDate = isCurrentMonth ? today.getDate() : -1;
+  const isFutureMonth =
+    year > today.getFullYear() ||
+    (year === today.getFullYear() && month > today.getMonth());
 
   const dates = getCalendarDates(year, month);
 
@@ -78,8 +81,13 @@ function CalendarGrid({
 
       <div className="grid flex-1 auto-rows-fr grid-cols-7">
         {dates.map((date, index) => {
-          const amounts = date.isCurrentMonth ? dailyAmounts[date.day] : undefined;
-          const isSelected = date.isCurrentMonth && date.day === selectedDay;
+          const isFutureDay =
+            date.isCurrentMonth &&
+            (isFutureMonth || (isCurrentMonth && date.day > todayDate));
+          const isInactive = !date.isCurrentMonth || isFutureDay;
+
+          const amounts = isInactive ? undefined : dailyAmounts[date.day];
+          const isSelected = !isInactive && date.day === selectedDay;
           const isToday = date.isCurrentMonth && date.day === todayDate;
           const otherDateSelected =
             selectedDay !== null && selectedDay !== todayDate;
@@ -91,18 +99,18 @@ function CalendarGrid({
             dayClass = 'rounded-[25px] bg-[#E5E5E5] text-[#1C1D1F]';
           } else if (isToday) {
             dayClass = 'rounded-[25px] bg-[#13278A] text-white';
-          } else if (date.isCurrentMonth) {
-            dayClass = 'text-[#1C1D1F]';
-          } else {
+          } else if (isInactive) {
             dayClass = 'text-[#9FA4A8]';
+          } else {
+            dayClass = 'text-[#1C1D1F]';
           }
 
           return (
             <div
               key={index}
-              onClick={() => date.isCurrentMonth && onDateClick?.(date.day)}
+              onClick={() => !isInactive && onDateClick?.(date.day)}
               className={`flex flex-col items-start gap-2.5 px-1.25 py-2 ${
-                date.isCurrentMonth ? 'cursor-pointer' : ''
+                !isInactive ? 'cursor-pointer' : ''
               }`}
             >
               <div

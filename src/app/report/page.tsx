@@ -79,7 +79,13 @@ export default function ReportPage() {
   const isLoadingData = !isMounted || !isLoaded || isLoading;
 
   return (
-    <Suspense fallback={<div>로딩중...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex flex-1 flex-col bg-white">
+          <PageHeader title="리포트" showBack={false} />
+        </div>
+      }
+    >
       <ReportContent />
     </Suspense>
   );
