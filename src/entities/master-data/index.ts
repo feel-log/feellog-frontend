@@ -6,5 +6,6 @@ export {
   type Category,
   type Emotion,
   type SituationTag,
+  type PaymentMethod,
 } from './model/master-data-schema';
 export { useMasterData } from './model/useMasterData';
