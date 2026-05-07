@@ -63,7 +63,7 @@ function buildEmotions(masterData?: MasterData): Emotion[] {
 function buildSituationTags(masterData?: MasterData): SituationTag[] {
   if (!masterData?.situationTags) return [];
 
-  return masterData.situationTags.map((tag) => ({
+  return masterData.situationTags.map((tag): SituationTag => ({
     label: tag.name,
     id: tag.id,
   }));
@@ -84,7 +84,6 @@ export function useMasterData() {
 
   const { data: masterData, isLoading } = useQuery({
     ...masterDataQueries.data(token || ''),
-    enabled: !!token,
   });
 
   const expenseCategories = useMemo(

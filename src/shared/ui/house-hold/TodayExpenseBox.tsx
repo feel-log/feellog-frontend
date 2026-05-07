@@ -17,8 +17,12 @@ const MIN_DATE = (() => {
   return date;
 })();
 
-export default function TodayExpenseBox() {
-  const { emotions, expenseCategories } = useMasterData();
+interface TodayExpenseBoxProps {
+  emotions: any[];
+  expenseCategories: any[];
+}
+
+export default function TodayExpenseBox({ emotions, expenseCategories }: TodayExpenseBoxProps) {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
   const { getUser } = useUser();
