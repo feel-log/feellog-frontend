@@ -60,13 +60,15 @@ export default function CommonFeature({ title, secondary, changeLogoutModal }: {
 
   return (
     <div className={'common__menu px-5 mb-4'}>
-      <h2 className={'mb-2 text-[14px] font-bold text-gray-500'}>{title}</h2>
+      <h2 className={'mb-2 text-[14px] font-medium text-gray-500'}>{title}</h2>
       {secondary === '푸시 알림' && (
         <div className={'flex justify-between items-center w-full'}>
           <span className={'text-[14px] font-bold'}>{secondary}</span>
           <button
-            className={`h-8 w-14.5 rounded-full relative bg-[#13278a] after:absolute after:top-0 after:bottom-0 after:my-auto after:h-5 after:w-5 after:rounded-full after:bg-white after:content-[''] transition-all ${
-              isPushedNotification ? 'after:right-1.5' : 'after:left-1.5 opacity-45'
+            className={`h-6 w-11 rounded-full relative transition-all ${
+              isPushedNotification ? 'bg-[#13278a]' : 'bg-[#E5E5E5]'
+            } after:absolute after:top-1/2 after:-translate-y-1/2 after:h-4 after:w-4 after:rounded-full after:bg-white after:content-[''] ${
+              isPushedNotification ? 'after:right-1' : 'after:left-1'
             } ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             onClick={switchNotification}
             disabled={isLoading}

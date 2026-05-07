@@ -7,7 +7,7 @@ export interface GreetingMessage {
 export const greetingMessages: GreetingMessage[] = [
   {
     title: '사고 싶은 건 한번 더 생각!',
-    secondary: '작은 절약이 큰 변화를 만들어요.',
+    secondary: '작은 절약이 큰 변화를 만들어요',
     image: '/svg/gm/pig.svg'
   },
   {

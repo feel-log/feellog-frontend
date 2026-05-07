@@ -88,7 +88,7 @@ export default function AssetContent() {
             아직 등록된 자산이 없어요
           </p>
           <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
-            자산을 등록하고 한눈에 관리해보세요.
+            자산을 등록하고 한눈에 관리해보세요
           </p>
         </div>
       ) : (

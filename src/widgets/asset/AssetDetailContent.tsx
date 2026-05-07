@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import PageHeader from '@/shared/ui/PageHeader';
 import Footer from '@/shared/ui/Footer';
 import SortButton, { SortType } from '@/shared/ui/SortButton';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { ASSET_CATEGORIES } from '@/shared/constants/assetData';
 import { useGetAssets } from '@/entities/get-assets/useGetAssets';
+import { deleteAssetApi } from '@/features/post-asset/api/post-asset-api';
+import { Trash2 } from 'lucide-react';
 
 interface AssetDetailContentProps {
   categoryId: string;
@@ -36,9 +40,14 @@ function formatRecordDate(date: string): string {
 }
 
 export default function AssetDetailContent({ categoryId }: AssetDetailContentProps) {
+  const router = useRouter();
   const category = ASSET_CATEGORIES.find(cat => cat.id === categoryId);
   const apiCategoryId = CATEGORY_ID_MAP[categoryId];
   const [sortType, setSortType] = useState<SortType>('latest');
+  const [swipedId, setSwipedId] = useState<number | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const touchStartX = useRef(0);
 
   const { data: assetsData, isLoading } = useGetAssets({
     categoryId: apiCategoryId,
@@ -46,6 +55,44 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
     page: 0,
     size: 100,
   });
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    touchStartX.current = e.clientX;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent, assetId: number) => {
+    const touchEndX = e.clientX;
+    const diff = touchStartX.current - touchEndX;
+
+    if (diff > 30) {
+      setSwipedId(assetId);
+      e.preventDefault();
+    } else if (diff < -30) {
+      setSwipedId(null);
+    }
+  };
+
+  const handleAssetClick = (e: React.MouseEvent, assetId: number) => {
+    const diff = Math.abs(touchStartX.current - e.clientX);
+    if (diff < 30) {
+      router.push(`/record?assetId=${assetId}&type=asset`);
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteTargetId === null) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteAssetApi(deleteTargetId);
+      setDeleteTargetId(null);
+      setSwipedId(null);
+      // 목록 새로고침을 위해 쿼리 재실행 (useGetAssets가 자동으로 처리)
+    } catch (error) {
+      alert('삭제 중 오류가 발생했습니다.');
+      setIsDeleting(false);
+    }
+  };
 
   if (!category) {
     return (
@@ -116,25 +163,62 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
         ) : (
           <div className="flex flex-col gap-5 mt-4">
             {records.map((record, idx) => (
-              <div key={idx} className="flex flex-col gap-0.75">
-                <div className="flex items-center justify-between">
-                  <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
-                    {formatRecordDate(record.assetDate)}
-                  </p>
-                  <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-                    {record.amount.toLocaleString()}원
-                  </p>
+              <div
+                key={idx}
+                className="relative overflow-hidden rounded-lg"
+                onPointerDown={handlePointerDown}
+                onPointerUp={(e) => handlePointerUp(e, record.assetId)}
+                style={{ touchAction: 'pan-y' }}
+              >
+                {/* 삭제 버튼 배경 */}
+                <div className="absolute inset-y-0 right-0 z-0 flex items-center justify-end pr-4">
+                  <button
+                    onClick={() => setDeleteTargetId(record.assetId)}
+                    className="bg-[#eb1c1c] text-white w-10 h-10 flex justify-center items-center rounded-full"
+                    aria-label="삭제"
+                  >
+                    <Trash2 size={24} />
+                  </button>
                 </div>
-                {record.memo && (
-                  <p className="text-right text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
-                    {record.memo}
-                  </p>
-                )}
+
+                {/* 컨텐츠 */}
+                <button
+                  className={`relative z-10 w-full text-left bg-white transition-transform duration-300 cursor-pointer flex flex-col gap-0.75 pb-3.75 ${
+                    swipedId === record.assetId ? 'translate-x-[-80px]' : ''
+                  }`}
+                  onClick={(e) => handleAssetClick(e, record.assetId)}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
+                      {formatRecordDate(record.assetDate)}
+                    </p>
+                    <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+                      {record.amount.toLocaleString()}원
+                    </p>
+                  </div>
+                  {record.memo && (
+                    <p className="text-right text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#9FA4A8]">
+                      {record.memo}
+                    </p>
+                  )}
+                </button>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* 삭제 확인 모달 */}
+      <ConfirmModal
+        isOpen={deleteTargetId !== null}
+        title="자산을 삭제하시겠어요?"
+        message="이 작업은 되돌릴 수 없습니다."
+        confirmText="삭제"
+        cancelText="취소"
+        isDangerous={true}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteTargetId(null)}
+      />
 
       <Footer />
     </div>
