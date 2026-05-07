@@ -9,6 +9,7 @@ import { incomeQueries } from '@/entities/income';
 import { masterDataQueries, type MasterData } from '@/entities/master-data';
 import CalendarHeader from '@/widgets/calendar/CalendarHeader';
 import CalendarGrid from '@/widgets/calendar/CalendarGrid';
+import CalendarSkeleton from '@/widgets/calendar/CalendarSkeleton';
 import DateBottomSheet from '@/widgets/calendar/DateBottomSheet';
 import PageHeader from '@/shared/ui/PageHeader';
 
@@ -53,20 +54,23 @@ export default function CalendarContent() {
   const { getAccessToken } = useToken();
   const token = getAccessToken();
 
-  const { data: expenses } = useQuery({
+  const { data: expenses, isLoading: isExpensesLoading } = useQuery({
     ...expenseQueries.monthly(token || '', year, month + 1),
     enabled: !!token,
   });
 
-  const { data: incomes } = useQuery({
+  const { data: incomes, isLoading: isIncomesLoading } = useQuery({
     ...incomeQueries.monthly(token || '', year, month + 1),
     enabled: !!token,
   });
 
-  const { data: masterData } = useQuery({
+  const { data: masterData, isLoading: isMasterDataLoading } = useQuery({
     ...masterDataQueries.data(token || ''),
     enabled: !!token,
   });
+
+  const isLoading =
+    !!token && (isExpensesLoading || isIncomesLoading || isMasterDataLoading);
 
   const { categoryMap, emotionMap, situationMap, paymentMethodMap } = useMemo(
     () => buildLookups(masterData),
@@ -152,6 +156,8 @@ export default function CalendarContent() {
       setMonth(month + 1);
     }
   };
+
+  if (isLoading) return <CalendarSkeleton />;
 
   return (
     <div className="flex flex-1 flex-col">

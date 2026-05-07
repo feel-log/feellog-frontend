@@ -9,6 +9,7 @@ import {
   type MonthlyExpenseItem,
 } from '@/entities/report';
 import PageHeader from '@/shared/ui/PageHeader';
+import Skeleton from '@/shared/ui/Skeleton';
 import SortButton, { type SortType } from '@/shared/ui/SortButton';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
 
@@ -153,6 +154,20 @@ export default function MonthlyExpenseContent() {
   const isDateSort = sortType === 'latest' || sortType === 'oldest';
   const totalAmount = data?.totalAmount ?? 0;
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 flex-col bg-white">
+        <PageHeader title="이번 달 지출" />
+        <div className="px-4 pt-3 pb-5">
+          <Skeleton className="h-9 w-40 rounded-[8px]" />
+        </div>
+        <div className="flex flex-1 flex-col px-4 pt-3 pb-6">
+          <Skeleton className="w-full flex-1 rounded-[12px]" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-1 flex-col bg-white">
       <PageHeader title="이번 달 지출" />
@@ -167,11 +182,7 @@ export default function MonthlyExpenseContent() {
         <SortButton sortType={sortType} onSortChange={setSortType} />
       </div>
 
-      {isLoading ? (
-        <div className="flex flex-1 items-center justify-center py-20">
-          <p className="text-[14px] text-[#9FA4A8]">불러오는 중...</p>
-        </div>
-      ) : sortedItems.length === 0 ? (
+      {sortedItems.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center py-20">
           <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#474C52]">
             아직 등록된 지출이 없어요

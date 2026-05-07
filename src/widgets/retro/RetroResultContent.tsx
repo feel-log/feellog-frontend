@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useToken } from '@/shared/store';
 import { reviewQueries } from '@/entities/review';
 import PageHeader from '@/shared/ui/PageHeader';
+import Skeleton from '@/shared/ui/Skeleton';
 
 function todayDateString(): string {
   const d = new Date();
@@ -33,8 +34,10 @@ export default function RetroResultContent() {
       />
 
       {isLoading || !data ? (
-        <div className="flex flex-1 items-center justify-center py-20">
-          <p className="text-[14px] text-[#9FA4A8]">불러오는 중...</p>
+        <div className="flex flex-col gap-6 px-4 pt-5 pb-25">
+          <Skeleton className="h-30 w-full rounded-xl" />
+          <Skeleton className="h-32 w-full rounded-xl" />
+          <Skeleton className="h-40 w-full rounded-xl" />
         </div>
       ) : (
         <div className="flex flex-col gap-10 px-4 pt-5 pb-25">
