@@ -15,7 +15,7 @@ import EmotionList from '@/widgets/report/EmotionList';
 import SituationTags from '@/widgets/report/SituationTags';
 import Footer from '@/shared/ui/Footer';
 import PageHeader from '@/shared/ui/PageHeader';
-import FullScreenLoader from '@/shared/ui/FullScreenLoader';
+import ReportSkeleton from '@/widgets/report/ReportSkeleton';
 import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
 
 const CATEGORY_COLORS = ['#13278A', '#1BC590', '#FFDB72', '#E5E5E5', '#FFFFFF'];
@@ -122,12 +122,17 @@ export default function ReportContent() {
 
   const isLoadingData = !isMounted || !isLoaded || isLoading;
 
+  if (isLoadingData) {
+    return (
+      <AuthGuard>
+        <ReportSkeleton />
+      </AuthGuard>
+    );
+  }
+
   return (
     <AuthGuard>
-      <FullScreenLoader isLoading={isLoadingData} />
-      <div
-        className={`flex flex-1 flex-col bg-white ${isLoadingData ? 'pointer-events-none' : ''}`}
-      >
+      <div className="flex flex-1 flex-col bg-white">
         <PageHeader title="리포트" showBack={false} />
 
         <div className="flex flex-col gap-6.25 px-4 pt-5 pb-30">

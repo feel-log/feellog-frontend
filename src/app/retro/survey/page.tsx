@@ -8,6 +8,7 @@ import { reviewQueries, upsertReviewApi } from '@/entities/review';
 import ChipSelect from '@/widgets/retro/ChipSelect';
 import ListSelect from '@/widgets/retro/ListSelect';
 import PageHeader from '@/shared/ui/PageHeader';
+import Skeleton from '@/shared/ui/Skeleton';
 
 function todayDateString(): string {
   const d = new Date();
@@ -70,8 +71,11 @@ export default function RetroSurveyPage() {
     return (
       <div className="flex flex-1 flex-col">
         <PageHeader title="회고하기" backHref="/retro" />
-        <div className="flex flex-1 items-center justify-center py-20">
-          <p className="text-[14px] text-[#9FA4A8]">불러오는 중...</p>
+        <div className="flex flex-col gap-6 px-4 pt-5 pb-36">
+          <Skeleton className="h-32 w-full rounded-[12px]" />
+          <Skeleton className="h-32 w-full rounded-[12px]" />
+          <Skeleton className="h-32 w-full rounded-[12px]" />
+          <Skeleton className="h-32 w-full rounded-[12px]" />
         </div>
       </div>
     );
@@ -198,7 +202,7 @@ export default function RetroSurveyPage() {
               : 'bg-[#E5E5E5] text-[#9FA4A8]'
           }`}
         >
-          {isPending ? '저장 중...' : '결과보기'}
+          결과보기
         </button>
       </div>
     </div>
