@@ -25,8 +25,8 @@ export function useGetAssets(params: GetAssetsParams) {
         const response = await getAssetsApi(params);
         const assetsWithCategory = response.assets.map(asset => ({
           ...asset,
-          assetCategoryId: params.categoryId,
-        }));
+          assetCategoryId: params.categoryId!,
+        })) as AssetItem[];
         const totalAmount = assetsWithCategory.reduce((sum, asset) => sum + asset.amount, 0);
         return {
           data: assetsWithCategory,
@@ -55,7 +55,7 @@ export function useGetAssets(params: GetAssetsParams) {
         const assetsWithCategory = (response.assets || []).map(asset => ({
           ...asset,
           assetCategoryId: categoryId,
-        }));
+        })) as AssetItem[];
         allAssets.push(...assetsWithCategory);
         categoryTotals[categoryId] = response.categoryTotalAmount || 0;
       });
