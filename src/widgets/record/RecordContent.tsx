@@ -1,14 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import PageHeader from '@/shared/ui/PageHeader';
-import BottomSheet from '@/shared/ui/BottomSheet';
-import Button from '@/shared/ui/Button';
-import SelectField from '@/shared/ui/SelectField';
 import { cn } from '@/shared/lib/utils';
-import KeyBoardUserExperience from '@/shared/ui/record/KeyBoardUserExperience';
 import { useToken, useUser } from '@/shared/store';
 import { useUserGetter } from '@/entities/user';
 import { useMasterData } from '@/entities/master-data';
@@ -16,106 +12,29 @@ import { useHouseHoldPost } from '@/features/post-house-hold/model/useHouseHoldP
 import { useUpdateExpense } from '@/features/update-expense/model/useUpdateExpense';
 import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
 import { useGetAssets } from '@/entities/get-assets/useGetAssets';
+import type { AssetItem } from '@/entities/get-assets/get-assets-api';
 import { usePostAsset } from '@/features/post-asset/model/usePostAsset';
 import { useUpdateAsset } from '@/features/post-asset/model/useUpdateAsset';
 import { usePostIncome } from '@/features/post-income/model/usePostIncome';
-import { evaluate } from 'mathjs';
-
-interface RecordState {
-  amount: number;
-  type: 'income' | 'expense';
-  date: string;
-  categoryId: number | null;
-  paymentMethodId: number | null;
-  emotionIds?: number[];
-  situationTagIds?: number[];
-  memo: string;
-}
-
-const INCOME_CATEGORIES = [
-  {
-    name: '급여',
-    id: 1,
-  },
-  {
-    name: '용돈',
-    id: 2,
-  },
-  {
-    name: '부수입',
-    id: 3,
-  },
-  {
-    name: '상여금',
-    id: 4,
-  },
-  {
-    name: '금융 수입',
-    id: 5,
-  },
-  {
-    name: '기타',
-    id: 6,
-  },
-];
-
-const ASSET_CATEGORIES = [
-  {
-    name: '급여',
-    id: 1,
-  },
-  {
-    name: '용돈',
-    id: 2,
-  },
-  {
-    name: '부수입',
-    id: 3,
-  },
-  {
-    name: '상여금',
-    id: 4,
-  },
-  {
-    name: '금융수입',
-    id: 5,
-  },
-  {
-    name: '기타',
-    id: 6,
-  },
-];
-
-const PAYMENT_METHODS = [
-  {
-    name: '카드',
-    id: 1,
-  },
-  {
-    name: '현금',
-    id: 2,
-  },
-  {
-    name: '계좌',
-    id: 3,
-  },
-  {
-    name: '기타',
-    id: 4,
-  },
-];
-
-const DAY_OF_WEEK = ['일', '월', '화', '수', '목', '금', '토'];
-
-function formatDateDisplay(dateString: string): string {
-  const [year, month, day] = dateString.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-  const dayOfWeek = DAY_OF_WEEK[date.getDay()];
-  return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
-}
+import type { DailyExpendType } from '@/entities/daily-expend/model/daily-expend-type';
+import {
+  formatDateDisplay,
+  calculateExpression,
+  getDisplayAmount,
+  RecordState
+} from '@/shared/utils/record';
+import { useAmountInput } from '@/shared/hooks/useAmountInput';
+import DatePickerBottomSheet from './DatePickerBottomSheet';
+import CategoryBottomSheet from './CategoryBottomSheet';
+import PaymentMethodBottomSheet from './PaymentMethodBottomSheet';
+import EmotionBottomSheet from './EmotionBottomSheet';
+import SituationMemoBottomSheet from './SituationMemoBottomSheet';
+import IncomeMemoBottomSheet from './IncomeMemoBottomSheet';
+import SaveButtonSection from './SaveButtonSection';
+import SelectField from '@/shared/ui/SelectField';
 
 export default function RecordContent() {
-  const { expenseCategories, emotions, situationTags, isLoading } = useMasterData();
+  const { expenseCategories, emotions, situationTags, paymentMethods, incomeCategories, isLoading } = useMasterData();
   const searchParams = useSearchParams();
 
   const now = new Date();
@@ -147,91 +66,211 @@ export default function RecordContent() {
     isAssetEditMode
   );
 
-  const [record, setRecord] = useState<RecordState>({
-    amount: 0,
-    type: initialType,
-    date: selectedDate,
-    categoryId: null,
-    paymentMethodId: null,
-    emotionIds: [],
-    situationTagIds: [],
-    memo: '',
-  });
-
-  // Edit 모드일 때 초기값 설정
-  useEffect(() => {
-    if (isEditMode && expenseIdParam && dailyExpenseData.length > 0) {
-      const expense = dailyExpenseData.find(
-        (e) => e.expenseId === parseInt(expenseIdParam)
-      );
-      if (expense) {
-        setRecord({
-          amount: expense.amount,
-          type: 'expense',
-          date: expense.expenseDate,
-          categoryId: expense.categoryId,
-          paymentMethodId: expense.paymentMethodId,
-          emotionIds: expense.emotionIds,
-          situationTagIds: expense.situationTagIds,
-          memo: expense.memo,
-        });
-        setAmountInput(expense.amount.toString());
-        setSelectedCategoryId(expense.categoryId);
-        setSelectedPaymentId(expense.paymentMethodId);
-        setSelectedEmotions(expense.emotionIds);
-        setTempTags(expense.situationTagIds);
-        setTempMemo(expense.memo);
-      }
-    }
+  // Memoize expense for stable reference
+  const targetExpense = useMemo(() => {
+    if (!isEditMode || !expenseIdParam || dailyExpenseData.length === 0) return null;
+    return dailyExpenseData.find((e) => e.expenseId === parseInt(expenseIdParam));
   }, [isEditMode, expenseIdParam, dailyExpenseData]);
 
-  // 자산 edit 모드일 때 초기값 설정
-  useEffect(() => {
-    if (!isAssetEditMode || !assetIdParam || !assetsData?.data) return;
+  // Memoize asset for stable reference
+  const targetAsset = useMemo(() => {
+    if (!isAssetEditMode || !assetIdParam || !assetsData?.data) return null;
+    const parsedAssetId = parseInt(assetIdParam);
+    return assetsData.data.find((a) => a.assetId === parsedAssetId);
+  }, [isAssetEditMode, assetIdParam, assetsData]);
 
-    try {
-      const assetsList = assetsData.data;
-      const parsedAssetId = parseInt(assetIdParam);
-      const asset = assetsList.find((a) => a.assetId === parsedAssetId);
+  interface FormState {
+    record: RecordState;
+    selectedCategoryId: number | null;
+    selectedPaymentId: number | null;
+    selectedEmotions: number[];
+    tempTags: number[];
+    tempMemo: string;
+    memoInput: string;
+    tempDate: string;
+    isDateSelected: boolean;
+    isCategoryOpen: boolean;
+    isPaymentOpen: boolean;
+    isEmotionOpen: boolean;
+    isMemoOpen: boolean;
+    isSituationOpen: boolean;
+    isDateOpen: boolean;
+  }
 
-      if (asset && asset.assetCategoryId) {
-        setRecord({
-          amount: asset.amount,
-          type: 'income',
-          date: asset.assetDate,
-          categoryId: asset.assetCategoryId,
-          paymentMethodId: null,
-          emotionIds: [],
-          situationTagIds: [],
-          memo: asset.memo || '',
-        });
-        setAmountInput(asset.amount.toString());
-        setSelectedCategoryId(asset.assetCategoryId);
-        setTempMemo(asset.memo || '');
-      }
-    } catch (error) {
-      console.error('Error loading asset for edit:', error);
+  type FormAction =
+    | { type: 'LOAD_EXPENSE'; payload: DailyExpendType }
+    | { type: 'LOAD_ASSET'; payload: AssetItem }
+    | { type: 'SET_RECORD'; payload: RecordState }
+    | { type: 'SET_CATEGORY'; payload: number | null }
+    | { type: 'SET_PAYMENT'; payload: number | null }
+    | { type: 'SET_EMOTIONS'; payload: number[] }
+    | { type: 'SET_TAGS'; payload: number[] }
+    | { type: 'SET_MEMO'; payload: string }
+    | { type: 'SET_MEMO_INPUT'; payload: string }
+    | { type: 'SET_DATE'; payload: string }
+    | { type: 'SET_DATE_SELECTED'; payload: boolean }
+    | { type: 'SET_CATEGORY_OPEN'; payload: boolean }
+    | { type: 'SET_PAYMENT_OPEN'; payload: boolean }
+    | { type: 'SET_EMOTION_OPEN'; payload: boolean }
+    | { type: 'SET_MEMO_OPEN'; payload: boolean }
+    | { type: 'SET_SITUATION_OPEN'; payload: boolean }
+    | { type: 'SET_DATE_OPEN'; payload: boolean };
+
+  const initialFormState: FormState = {
+    record: {
+      amount: 0,
+      type: initialType,
+      date: selectedDate,
+      categoryId: null,
+      paymentMethodId: null,
+      emotionIds: [],
+      situationTagIds: [],
+      memo: '',
+    },
+    selectedCategoryId: null,
+    selectedPaymentId: null,
+    selectedEmotions: [],
+    tempTags: [],
+    tempMemo: '',
+    memoInput: '',
+    tempDate: selectedDate,
+    isDateSelected: false,
+    isCategoryOpen: false,
+    isPaymentOpen: false,
+    isEmotionOpen: false,
+    isMemoOpen: false,
+    isSituationOpen: false,
+    isDateOpen: false,
+  };
+
+  const formReducer = (state: FormState, action: FormAction): FormState => {
+    switch (action.type) {
+      case 'LOAD_EXPENSE':
+        return {
+          ...state,
+          record: {
+            amount: action.payload.amount,
+            type: 'expense',
+            date: action.payload.expenseDate,
+            categoryId: action.payload.categoryId,
+            paymentMethodId: action.payload.paymentMethodId,
+            emotionIds: action.payload.emotionIds,
+            situationTagIds: action.payload.situationTagIds,
+            memo: action.payload.memo,
+          },
+          selectedCategoryId: action.payload.categoryId,
+          selectedPaymentId: action.payload.paymentMethodId,
+          selectedEmotions: action.payload.emotionIds,
+          tempTags: action.payload.situationTagIds,
+          tempMemo: action.payload.memo,
+        };
+      case 'LOAD_ASSET':
+        return {
+          ...state,
+          record: {
+            amount: action.payload.amount,
+            type: 'income',
+            date: action.payload.assetDate,
+            categoryId: action.payload.assetCategoryId,
+            paymentMethodId: null,
+            emotionIds: [],
+            situationTagIds: [],
+            memo: action.payload.memo || '',
+          },
+          selectedCategoryId: action.payload.assetCategoryId,
+          tempMemo: action.payload.memo || '',
+        };
+      case 'SET_RECORD':
+        return { ...state, record: action.payload };
+      case 'SET_CATEGORY':
+        return { ...state, selectedCategoryId: action.payload };
+      case 'SET_PAYMENT':
+        return { ...state, selectedPaymentId: action.payload };
+      case 'SET_EMOTIONS':
+        return { ...state, selectedEmotions: action.payload };
+      case 'SET_TAGS':
+        return { ...state, tempTags: action.payload };
+      case 'SET_MEMO':
+        return { ...state, tempMemo: action.payload };
+      case 'SET_MEMO_INPUT':
+        return { ...state, memoInput: action.payload };
+      case 'SET_DATE':
+        return { ...state, tempDate: action.payload };
+      case 'SET_DATE_SELECTED':
+        return { ...state, isDateSelected: action.payload };
+      case 'SET_CATEGORY_OPEN':
+        return { ...state, isCategoryOpen: action.payload };
+      case 'SET_PAYMENT_OPEN':
+        return { ...state, isPaymentOpen: action.payload };
+      case 'SET_EMOTION_OPEN':
+        return { ...state, isEmotionOpen: action.payload };
+      case 'SET_MEMO_OPEN':
+        return { ...state, isMemoOpen: action.payload };
+      case 'SET_SITUATION_OPEN':
+        return { ...state, isSituationOpen: action.payload };
+      case 'SET_DATE_OPEN':
+        return { ...state, isDateOpen: action.payload };
+      default:
+        return state;
     }
-  }, [isAssetEditMode, assetIdParam, assetsData?.data]);
+  };
 
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
-  const [isEmotionOpen, setIsEmotionOpen] = useState(false);
-  const [isMemoOpen, setIsMemoOpen] = useState(false);
-  const [isSituationOpen, setIsSituationOpen] = useState(false);
-  const [isDateOpen, setIsDateOpen] = useState(false);
+  const [formState, dispatch] = useReducer(formReducer, initialFormState);
+  const {
+    record,
+    selectedCategoryId,
+    selectedPaymentId,
+    selectedEmotions,
+    tempTags,
+    tempMemo,
+    memoInput,
+    tempDate,
+    isDateSelected,
+    isCategoryOpen,
+    isPaymentOpen,
+    isEmotionOpen,
+    isMemoOpen,
+    isSituationOpen,
+    isDateOpen,
+  } = formState;
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
-  const [selectedPaymentId, setSelectedPaymentId] = useState<number | null>(null);
-  const [selectedEmotions, setSelectedEmotions] = useState<number[]>([]);
-  const [memoInput, setMemoInput] = useState('');
-  const [tempTags, setTempTags] = useState<number[]>([]);
-  const [tempMemo, setTempMemo] = useState('');
-  const [isDateSelected, setIsDateSelected] = useState(false);
+  const setRecord = (newRecord: RecordState | ((prev: RecordState) => RecordState)) => {
+    if (typeof newRecord === 'function') {
+      dispatch({ type: 'SET_RECORD', payload: newRecord(record) });
+    } else {
+      dispatch({ type: 'SET_RECORD', payload: newRecord });
+    }
+  };
+  const setSelectedCategoryId = (id: number | null) => dispatch({ type: 'SET_CATEGORY', payload: id });
+  const setSelectedPaymentId = (id: number | null) => dispatch({ type: 'SET_PAYMENT', payload: id });
+  const setSelectedEmotions = (emotions: number[]) => dispatch({ type: 'SET_EMOTIONS', payload: emotions });
+  const setTempTags = (tags: number[]) => dispatch({ type: 'SET_TAGS', payload: tags });
+  const setTempMemo = (memo: string) => dispatch({ type: 'SET_MEMO', payload: memo });
+  const setMemoInput = (memo: string) => dispatch({ type: 'SET_MEMO_INPUT', payload: memo });
+  const setTempDate = (date: string) => dispatch({ type: 'SET_DATE', payload: date });
+  const setIsDateSelected = (selected: boolean) => dispatch({ type: 'SET_DATE_SELECTED', payload: selected });
+  const setIsCategoryOpen = (open: boolean) => dispatch({ type: 'SET_CATEGORY_OPEN', payload: open });
+  const setIsPaymentOpen = (open: boolean) => dispatch({ type: 'SET_PAYMENT_OPEN', payload: open });
+  const setIsEmotionOpen = (open: boolean) => dispatch({ type: 'SET_EMOTION_OPEN', payload: open });
+  const setIsMemoOpen = (open: boolean) => dispatch({ type: 'SET_MEMO_OPEN', payload: open });
+  const setIsSituationOpen = (open: boolean) => dispatch({ type: 'SET_SITUATION_OPEN', payload: open });
+  const setIsDateOpen = (open: boolean) => dispatch({ type: 'SET_DATE_OPEN', payload: open });
 
+  const { amountInput, setAmountInput, isAmountEditing, setIsAmountEditing, handleAmountChange, displayAmount } = useAmountInput();
 
-  const [amountInput, setAmountInput] = useState(''); // amount 값
-  const [isAmountEditing, setIsAmountEditing] = useState(false);
+  useEffect(() => {
+    if (targetExpense) {
+      dispatch({ type: 'LOAD_EXPENSE', payload: targetExpense });
+      setAmountInput(targetExpense.amount.toString());
+    }
+  }, [targetExpense, setAmountInput]);
+
+  useEffect(() => {
+    if (targetAsset) {
+      dispatch({ type: 'LOAD_ASSET', payload: targetAsset });
+      setAmountInput(targetAsset.amount.toString());
+    }
+  }, [targetAsset, setAmountInput]);
 
   // userId 가져오기
   const { getAccessToken } = useToken();
@@ -240,78 +279,6 @@ export default function RecordContent() {
   const { getUser } = useUser();
   const user = getUser();
 
-  const [calendarMonth, setCalendarMonth] = useState(() => {
-    const [year, month] = selectedDate.split('-').map(Number);
-    return { year, month };
-  });
-  const [tempDate, setTempDate] = useState(selectedDate);
-
-  const calculateExpression = (expression: string): number => {
-    try {
-      if (!expression || expression.trim() === '') {
-        return 0;
-      }
-      const normalized = expression.replace(/,00/g, '.00').replace(/,000/g, '.000');
-
-      const result = evaluate(normalized);
-      return Math.round((result || 0) * 100) / 100;
-    } catch {
-      // eval 에러 시 마지막 숫자만 추출
-      const numbers = expression.match(/\d+/g);
-      return numbers ? parseInt(numbers[numbers.length - 1]) : 0;
-    }
-  };
-
-  const getDisplayAmount = (): number => {
-    if (!amountInput) return 0;
-    try {
-      const normalized = amountInput.replace(/,00/g, '.00').replace(/,000/g, '.000');
-      const result = evaluate(normalized);
-      return Math.round((result || 0) * 100) / 100;
-    } catch {
-      // 에러 시 마지막 숫자 반환
-      const numbers = amountInput.match(/\d+/g);
-      return numbers ? parseInt(numbers[numbers.length - 1]) : 0;
-    }
-  };
-
-  const handleAmountChange = (value: string) => {
-    if (value === 'equals') {
-      const calculated = calculateExpression(amountInput);
-      setAmountInput(calculated.toString());
-      setRecord((rec) => ({
-        ...rec,
-        amount: calculated,
-      }));
-      setIsAmountEditing(false);
-    } else {
-      setAmountInput((prev) => {
-        let result = prev;
-
-        if (value === 'backspace') {
-          result = prev.slice(0, -1);
-        } else if (value === '+' || value === '-' || value === '*' || value === '/') {
-          if (!/[+\-*/]$/.test(result) && result !== '') {
-            const calculated = calculateExpression(result);
-            result = calculated.toString() + value;
-          } else if (result === '') {
-            result = '0' + value;
-          }
-        } else if (value === ',00' || value === ',000') {
-          const zeros = value === ',00' ? '00' : '000';
-          if (!/[+\-*/]$/.test(result)) {
-            result = prev + zeros;
-          }
-        } else {
-          if (result.length < 15) {
-            result = prev + value;
-          }
-        }
-
-        return result;
-      });
-    }
-  };
 
   const handleCategorySelect = (category: number) => {
     setSelectedCategoryId(category);
@@ -386,55 +353,6 @@ export default function RecordContent() {
     } else if (tempTags.length < 2) {
       setTempTags([...tempTags, tagId]);
     }
-  };
-
-  const getDaysInMonth = (year: number, month: number) => {
-    return new Date(year, month, 0).getDate();
-  };
-
-  const getFirstDayOfMonth = (year: number, month: number) => {
-    return new Date(year, month - 1, 1).getDay();
-  };
-
-  const getCalendarDays = () => {
-    const { year, month } = calendarMonth;
-    const daysInMonth = getDaysInMonth(year, month);
-    const firstDay = getFirstDayOfMonth(year, month);
-    const prevMonth = month === 1 ? 12 : month - 1;
-    const prevYear = month === 1 ? year - 1 : year;
-    const daysInPrevMonth = getDaysInMonth(prevYear, prevMonth);
-
-    const days = [];
-
-    for (let i = firstDay - 1; i >= 0; i--) {
-      days.push({
-        day: daysInPrevMonth - i,
-        isCurrentMonth: false,
-        date: `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(daysInPrevMonth - i).padStart(2, '0')}`,
-      });
-    }
-
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push({
-        day: i,
-        isCurrentMonth: true,
-        date: `${year}-${String(month).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
-      });
-    }
-
-    const TOTAL_CELLS = 42;
-    const remaining = TOTAL_CELLS - days.length;
-    const nextMonth = month === 12 ? 1 : month + 1;
-    const nextYear = month === 12 ? year + 1 : year;
-    for (let i = 1; i <= remaining; i++) {
-      days.push({
-        day: i,
-        isCurrentMonth: false,
-        date: `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
-      });
-    }
-
-    return days;
   };
 
   const nowForTime = new Date();
@@ -530,6 +448,14 @@ export default function RecordContent() {
     }
   };
 
+  const handleAmountChangeCallback = (value: string) => {
+    const newAmount = handleAmountChange(value);
+    setRecord((rec) => ({
+      ...rec,
+      amount: newAmount,
+    }));
+  };
+
   return (
     <div className="min-h-dvh bg-white" onClick={handleOutsideClick}>
       <PageHeader title={isEditMode ? '지출 수정' : isAssetEditMode ? '자산 수정' : isAssetMode ? '자산 추가' : '가계부'} />
@@ -548,12 +474,12 @@ export default function RecordContent() {
                 'text-[28px] font-semibold tracking-[-0.025em]',
                 !isAssetMode && 'pb-4',
                 record.type === 'expense' &&
-                  (isAmountEditing ? getDisplayAmount() : record.amount) !== 0
+                  (isAmountEditing ? getDisplayAmount(amountInput) : record.amount) !== 0
                   ? 'text-[#eb1c1c]'
                   : 'text-[#030303]'
               )}
             >
-              {isAmountEditing ? getDisplayAmount().toLocaleString() : record.amount.toLocaleString()}원
+              {isAmountEditing ? getDisplayAmount(amountInput).toLocaleString() : record.amount.toLocaleString()}원
             </h2>
             <button
               onClick={() => {
@@ -611,10 +537,6 @@ export default function RecordContent() {
           isDefault={!isDateSelected}
           onClick={() => {
             setTempDate(record.date);
-            setCalendarMonth(() => {
-              const [year, month] = record.date.split('-').map(Number);
-              return { year, month };
-            });
             setIsDateOpen(true);
           }}
         />
@@ -623,7 +545,7 @@ export default function RecordContent() {
         {record.type === 'expense' && (
           <SelectField
             label="결제 수단"
-            value={record.paymentMethodId ? PAYMENT_METHODS[record.paymentMethodId - 1].name : null}
+            value={record.paymentMethodId ? paymentMethods.find(m => m.id === record.paymentMethodId)?.label ?? null : null}
             placeholder="결제 수단을 선택하세요"
             onClick={() => setIsPaymentOpen(true)}
           />
@@ -634,9 +556,9 @@ export default function RecordContent() {
           label="카테고리"
           value={
             isAssetMode
-              ? ASSET_CATEGORIES.find((c) => c.id === record.categoryId)?.name ?? ''
+              ? incomeCategories.find((c) => c.id === record.categoryId)?.label ?? ''
               : record.type === 'income'
-              ? INCOME_CATEGORIES.find((c) => c.id === record.categoryId)?.name ?? ''
+              ? incomeCategories.find((c) => c.id === record.categoryId)?.label ?? ''
               : expenseCategories
                 .flatMap((g) => g.items)
                 .find((item) => item.id === record.categoryId)?.label ?? ''
@@ -702,348 +624,86 @@ export default function RecordContent() {
       </div>
 
       {/* Date Picker Bottom Sheet */}
-      <BottomSheet
+      <DatePickerBottomSheet
         isOpen={isDateOpen}
-        title="날짜를 선택해주세요"
+        selectedDate={record.date}
+        today={today}
         onClose={() => setIsDateOpen(false)}
         onSave={handleDateSave}
-        height={636}
-      >
-        <div>
-          <div className="mb-5 flex items-center gap-5">
-            <button
-              onClick={() => {
-                if (calendarMonth.month === 1) {
-                  setCalendarMonth({ year: calendarMonth.year - 1, month: 12 });
-                } else {
-                  setCalendarMonth({ ...calendarMonth, month: calendarMonth.month - 1 });
-                }
-              }}
-              className="cursor-pointer"
-              aria-label="이전 달"
-            >
-              <Image src={'/svg/icon_arrow_left_fill.svg'} alt={'left'} width={30} height={30} />
-            </button>
-            <h3 className="min-w-13.5 text-center text-[20px] font-bold tracking-[-0.025em] text-[#27282c]">
-              {calendarMonth.year === 2026 ? `${calendarMonth.month}월` : `${calendarMonth.year}년 ${calendarMonth.month}월`}
-            </h3>
-            <button
-              onClick={() => {
-                if (calendarMonth.month === 12) {
-                  setCalendarMonth({ year: calendarMonth.year + 1, month: 1 });
-                } else {
-                  setCalendarMonth({ ...calendarMonth, month: calendarMonth.month + 1 });
-                }
-              }}
-              disabled={calendarMonth.year > now.getFullYear() || (calendarMonth.year === now.getFullYear() && calendarMonth.month >= now.getMonth() + 1)}
-              className={cn(
-                'transition-opacity',
-                calendarMonth.year > now.getFullYear() || (calendarMonth.year === now.getFullYear() && calendarMonth.month >= now.getMonth() + 1)
-                  ? 'cursor-not-allowed opacity-40'
-                  : 'cursor-pointer'
-              )}
-              aria-label="다음 달"
-            >
-              <Image
-                src={'/svg/icon_arrow_left_fill.svg'}
-                alt={'right'}
-                width={30}
-                height={30}
-                className={'rotate-180'}
-              />
-            </button>
-          </div>
-
-          <div className="mb-5 grid grid-cols-7 text-center">
-            {DAY_OF_WEEK.map((day) => (
-              <div key={day} className="text-[14px] font-medium tracking-[-0.025em] text-[#73787e]">
-                {day}
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-7 gap-y-5 text-center">
-            {getCalendarDays().map((item, idx) => {
-              const isSelected = item.date === tempDate;
-              const isFutureDate = new Date(item.date) > new Date(today);
-              const handleDayClick = () => {
-                if (isFutureDate) return;
-                if (!item.isCurrentMonth) {
-                  const [y, m] = item.date.split('-').map(Number);
-                  setCalendarMonth({ year: y, month: m });
-                }
-                setTempDate(item.date);
-              };
-              return (
-                <button
-                  key={idx}
-                  onClick={handleDayClick}
-                  disabled={isFutureDate}
-                  className={cn(
-                    'relative mx-auto flex h-7.5 w-7.5 items-center justify-center text-[18px] font-semibold tracking-[-0.025em] transition-colors',
-                    isFutureDate
-                      ? 'cursor-not-allowed text-[#d0d0d0] opacity-50'
-                      : isSelected
-                        ? 'rounded-full bg-[#13278a] text-white cursor-pointer'
-                        : item.isCurrentMonth
-                          ? 'text-[#030303] cursor-pointer'
-                          : 'text-[#9fa4a8] cursor-pointer'
-                  )}
-                >
-                  {item.day}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </BottomSheet>
+      />
 
       {/* Category Bottom Sheet */}
-      <BottomSheet
+      <CategoryBottomSheet
         isOpen={isCategoryOpen}
-        title="카테고리를 선택해주세요"
-        subtitle={record.type === 'expense' ? '한 가지만 선택할 수 있어요' : undefined}
-        onClose={() => {
-          setIsCategoryOpen(false);
-          setSelectedCategoryId(null);
-        }}
+        recordType={record.type}
+        isAssetMode={isAssetMode}
+        expenseCategories={expenseCategories}
+        incomeCategories={incomeCategories.map(cat => ({ id: cat.id, name: cat.label }))}
+        assetCategories={incomeCategories.map(cat => ({ id: cat.id, name: cat.label }))}
+        selectedCategoryId={selectedCategoryId}
+        onCategorySelect={handleCategorySelect}
+        onClose={() => setIsCategoryOpen(false)}
         onSave={handleCategorySave}
-        isSaveDisabled={selectedCategoryId === null}
-        height={record.type === 'expense' ? 636 : 492}
-      >
-        {isAssetMode ? (
-          <div className="flex flex-wrap gap-2.5">
-            {ASSET_CATEGORIES.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => handleCategorySelect(category.id)}
-                className={cn(
-                  'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
-                  selectedCategoryId === category.id
-                    ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
-                    : 'border-[#e5e5e5] text-[#474c52]'
-                )}
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
-        ) : record.type === 'income' ? (
-          <div className="flex flex-wrap gap-2.5">
-            {INCOME_CATEGORIES.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => handleCategorySelect(category.id)}
-                className={cn(
-                  'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
-                  selectedCategoryId === category.id
-                    ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
-                    : 'border-[#e5e5e5] text-[#474c52]'
-                )}
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-10">
-            {expenseCategories.map((group) => (
-              <div key={group.group} className="flex flex-col gap-3">
-                <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
-                <div className="flex flex-wrap gap-2.5">
-                  {group.items.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => handleCategorySelect(item.id)}
-                      className={cn(
-                        'flex h-8 px-4 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
-                        selectedCategoryId === item.id
-                          ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
-                          : 'border-[#e5e5e5] text-[#474c52]'
-                      )}
-                    >
-                      <span>{item.emoji}</span>
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </BottomSheet>
+      />
 
       {/* Payment Method Bottom Sheet (Expense Only) */}
       {record.type === 'expense' && (
-        <BottomSheet
+        <PaymentMethodBottomSheet
           isOpen={isPaymentOpen}
-          title="결제 수단을 선택해주세요"
-          onClose={() => {
-            setIsPaymentOpen(false);
-            setSelectedPaymentId(null);
-          }}
+          selectedPaymentId={selectedPaymentId}
+          paymentMethods={paymentMethods.map(method => ({ id: method.id, name: method.label }))}
+          onPaymentSelect={setSelectedPaymentId}
+          onClose={() => setIsPaymentOpen(false)}
           onSave={handlePaymentSave}
-          isSaveDisabled={selectedPaymentId === null}
-          height={492}
-        >
-          <div className="flex flex-wrap gap-2.5">
-            {PAYMENT_METHODS.map((method) => (
-              <button
-                key={method.id}
-                onClick={() => setSelectedPaymentId(method.id)}
-                className={cn(
-                  'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
-                  selectedPaymentId === method.id
-                    ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
-                    : 'border-[#e5e5e5] text-[#474c52]'
-                )}
-              >
-                {method.name}
-              </button>
-            ))}
-          </div>
-        </BottomSheet>
+        />
       )}
 
       {/* Emotion Bottom Sheet (Expense Only) */}
       {record.type === 'expense' && (
-        <BottomSheet
+        <EmotionBottomSheet
           isOpen={isEmotionOpen}
-          title="지출할 때의 감정을 선택해주세요"
-          subtitle="세 가지까지 선택할 수 있어요"
-          onClose={() => {
-            setIsEmotionOpen(false);
-            setSelectedEmotions([]);
-          }}
+          emotions={emotions}
+          selectedEmotions={selectedEmotions}
+          isLoading={isLoading}
+          onEmotionToggle={handleEmotionToggle}
+          onClose={() => setIsEmotionOpen(false)}
           onSave={handleEmotionSave}
-          isSaveDisabled={false}
-          height={636}
-        >
-          <div className="flex flex-col gap-10">
-            {isLoading ? (
-              <div className="text-center py-10 text-[#9fa4a8]">데이터를 불러오는 중입니다...</div>
-            ) : emotions.length === 0 ? (
-              <div className="text-center py-10 text-[#9fa4a8]">감정 데이터를 불러올 수 없습니다.</div>
-            ) : (
-              emotions.map((group) => (
-                <div key={group.group} className="flex flex-col gap-3">
-                  <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
-                  <div className="flex flex-wrap gap-2.5">
-                    {group.items.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => handleEmotionToggle(item.id)}
-                        className={cn(
-                          'flex h-8 px-4 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
-                          selectedEmotions.includes(item.id)
-                            ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
-                            : 'border-[#e5e5e5] text-[#27282c]'
-                        )}
-                      >
-                        {item.emoji && <Image src={item.emoji} alt={item.label} width={18} height={18} />}
-                        <span>{item.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </BottomSheet>
+        />
       )}
 
       {/* Memo Bottom Sheet (Income) */}
       {record.type === 'income' && (
-        <BottomSheet
+        <IncomeMemoBottomSheet
           isOpen={isMemoOpen}
-          title="메모를 입력해주세요"
+          memoInput={memoInput}
+          onMemoChange={setMemoInput}
           onClose={() => setIsMemoOpen(false)}
           onSave={handleMemoSave}
-          height={429}
-        >
-          <textarea
-            value={memoInput}
-            onChange={(e) => setMemoInput(e.target.value.slice(0, 50))}
-            placeholder="50자 이내로 입력해주세요"
-            autoFocus
-            className="h-25.25 w-full resize-none rounded-[10px] border border-[#e5e5e5] p-4 text-[16px] font-medium tracking-[-0.025em] text-[#27282c] placeholder:font-medium placeholder:text-[#9fa4a8] focus:border-[#13278a] focus:outline-none"
-          />
-          <div className="mt-2 text-right text-[14px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
-            {memoInput.length}/50
-          </div>
-        </BottomSheet>
+        />
       )}
 
       {/* Situation Tags & Memo Bottom Sheet (Expense) */}
       {record.type === 'expense' && (
-        <BottomSheet
+        <SituationMemoBottomSheet
           isOpen={isSituationOpen}
-          title="상황 태그 · 메모를 입력해주세요"
-          subtitle="상황 태그는 두 가지만 선택할 수 있어요"
+          situationTags={situationTags}
+          tempTags={tempTags}
+          tempMemo={tempMemo}
+          isLoading={isLoading}
+          onTagToggle={handleTagToggle}
+          onMemoChange={setTempMemo}
           onClose={() => setIsSituationOpen(false)}
           onSave={handleSituationSave}
-          height={650}
-        >
-          <div className="flex flex-col gap-10">
-            {/* 상황 태그 Section */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">상황 태그</h3>
-              <div className="flex flex-wrap gap-2.5">
-                {isLoading ? (
-                  <div className="text-[#9fa4a8]">데이터를 불러오는 중입니다...</div>
-                ) : situationTags.length === 0 ? (
-                  <div className="text-[#9fa4a8]">상황 태그 데이터를 불러올 수 없습니다.</div>
-                ) : (
-                  situationTags.map((tag) => (
-                    <button
-                      key={tag.id}
-                      onClick={() => handleTagToggle(tag.id)}
-                      className={cn(
-                        'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
-                        tempTags.includes(tag.id)
-                          ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
-                          : 'border-[#e5e5e5] text-[#27282c]'
-                      )}
-                    >
-                      #{tag.label}
-                    </button>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* 메모 Section */}
-            <div className="flex flex-col gap-2">
-              <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">메모</h3>
-              <textarea
-                value={tempMemo}
-                onChange={(e) => setTempMemo(e.target.value.slice(0, 50))}
-                placeholder="50자 이내로 입력해주세요"
-                className="h-25.25 w-full resize-none rounded-[10px] border border-[#e5e5e5] p-4 text-[16px] font-medium tracking-[-0.025em] text-[#27282c] placeholder:font-medium placeholder:text-[#9fa4a8] focus:border-[#13278a] focus:outline-none"
-              />
-              <div className="text-right text-[14px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
-                {tempMemo.length}/50
-              </div>
-            </div>
-          </div>
-        </BottomSheet>
+        />
       )}
 
       {/* Save Button */}
-      <div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md bg-white" onClick={(e) => e.stopPropagation()}>
-        {!isAmountEditing && (
-          <div className="px-4 pt-6 pb-12">
-            <Button
-              size="lg"
-              onClick={submitHouseHoldPost}
-              disabled={!isFormValid()}
-            >
-              저장
-            </Button>
-          </div>
-        )}
-        {isAmountEditing && <KeyBoardUserExperience changeAmount={handleAmountChange} />}
-      </div>
+      <SaveButtonSection
+        isAmountEditing={isAmountEditing}
+        isFormValid={isFormValid()}
+        onSubmit={submitHouseHoldPost}
+        onAmountChange={handleAmountChangeCallback}
+      />
     </div>
   );
 }
