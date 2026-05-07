@@ -6,7 +6,6 @@ import { QueryProvider } from '@/shared/lib/QueryProvider';
 import { KakaoScript } from '@/shared/lib/KakaoScript';
 import { GoogleScript } from '@/shared/lib/GoogleScript';
 import { Header } from '@/shared/ui';
-import StatusBar from '@/shared/ui/StatusBar';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +39,6 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#3B82F6",
 };
 
 export default function RootLayout({
@@ -59,7 +57,6 @@ export default function RootLayout({
         <KakaoScript />
         <GoogleScript />
         <BackgroundProvider>
-          <StatusBar />
           {children}
         </BackgroundProvider>
         </body>
