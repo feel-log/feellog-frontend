@@ -31,10 +31,10 @@ function buildLookups(masterData?: MasterData) {
     g.categories.forEach((c) => categoryMap.set(c.id, c.name)),
   );
   masterData?.emotionGroups.forEach((g) =>
-    g.emotions.forEach((e) => emotionMap.set(e.emotionId, e.emotionName)),
+    g.emotions.forEach((e) => emotionMap.set(e.id, e.name)),
   );
   masterData?.situationTags.forEach((s) =>
-    situationMap.set(s.situationTagId, s.situationName),
+    situationMap.set(s.id, s.name),
   );
   masterData?.paymentMethods.forEach((p) =>
     paymentMethodMap.set(p.id, p.name),
