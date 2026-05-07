@@ -125,8 +125,8 @@ export default function RecordContent() {
   const expenseIdParam = searchParams?.get('expenseId');
   const assetIdParam = searchParams?.get('assetId');
   const modeParam = searchParams?.get('mode');
-  const isEditMode = modeParam === 'edit' && expenseIdParam;
-  const isAssetEditMode = typeParam === 'asset' && assetIdParam;
+  const isEditMode = !!(modeParam === 'edit' && expenseIdParam);
+  const isAssetEditMode = !!(typeParam === 'asset' && assetIdParam);
   const isAssetMode = typeParam === 'asset';
   const initialType: 'income' | 'expense' =
     typeParam === 'income' || isAssetMode ? 'income' : 'expense';
