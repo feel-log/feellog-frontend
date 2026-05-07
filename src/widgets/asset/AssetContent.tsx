@@ -29,7 +29,7 @@ export default function AssetContent() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-white pb-30">
+      <div className="flex min-h-dvh flex-col bg-white pb-30">
         <PageHeader title="자산" showBack={false} />
 
         <div className="flex flex-col gap-1.25 border-b-[5px] border-[#F7F8FA] px-4 pb-3.75">
@@ -56,7 +56,7 @@ export default function AssetContent() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white pb-30">
+    <div className="flex min-h-dvh flex-col bg-white pb-30">
       <PageHeader
         title="자산"
         showBack={false}

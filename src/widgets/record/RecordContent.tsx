@@ -464,7 +464,7 @@ export default function RecordContent() {
 
 
   return (
-    <div className="min-h-screen bg-white" onClick={() => isAmountEditing && setIsAmountEditing(false)}>
+    <div className="min-h-dvh bg-white" onClick={() => isAmountEditing && setIsAmountEditing(false)}>
       <PageHeader title={isEditMode ? '지출 수정' : isAssetMode ? '자산 추가' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">

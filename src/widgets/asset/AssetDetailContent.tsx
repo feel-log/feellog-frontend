@@ -49,7 +49,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
 
   if (!category) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-dvh items-center justify-center">
         <p className="text-[14px] text-[#9FA4A8]">
           자산 카테고리를 찾을 수 없습니다. (categoryId: {categoryId})
         </p>
@@ -62,7 +62,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-white pb-30">
+      <div className="flex min-h-dvh flex-col bg-white pb-30">
         <PageHeader title="자산" backHref="/asset" />
 
         <div className="flex flex-col gap-1.25 border-b-[5px] border-[#F7F8FA] px-4 pb-3.75">
@@ -86,7 +86,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white pb-30">
+    <div className="flex min-h-dvh flex-col bg-white pb-30">
       <PageHeader title="자산" backHref="/asset" />
 
       {/* 카테고리 합계 */}
