@@ -415,7 +415,7 @@ export default function RecordContent() {
 
   const isFormValid = () => {
     if (record.type === 'expense') {
-      return isDateSelected && record.paymentMethodId !== null && record.categoryId !== null;
+      return record.amount > 0 && isDateSelected && record.paymentMethodId !== null && record.categoryId !== null;
     }
     if (isAssetMode) {
       return isDateSelected && record.amount > 0 && record.categoryId !== null;
