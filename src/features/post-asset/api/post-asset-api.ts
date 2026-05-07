@@ -13,3 +13,16 @@ export function postAssetApi(req: AssetRequestBody) {
     body: JSON.stringify(req)
   });
 }
+
+export function patchAssetApi(assetId: number, req: AssetRequestBody) {
+  return apiClient(`/api/v1/assets/${assetId}`, {
+    method: "PATCH",
+    body: JSON.stringify(req)
+  });
+}
+
+export function deleteAssetApi(assetId: number) {
+  return apiClient(`/api/v1/assets/${assetId}`, {
+    method: "DELETE"
+  });
+}

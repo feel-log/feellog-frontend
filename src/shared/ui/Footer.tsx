@@ -12,7 +12,7 @@ const navItems = [
 ];
 
 
-function FooterIcon({ icon }: { icon: string }) {
+function FooterIcon({ icon, color }: { icon: string; color: string }) {
   switch (icon) {
     case 'household':
       return (
@@ -23,31 +23,31 @@ function FooterIcon({ icon }: { icon: string }) {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <rect x="7" y="13" width="16" height="12" fill="#1C1D1F" />
+          <rect x="7" y="13" width="16" height="12" fill={color} />
           <path
             d="M22 7H8C6.89543 7 6 7.89543 6 9V23C6 24.1046 6.89543 25 8 25H22C23.1046 25 24 24.1046 24 23V9C24 7.89543 23.1046 7 22 7Z"
-            stroke="#1C1D1F"
+            stroke={color}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d="M19 5V9.00001"
-            stroke="#1C1D1F"
+            stroke={color}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d="M11 5V9.00001"
-            stroke="#1C1D1F"
+            stroke={color}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d="M6 13H24"
-            stroke="#1C1D1F"
+            stroke={color}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -79,14 +79,14 @@ function FooterIcon({ icon }: { icon: string }) {
         >
           <path
             d="M5 6L5 24H25"
-            stroke="black"
+            stroke={color}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d="M9.73193 17.6201L14.5401 12.4646L17.8105 15.7154L23.7319 9.62012"
-            stroke="black"
+            stroke={color}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -102,7 +102,7 @@ function FooterIcon({ icon }: { icon: string }) {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <circle cx="15" cy="14.8691" r="10" fill="black" stroke="black" strokeWidth="2" />
+          <circle cx="15" cy="14.8691" r="10" fill={color} stroke={color} strokeWidth="2" />
           <path
             d="M10.2002 12L12.1472 18.26C12.1771 18.3563 12.2398 18.4412 12.3261 18.5024C12.4123 18.5636 12.5177 18.5977 12.6266 18.5999C12.7356 18.602 12.8425 18.5721 12.9315 18.5144C13.0206 18.4567 13.0872 18.3743 13.1216 18.2793L15.0002 13.1023L16.8788 18.2793C16.9132 18.3743 16.9798 18.4567 17.0689 18.5144C17.1579 18.5721 17.2648 18.602 17.3737 18.5999C17.4827 18.5977 17.5881 18.5636 17.6743 18.5024C17.7606 18.4412 17.8233 18.3563 17.8532 18.26L19.8002 12"
             stroke="white"
@@ -130,19 +130,19 @@ function FooterIcon({ icon }: { icon: string }) {
         >
           <path
             d="M14.5003 13.2964C16.7913 13.2964 18.6485 11.4392 18.6485 9.14821C18.6485 6.85722 16.7913 5 14.5003 5C12.2093 5 10.3521 6.85722 10.3521 9.14821C10.3521 11.4392 12.2093 13.2964 14.5003 13.2964Z"
-            fill="#000"
-            stroke="#000"
+            fill={color}
+            stroke={color}
             strokeWidth="1.9"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d="M24 24.0004V21.708C24 20.492 23.4996 19.3258 22.6088 18.4659C21.718 17.6061 20.5098 17.123 19.25 17.123H9.75C8.49022 17.123 7.28204 17.6061 6.39124 18.4659C5.50044 19.3258 5 20.492 5 21.708V24.0004"
-            fill="#000"
+            fill={color}
           />
           <path
             d="M24 24.0004V21.708C24 20.492 23.4996 19.3258 22.6088 18.4659C21.718 17.6061 20.5098 17.123 19.25 17.123H9.75C8.49022 17.123 7.28204 17.6061 6.39124 18.4659C5.50044 19.3258 5 20.492 5 21.708V24.0004H24Z"
-            stroke="#000"
+            stroke={color}
             strokeWidth="1.9"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -193,7 +193,7 @@ export default function Footer() {
                 isActive ? 'text-[#1c1d1f] opacity-100' : 'text-[#9fa4a8] opacity-50'
               }`}
             >
-              <FooterIcon icon={item.icon} />
+              <FooterIcon icon={item.icon} color={isActive ? '#1c1d1f' : '#9fa4a8' } />
               <span className="text-[14px] font-medium tracking-[-0.025em] whitespace-nowrap">{item.label}</span>
             </button>
             );
@@ -212,7 +212,7 @@ export default function Footer() {
                 isActive ? 'text-[#1c1d1f] opacity-100' : 'text-[#9fa4a8] opacity-50'
               }`}
             >
-              <FooterIcon icon={item.icon} />
+              <FooterIcon icon={item.icon} color={isActive ? '#1c1d1f' : '#9fa4a8' } />
               <span className="text-[14px] font-medium tracking-[-0.025em] whitespace-nowrap">{item.label}</span>
             </button>
             );

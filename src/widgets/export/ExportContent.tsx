@@ -230,38 +230,23 @@ export default function ExportContent() {
                         </p>
                       </div>
 
-                      {/* 태그 + 감정 + 결제수단 */}
-                      <div className="flex items-center justify-between gap-1.25">
-                        <div className="flex items-center gap-2">
+                      {/* 태그 + 메모 */}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1">
                           {expense.tag && expense.tag.length > 0 && (
-                            <div className="flex items-center gap-1.5">
-                              {expense.tag.map((tag, tagIdx) => (
-                                <span
-                                  key={tagIdx}
-                                  className="text-[16px] font-medium tracking-[-0.025em] text-[#13278a]"
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
+                            <span className="text-[16px] font-medium tracking-[-0.025em] text-[#13278a]">
+                              {expense.tag.join(', ')}
+                            </span>
                           )}
-                          {expense.emotions.length > 0 && (
-                            <>
-                              <span className="h-3.5 w-px shrink-0 bg-[#e5e5e5]" />
-                              <div className="flex items-center gap-1.5">
-                                {expense.emotions.map((emotion) => (
-                                  emotion.emoji && (
-                                    <Image
-                                      key={emotion.label}
-                                      src={emotion.emoji}
-                                      alt={emotion.label}
-                                      width={20}
-                                      height={20}
-                                    />
-                                  )
-                                ))}
-                              </div>
-                            </>
+                          {expense.tag && expense.tag.length > 0 && expense.memo && (
+                            <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
+                              |
+                            </span>
+                          )}
+                          {expense.memo && (
+                            <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
+                              {expense.memo}
+                            </span>
                           )}
                         </div>
                         <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
@@ -269,11 +254,28 @@ export default function ExportContent() {
                         </span>
                       </div>
 
-                      {/* 메모 */}
-                      {expense.memo && (
-                        <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
-                          {expense.memo}
-                        </span>
+                      {/* 감정 */}
+                      {expense.emotions.length > 0 && (
+                        <div className="flex items-center gap-1.5">
+                          {expense.emotions.map((emotion, idx) => (
+                            <span key={idx} className="flex items-center gap-1">
+                              {emotion.emoji && (
+                                <Image
+                                  src={emotion.emoji}
+                                  alt={emotion.label}
+                                  width={18}
+                                  height={18}
+                                />
+                              )}
+                              <span className="text-[14px] font-medium tracking-[-0.025em] text-[#474c52]">
+                                {emotion.label}
+                              </span>
+                              {idx < expense.emotions.length - 1 && (
+                                <span className="text-[14px] text-[#9fa4a8]">,</span>
+                              )}
+                            </span>
+                          ))}
+                        </div>
                       )}
                     </div>
                   </div>

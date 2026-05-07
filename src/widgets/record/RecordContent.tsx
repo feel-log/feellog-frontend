@@ -15,6 +15,7 @@ import { useMasterData } from '@/entities/master-data';
 import { useHouseHoldPost } from '@/features/post-house-hold/model/useHouseHoldPost';
 import { useUpdateExpense } from '@/features/update-expense/model/useUpdateExpense';
 import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
+import { useGetAssets } from '@/entities/get-assets/useGetAssets';
 import { usePostAsset } from '@/features/post-asset/model/usePostAsset';
 import { usePostIncome } from '@/features/post-income/model/usePostIncome';
 import { evaluate } from 'mathjs';
@@ -121,8 +122,10 @@ export default function RecordContent() {
   const selectedDate = searchParams?.get('date') || today;
   const typeParam = searchParams?.get('type');
   const expenseIdParam = searchParams?.get('expenseId');
+  const assetIdParam = searchParams?.get('assetId');
   const modeParam = searchParams?.get('mode');
   const isEditMode = modeParam === 'edit' && expenseIdParam;
+  const isAssetEditMode = typeParam === 'asset' && assetIdParam;
   const isAssetMode = typeParam === 'asset';
   const initialType: 'income' | 'expense' =
     typeParam === 'income' || isAssetMode ? 'income' : 'expense';
@@ -132,6 +135,13 @@ export default function RecordContent() {
   const expenseMonth = parseInt(selectedDate.split('-')[1]);
   const expenseDay = parseInt(selectedDate.split('-')[2]);
   const { data: dailyExpenseData = [] } = useDailyExpend(expenseYear, expenseMonth, expenseDay);
+
+  // 자산 edit 모드일 때 자산 데이터 로드
+  const { data: assetsData } = useGetAssets({
+    sort: 'LATEST',
+    page: 0,
+    size: 100,
+  });
 
   const [record, setRecord] = useState<RecordState>({
     amount: 0,
@@ -170,6 +180,30 @@ export default function RecordContent() {
       }
     }
   }, [isEditMode, expenseIdParam, dailyExpenseData]);
+
+  // 자산 edit 모드일 때 초기값 설정
+  useEffect(() => {
+    if (isAssetEditMode && assetIdParam && assetsData?.data) {
+      const asset = assetsData.data.find(
+        (a) => a.assetId === parseInt(assetIdParam)
+      );
+      if (asset) {
+        setRecord({
+          amount: asset.amount,
+          type: 'income',
+          date: asset.assetDate,
+          categoryId: asset.assetCategoryId,
+          paymentMethodId: null,
+          emotionIds: [],
+          situationTagIds: [],
+          memo: asset.memo,
+        });
+        setAmountInput(asset.amount.toString());
+        setSelectedCategoryId(asset.assetCategoryId);
+        setTempMemo(asset.memo);
+      }
+    }
+  }, [isAssetEditMode, assetIdParam, assetsData?.data]);
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -465,7 +499,7 @@ export default function RecordContent() {
 
   return (
     <div className="min-h-dvh bg-white" onClick={() => isAmountEditing && setIsAmountEditing(false)}>
-      <PageHeader title={isEditMode ? '지출 수정' : isAssetMode ? '자산 추가' : '가계부'} />
+      <PageHeader title={isEditMode ? '지출 수정' : isAssetEditMode ? '자산 수정' : isAssetMode ? '자산 추가' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">
         {/* Amount Section */}
@@ -721,13 +755,13 @@ export default function RecordContent() {
         height={record.type === 'expense' ? 636 : 492}
       >
         {isAssetMode ? (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             {ASSET_CATEGORIES.map((category) => (
               <button
                 key={category.id}
                 onClick={() => handleCategorySelect(category.id)}
                 className={cn(
-                  'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
+                  'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
                   selectedCategoryId === category.id
                     ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                     : 'border-[#e5e5e5] text-[#474c52]'
@@ -738,13 +772,13 @@ export default function RecordContent() {
             ))}
           </div>
         ) : record.type === 'income' ? (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             {INCOME_CATEGORIES.map((category) => (
               <button
                 key={category.id}
                 onClick={() => handleCategorySelect(category.id)}
                 className={cn(
-                  'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
+                  'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
                   selectedCategoryId === category.id
                     ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                     : 'border-[#e5e5e5] text-[#474c52]'
@@ -759,13 +793,13 @@ export default function RecordContent() {
             {expenseCategories.map((group) => (
               <div key={group.group} className="flex flex-col gap-3">
                 <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2.5">
                   {group.items.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => handleCategorySelect(item.id)}
                       className={cn(
-                        'flex h-9.5 w-26.25 cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
+                        'flex h-8 px-4 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
                         selectedCategoryId === item.id
                           ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                           : 'border-[#e5e5e5] text-[#474c52]'
@@ -795,13 +829,13 @@ export default function RecordContent() {
           isSaveDisabled={selectedPaymentId === null}
           height={492}
         >
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             {PAYMENT_METHODS.map((method) => (
               <button
                 key={method.id}
                 onClick={() => setSelectedPaymentId(method.id)}
                 className={cn(
-                  'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
+                  'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
                   selectedPaymentId === method.id
                     ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                     : 'border-[#e5e5e5] text-[#474c52]'
@@ -832,19 +866,19 @@ export default function RecordContent() {
             {emotions.map((group) => (
               <div key={group.group} className="flex flex-col gap-3">
                 <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2.5">
                   {group.items.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => handleEmotionToggle(item.id)}
                       className={cn(
-                        'flex h-9.5 w-26.25 cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
+                        'flex h-8 px-4 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
                         selectedEmotions.includes(item.id)
                           ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                           : 'border-[#e5e5e5] text-[#27282c]'
                       )}
                     >
-                      {item.emoji && <Image src={item.emoji} alt={item.label} width={24} height={24} />}
+                      {item.emoji && <Image src={item.emoji} alt={item.label} width={18} height={18} />}
                       <span>{item.label}</span>
                     </button>
                   ))}
@@ -891,13 +925,13 @@ export default function RecordContent() {
             {/* 상황 태그 Section */}
             <div className="flex flex-col gap-3">
               <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">상황 태그</h3>
-              <div className="flex flex-wrap gap-x-2 gap-y-2.5">
+              <div className="flex flex-wrap gap-2.5">
                 {situationTags.map((tag) => (
                   <button
                     key={tag.id}
                     onClick={() => handleTagToggle(tag.id)}
                     className={cn(
-                      'flex h-9.5 w-26.25 cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
+                      'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
                       tempTags.includes(tag.id)
                         ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                         : 'border-[#e5e5e5] text-[#27282c]'

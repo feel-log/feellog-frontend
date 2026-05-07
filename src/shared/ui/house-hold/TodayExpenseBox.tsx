@@ -67,9 +67,9 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
 
     dailyExpenseList.forEach((expense) => {
       if (!categoryMap.has(expense.categoryId)) {
-        const categoryLabel = expenseCategories
-          .flatMap((g) => g.items)
-          .find((item) => item.id === expense.categoryId)?.label || '기타';
+        const categoryLabel = expenseCategories && Array.isArray(expenseCategories)
+          ? expenseCategories.flatMap((g) => g.items).find((item) => item.id === expense.categoryId)?.label || '기타'
+          : '기타';
 
         categoryMap.set(expense.categoryId, {
           name: categoryLabel,
@@ -83,7 +83,9 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
       // emotionIds를 사용해서 emotion 정보 추가
       if (expense.emotionIds && expense.emotionIds.length > 0) {
         expense.emotionIds.forEach((emotionId) => {
-          const emotion = emotions.flatMap((g) => g.items).find((item) => item.id === emotionId);
+          const emotion = emotions && Array.isArray(emotions)
+            ? emotions.flatMap((g) => g.items).find((item) => item.id === emotionId)
+            : undefined;
           if (emotion && !category.emotions.find((e) => e.id === emotion.id)) {
             category.emotions.push(emotion);
           }
@@ -132,7 +134,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
         </button>
       </div>
 
-      <div className={cn('flex items-center gap-0.75', totalAmount === 0 ? 'mb-2' : 'mb-6')}>
+      <div className={cn('flex items-center gap-0.75', totalAmount === 0 ? 'mb-2' : 'mb-3')}>
         <button
           onClick={handlePrevDay}
           disabled={!canGoPrev}
@@ -170,7 +172,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
 
       {totalAmount === 0 ? (
         <div className="flex flex-col items-center justify-center">
-          <p className="mb-4 self-start text-[14px] font-medium text-gray-500">
+          <p className="mb-4 self-start text-[16px] font-medium text-gray-500">
             아직 지출이 없어요
           </p>
           <button
