@@ -539,8 +539,9 @@ export default function RecordContent() {
         {/* Date Section */}
         <SelectField
           label="날짜"
-          value={isDateSelected ? formatDateDisplay(record.date) : ''}
+          value={formatDateDisplay(record.date)}
           placeholder="날짜를 선택하세요"
+          isDefault={!isDateSelected}
           onClick={() => {
             setTempDate(record.date);
             setCalendarMonth(() => {
