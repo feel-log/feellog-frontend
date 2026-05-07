@@ -19,10 +19,10 @@ export default function ListSelect({
           <button
             key={option}
             onClick={() => onChange(selected === option ? null : option)}
-            className={`flex h-13 items-center rounded-[10px] border px-4.5 text-[16px] font-medium leading-normal tracking-[-0.4px] ${
+            className={`flex h-13 w-89.5 max-w-full items-center rounded-[10px] border px-4.5 text-[16px] font-medium leading-normal tracking-[-0.4px] ${
               isSelected
                 ? 'border-[#13278A] bg-[#ECF2FB] text-[#13278A]'
-                : 'border-[#CACDD2] bg-white text-[#27282C]'
+                : 'border-[#E5E5E5] bg-white text-[#27282C]'
             }`}
           >
             {option}

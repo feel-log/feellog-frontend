@@ -56,7 +56,7 @@ export default function RetroMain({
     <div className="flex w-full flex-col gap-5">
       <div className="relative flex h-90 w-full flex-col items-center rounded-[12px] bg-[#F7F8FA] px-5">
         <div className="mt-7.5 flex flex-col items-center gap-0.5">
-          <p className="whitespace-nowrap text-[18px] font-bold text-[#1C1D1F]">{mainMessage}</p>
+          <p className="whitespace-nowrap text-[18px] font-semibold text-[#1C1D1F]">{mainMessage}</p>
           <p className="whitespace-nowrap text-[14px] font-medium text-[#474C52]">{subMessage}</p>
         </div>
 
@@ -99,7 +99,7 @@ export default function RetroMain({
                 </p>
                 <div className="mt-1.5 flex items-center gap-1.5">
                   <EmotionIcon name={emotion.emotionName} size={25} />
-                  <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
+                  <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#1C1D1F]">
                     {emotion.emotionName}
                   </p>
                 </div>
