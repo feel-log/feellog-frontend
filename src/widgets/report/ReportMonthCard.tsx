@@ -100,7 +100,7 @@ export default function ReportMonthCard({
 
           <button
             onClick={onExpenseDetailClick}
-            className="flex h-11 w-full items-center justify-center rounded-[8px] bg-white shadow-[0px_0px_4px_rgba(19,39,138,0.08)]"
+            className="flex h-13 w-full items-center justify-center rounded-[8px] bg-white shadow-[0px_0px_4px_rgba(19,39,138,0.08)]"
           >
             <span className="text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#27282C]">
               {isEmpty ? '지출 기록하기' : '이번 달 지출 확인하기'}
