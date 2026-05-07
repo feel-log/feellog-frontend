@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useToken } from '@/shared/store';
 import { expenseQueries } from '@/entities/expense';
+import { incomeQueries } from '@/entities/income';
 import { masterDataQueries, type MasterData } from '@/entities/master-data';
 import CalendarHeader from '@/widgets/calendar/CalendarHeader';
 import CalendarGrid from '@/widgets/calendar/CalendarGrid';
@@ -16,6 +17,15 @@ const PAYMENT_METHOD_NAMES: Record<number, string> = {
   2: '현금',
   3: '계좌',
   4: '기타',
+};
+
+const INCOME_CATEGORY_NAMES: Record<number, string> = {
+  1: '급여',
+  2: '용돈',
+  3: '부수입',
+  4: '상여금',
+  5: '금융수입',
+  6: '기타',
 };
 
 function buildLookups(masterData?: MasterData) {
@@ -49,6 +59,11 @@ export default function CalendarContent() {
     enabled: !!token,
   });
 
+  const { data: incomes } = useQuery({
+    ...incomeQueries.monthly(token || '', year, month + 1),
+    enabled: !!token,
+  });
+
   const { data: masterData } = useQuery({
     ...masterDataQueries.data(token || ''),
     enabled: !!token,
@@ -60,28 +75,36 @@ export default function CalendarContent() {
   );
 
   const dailyAmounts = useMemo(() => {
-    const map: Record<number, { expense: number }> = {};
+    const map: Record<number, { income: number; expense: number }> = {};
     (expenses ?? []).forEach((e) => {
       const day = Number(e.expenseDate.split('-')[2]);
-      const prev = map[day]?.expense ?? 0;
-      map[day] = { expense: prev + e.amount };
+      const prev = map[day] ?? { income: 0, expense: 0 };
+      map[day] = { ...prev, expense: prev.expense + e.amount };
+    });
+    (incomes ?? []).forEach((i) => {
+      const day = Number(i.incomeDate.split('-')[2]);
+      const prev = map[day] ?? { income: 0, expense: 0 };
+      map[day] = { ...prev, income: prev.income + i.amount };
     });
     return map;
-  }, [expenses]);
+  }, [expenses, incomes]);
 
   const monthlyTotals = useMemo(() => {
-    const income = 0;
+    const income = (incomes ?? []).reduce((acc, i) => acc + i.amount, 0);
     const expense = (expenses ?? []).reduce((acc, e) => acc + e.amount, 0);
     const balance = income - expense;
     return { income, expense, balance: balance || 0 };
-  }, [expenses]);
+  }, [expenses, incomes]);
 
   const dayData = useMemo(() => {
-    if (selectedDay == null || !expenses) {
+    if (selectedDay == null) {
       return { income: 0, expense: 0, expenseItems: [], incomeItems: [] };
     }
-    const dayExpenses = expenses.filter(
+    const dayExpenses = (expenses ?? []).filter(
       (e) => Number(e.expenseDate.split('-')[2]) === selectedDay,
+    );
+    const dayIncomes = (incomes ?? []).filter(
+      (i) => Number(i.incomeDate.split('-')[2]) === selectedDay,
     );
     const expenseItems = dayExpenses.map((e) => ({
       category: categoryMap.get(e.categoryId) ?? '',
@@ -95,9 +118,15 @@ export default function CalendarContent() {
         .map((id) => emotionMap.get(id))
         .filter((n): n is string => !!n),
     }));
+    const incomeItems = dayIncomes.map((i) => ({
+      category: INCOME_CATEGORY_NAMES[i.incomeCategoryId] ?? '',
+      amount: i.amount,
+      memo: i.memo ?? undefined,
+    }));
     const expense = dayExpenses.reduce((acc, e) => acc + e.amount, 0);
-    return { income: 0, expense, expenseItems, incomeItems: [] };
-  }, [expenses, selectedDay, categoryMap, emotionMap, situationMap]);
+    const income = dayIncomes.reduce((acc, i) => acc + i.amount, 0);
+    return { income, expense, expenseItems, incomeItems };
+  }, [expenses, incomes, selectedDay, categoryMap, emotionMap, situationMap]);
 
   const handlePrevMonth = () => {
     if (month === 0) {
