@@ -175,8 +175,13 @@ export default function ExportContent() {
           <SortButton sortType={sortType} onSortChange={setSortType} />
         </div>
 
+        {/* 날짜 라벨 */}
+        <p className="mb-4 text-[14px] font-semibold tracking-[-0.025em] text-gray-500">
+          {formattedDate}
+        </p>
+
         {totalAmount === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
+          <div className="flex flex-col items-center justify-center py-20 text-center">
             <h3 className="mb-1 text-[18px] font-semibold tracking-[-0.025em] text-[#474c52]">
               지출 기록이 아직 없어요
             </h3>
@@ -186,11 +191,6 @@ export default function ExportContent() {
           </div>
         ) : (
           <div>
-            {/* 날짜 라벨 */}
-            <p className="mb-2.5 text-[14px] font-medium tracking-[-0.025em] text-[#474c52]">
-              {formattedDate}
-            </p>
-
             {/* 항목 리스트 */}
             <div className="flex flex-col gap-5">
               {expenses.map((expense) => (
