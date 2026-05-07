@@ -12,13 +12,6 @@ import CalendarGrid from '@/widgets/calendar/CalendarGrid';
 import DateBottomSheet from '@/widgets/calendar/DateBottomSheet';
 import PageHeader from '@/shared/ui/PageHeader';
 
-const PAYMENT_METHOD_NAMES: Record<number, string> = {
-  1: '카드',
-  2: '현금',
-  3: '계좌',
-  4: '기타',
-};
-
 const INCOME_CATEGORY_NAMES: Record<number, string> = {
   1: '급여',
   2: '용돈',
@@ -32,16 +25,22 @@ function buildLookups(masterData?: MasterData) {
   const categoryMap = new Map<number, string>();
   const emotionMap = new Map<number, string>();
   const situationMap = new Map<number, string>();
+  const paymentMethodMap = new Map<number, string>();
 
   masterData?.categoryGroups.forEach((g) =>
     g.categories.forEach((c) => categoryMap.set(c.id, c.name)),
   );
   masterData?.emotionGroups.forEach((g) =>
-    g.emotions.forEach((e) => emotionMap.set(e.id, e.name)),
+    g.emotions.forEach((e) => emotionMap.set(e.emotionId, e.emotionName)),
   );
-  masterData?.situationTags.forEach((s) => situationMap.set(s.id, s.name));
+  masterData?.situationTags.forEach((s) =>
+    situationMap.set(s.situationTagId, s.situationName),
+  );
+  masterData?.paymentMethods.forEach((p) =>
+    paymentMethodMap.set(p.id, p.name),
+  );
 
-  return { categoryMap, emotionMap, situationMap };
+  return { categoryMap, emotionMap, situationMap, paymentMethodMap };
 }
 
 export default function CalendarContent() {
@@ -69,7 +68,7 @@ export default function CalendarContent() {
     enabled: !!token,
   });
 
-  const { categoryMap, emotionMap, situationMap } = useMemo(
+  const { categoryMap, emotionMap, situationMap, paymentMethodMap } = useMemo(
     () => buildLookups(masterData),
     [masterData],
   );
@@ -112,7 +111,7 @@ export default function CalendarContent() {
         .map((id) => situationMap.get(id))
         .filter((n): n is string => !!n),
       amount: e.amount,
-      paymentMethod: PAYMENT_METHOD_NAMES[e.paymentMethodId] ?? '',
+      paymentMethod: paymentMethodMap.get(e.paymentMethodId) ?? '',
       memo: e.memo ?? undefined,
       emotions: e.emotionIds
         .map((id) => emotionMap.get(id))
@@ -126,7 +125,15 @@ export default function CalendarContent() {
     const expense = dayExpenses.reduce((acc, e) => acc + e.amount, 0);
     const income = dayIncomes.reduce((acc, i) => acc + i.amount, 0);
     return { income, expense, expenseItems, incomeItems };
-  }, [expenses, incomes, selectedDay, categoryMap, emotionMap, situationMap]);
+  }, [
+    expenses,
+    incomes,
+    selectedDay,
+    categoryMap,
+    emotionMap,
+    situationMap,
+    paymentMethodMap,
+  ]);
 
   const handlePrevMonth = () => {
     if (month === 0) {

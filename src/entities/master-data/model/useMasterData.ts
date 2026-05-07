@@ -29,6 +29,11 @@ interface SituationTag {
   id: number;
 }
 
+interface PaymentMethod {
+  label: string;
+  id: number;
+}
+
 function buildExpenseCategories(masterData?: MasterData): ExpenseCategory[] {
   if (!masterData?.categoryGroups) return [];
 
@@ -48,9 +53,9 @@ function buildEmotions(masterData?: MasterData): Emotion[] {
   return masterData.emotionGroups.map((group) => ({
     group: group.name,
     items: group.emotions.map((emotion) => ({
-      label: emotion.name,
-      emoji: EMOTION_SVG_MAP[emotion.id] || '',
-      id: emotion.id,
+      label: emotion.emotionName,
+      emoji: EMOTION_SVG_MAP[emotion.emotionId] || '',
+      id: emotion.emotionId,
     })),
   }));
 }
@@ -59,8 +64,17 @@ function buildSituationTags(masterData?: MasterData): SituationTag[] {
   if (!masterData?.situationTags) return [];
 
   return masterData.situationTags.map((tag) => ({
-    label: tag.name,
-    id: tag.id,
+    label: tag.situationName,
+    id: tag.situationTagId,
+  }));
+}
+
+function buildPaymentMethods(masterData?: MasterData): PaymentMethod[] {
+  if (!masterData?.paymentMethods) return [];
+
+  return masterData.paymentMethods.map((method) => ({
+    label: method.name,
+    id: method.id,
   }));
 }
 
@@ -85,10 +99,16 @@ export function useMasterData() {
     [masterData],
   );
 
+  const paymentMethods = useMemo(
+    () => buildPaymentMethods(masterData),
+    [masterData],
+  );
+
   return {
     expenseCategories,
     emotions,
     situationTags,
+    paymentMethods,
     masterData,
     isLoading,
   };

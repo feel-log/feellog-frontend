@@ -12,8 +12,8 @@ const CategoryGroupSchema = z.object({
 });
 
 const EmotionSchema = z.object({
-  id: z.number(),
-  name: z.string(),
+  emotionId: z.number(),
+  emotionName: z.string(),
 });
 
 const EmotionGroupSchema = z.object({
@@ -23,6 +23,11 @@ const EmotionGroupSchema = z.object({
 });
 
 const SituationTagSchema = z.object({
+  situationTagId: z.number(),
+  situationName: z.string(),
+});
+
+const PaymentMethodSchema = z.object({
   id: z.number(),
   name: z.string(),
 });
@@ -31,9 +36,11 @@ export const MasterDataSchema = z.object({
   categoryGroups: z.array(CategoryGroupSchema),
   emotionGroups: z.array(EmotionGroupSchema),
   situationTags: z.array(SituationTagSchema),
+  paymentMethods: z.array(PaymentMethodSchema),
 });
 
 export type MasterData = z.infer<typeof MasterDataSchema>;
 export type Category = z.infer<typeof CategorySchema>;
 export type Emotion = z.infer<typeof EmotionSchema>;
 export type SituationTag = z.infer<typeof SituationTagSchema>;
+export type PaymentMethod = z.infer<typeof PaymentMethodSchema>;
