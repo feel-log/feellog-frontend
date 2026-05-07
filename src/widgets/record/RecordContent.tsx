@@ -844,7 +844,7 @@ export default function RecordContent() {
                           : 'border-[#e5e5e5] text-[#27282c]'
                       )}
                     >
-                      <Image src={item.emoji} alt={item.label} width={24} height={24} />
+                      {item.emoji && <Image src={item.emoji} alt={item.label} width={24} height={24} />}
                       <span>{item.label}</span>
                     </button>
                   ))}

@@ -197,13 +197,15 @@ export default function TodayExpenseBox() {
                       key={emoIdx}
                       className="inline-flex items-center gap-1.25 rounded-full bg-[#f0f4f5] px-2.5 py-0.75 text-[12px] font-medium tracking-[-0.025em] text-[#474c52]"
                     >
-                      <Image
-                        src={emotion.emoji}
-                        alt={emotion.label}
-                        width={14}
-                        height={14}
-                        loading="lazy"
-                      />
+                      {emotion.emoji && (
+                        <Image
+                          src={emotion.emoji}
+                          alt={emotion.label}
+                          width={14}
+                          height={14}
+                          loading="lazy"
+                        />
+                      )}
                       <span>{emotion.label}</span>
                     </span>
                   ))}

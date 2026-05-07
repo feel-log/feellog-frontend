@@ -250,13 +250,15 @@ export default function ExportContent() {
                               <span className="h-3.5 w-px shrink-0 bg-[#e5e5e5]" />
                               <div className="flex items-center gap-1.5">
                                 {expense.emotions.map((emotion) => (
-                                  <Image
-                                    key={emotion.label}
-                                    src={emotion.emoji}
-                                    alt={emotion.label}
-                                    width={20}
-                                    height={20}
-                                  />
+                                  emotion.emoji && (
+                                    <Image
+                                      key={emotion.label}
+                                      src={emotion.emoji}
+                                      alt={emotion.label}
+                                      width={20}
+                                      height={20}
+                                    />
+                                  )
                                 ))}
                               </div>
                             </>
