@@ -170,13 +170,13 @@ export default function ExportContent() {
       </div>
 
       {/* 정렬 셀렉터 + 본문 */}
-      <div className="overflow-y-auto px-4 pt-5 pb-12">
+      <div className="overflow-y-auto px-4 pt-5 pb-12 h-118.5 relative">
         <div className="flex justify-end">
           <SortButton sortType={sortType} onSortChange={setSortType} />
         </div>
 
         {totalAmount === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="flex flex-col items-center justify-center py-20 text-center absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
             <h3 className="mb-1 text-[18px] font-semibold tracking-[-0.025em] text-[#474c52]">
               지출 기록이 아직 없어요
             </h3>
