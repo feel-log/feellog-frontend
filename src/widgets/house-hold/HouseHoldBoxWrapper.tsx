@@ -14,9 +14,10 @@ import { useWeekExpend } from '@/entities/week-expenditure/model/useWeekExpend';
 import { useToken, useUser } from '@/shared/store';
 import { useMasterData } from '@/entities/master-data';
 import { useMemo } from 'react';
+import { todayKST } from '@/shared/utils/date';
 
 const getRandomNumberByDate = (): number => {
-  const today = new Date().toISOString().split('T')[0];
+  const today = todayKST();
   let hash = 0;
   for (let i = 0; i < today.length; i++) {
     hash = today.charCodeAt(i) + ((hash << 5) - hash);

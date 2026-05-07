@@ -4,6 +4,18 @@
  */
 
 /**
+ * 로컬 timezone(KST) 기준 오늘 날짜를 YYYY-MM-DD 형식으로 반환
+ * `toISOString()`은 UTC 기준이라 KST 새벽 시간대에 어제 날짜가 나오는 버그 방지
+ */
+export function todayKST(): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+/**
  * 서버-클라이언트 안전한 날짜 포맷팅
  * 서버에서는 ISO 문자열 반환, 클라이언트에서만 로컬 포맷 적용
  */

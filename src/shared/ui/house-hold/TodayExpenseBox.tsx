@@ -11,13 +11,6 @@ import { useMasterData } from '@/entities/master-data';
 import { useToken, useUser } from '@/shared/store';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
 
-const TODAY = new Date();
-const MIN_DATE = (() => {
-  const date = new Date(TODAY);
-  date.setMonth(date.getMonth() - 1);
-  return date;
-})();
-
 interface TodayExpenseBoxProps {
   emotions: any[];
   expenseCategories: any[];
@@ -25,6 +18,12 @@ interface TodayExpenseBoxProps {
 
 export default function TodayExpenseBox({ emotions, expenseCategories }: TodayExpenseBoxProps) {
   const router = useRouter();
+  const [TODAY] = useState(() => new Date());
+  const MIN_DATE = useMemo(() => {
+    const date = new Date(TODAY);
+    date.setMonth(date.getMonth() - 1);
+    return date;
+  }, [TODAY]);
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { getUser } = useUser();

@@ -11,6 +11,7 @@ import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
 import { DailyExpendType } from '@/entities/daily-expend/model/daily-expend-type';
 import { useMasterData } from '@/entities/master-data';
 import { useDeleteExpense } from '@/features/delete-expense/model/useDeleteExpense';
+import { todayKST } from '@/shared/utils/date';
 import { Trash2 } from 'lucide-react';
 
 type SortType = 'latest' | 'oldest' | 'expensive' | 'cheap';
@@ -44,7 +45,7 @@ export default function ExportContent() {
 
   const touchStartX = useRef(0);
 
-  const selectedDate = searchParams?.get('date') || new Date().toISOString().split('T')[0];
+  const selectedDate = searchParams?.get('date') || todayKST();
   const [year, month, day] = selectedDate.split('-').map(Number);
 
   const { data = [], isLoading } = useDailyExpend(year, month, day);
