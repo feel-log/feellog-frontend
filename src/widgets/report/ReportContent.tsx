@@ -36,10 +36,12 @@ export default function ReportContent() {
   };
 
   const isMounted = useIsMounted();
-  const { getAccessToken, isLoaded } = useToken();
+  const { getAccessToken, isLoaded, setErrorBox } = useToken();
   const token = getAccessToken();
   useUserGetter(token);
   const nickname = useUser((s) => s.nickname);
+  const { getUser } = useUser();
+  const user = getUser();
 
   const { data, isLoading } = useQuery({
     ...reportQueries.monthly(token || '', year, month),
@@ -142,13 +144,17 @@ export default function ReportContent() {
             income={income}
             expense={expense}
             onYearMonthChange={handleYearMonthChange}
-            onExpenseDetailClick={() =>
+            onExpenseDetailClick={() => {
+              if (!user?.nickname || user?.nickname.startsWith('guest')) {
+                setErrorBox(true);
+                return;
+              }
               router.push(
                 hasData
                   ? `/report/monthly?year=${year}&month=${month}`
                   : '/record?type=expense',
-              )
-            }
+              );
+            }}
           />
 
           {hasData ? (
