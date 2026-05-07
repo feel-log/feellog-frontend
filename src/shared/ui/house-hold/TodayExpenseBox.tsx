@@ -4,12 +4,13 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFormattedDate } from '@/shared/hooks';
 import Image from 'next/image';
-import { cn } from '@/shared/lib/utils';
 import { useMonthExpendStore } from '@/shared/store/month-expend-store';
 import { useTodayExpend } from '@/entities/today-expenditure/model/useTodayExpend';
-import { useMasterData } from '@/entities/master-data';
 import { useToken, useUser } from '@/shared/store';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
+import DateNavigator from './DateNavigator';
+import EmptyExpenseState from './EmptyExpenseState';
+import ExpenseCategoryItem from './ExpenseCategoryItem';
 
 interface TodayExpenseBoxProps {
   emotions: any[];
@@ -27,7 +28,6 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { getUser } = useUser();
-  const { setErrorBox } = useToken();
   const user = getUser();
 
   const canGoPrev = selectedDate > MIN_DATE;
@@ -143,93 +143,27 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
         </button>
       </div>
 
-      <div className={cn('flex items-center gap-0.75', totalAmount === 0 ? 'mb-2' : 'mb-3')}>
-        <button
-          onClick={handlePrevDay}
-          disabled={!canGoPrev}
-          className={`transition-opacity ${
-            canGoPrev ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
-          }`}
-        >
-          <Image
-            src={'/svg/icon_arrow_left_fill.svg'}
-            alt={'prev'}
-            width={20}
-            height={20}
-            loading="lazy"
-          />
-        </button>
-        <span className="text-[16px] font-medium tracking-[-0.025em] text-[#27282c]">
-          {formattedDate}
-        </span>
-        <button
-          onClick={handleNextDay}
-          disabled={!canGoNext}
-          className={`transition-opacity ${
-            canGoNext ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
-          }`}
-        >
-          <Image
-            src={'/svg/icon_arrow_left_fill.svg'}
-            alt={'next'}
-            width={20}
-            height={20}
-            className={'rotate-180'}
-          />
-        </button>
-      </div>
+      <DateNavigator
+        formattedDate={formattedDate}
+        canGoPrev={canGoPrev}
+        canGoNext={canGoNext}
+        onPrevDay={handlePrevDay}
+        onNextDay={handleNextDay}
+        totalAmount={totalAmount}
+      />
 
       {totalAmount === 0 ? (
-        <div className="flex flex-col items-center justify-center">
-          <p className="mb-4 self-start text-[16px] font-medium text-gray-500">
-            아직 지출이 없어요
-          </p>
-          <button
-            onClick={() => {
-              if(!user?.nickname || user?.nickname.startsWith('guest')) {
-                setErrorBox(true);
-                return;
-              }
-              router?.push(`/record?date=${dateString}`);
-            }}
-            className="w-full rounded-[10px] border border-[#e5e5e5] py-3 text-center text-[16px] font-medium text-[#27282c] transition-colors hover:bg-gray-50"
-          >
-            오늘의 지출 기록하러가기
-          </button>
-        </div>
+        <EmptyExpenseState dateString={dateString} />
       ) : (
         <>
           <div className="space-y-5">
             {expenseData?.categories.slice(0, 3).map((category, idx) => (
-              <div key={idx}>
-                <div className="mb-1.25 flex items-center justify-between">
-                  <span className="text-[16px] font-medium tracking-[-0.025em] text-[#27282c]">
-                    {category.name}
-                  </span>
-                  <span className="text-[18px] font-semibold tracking-[-0.025em] text-[#030303]">
-                    {category.amount.toLocaleString()}원
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1.25">
-                  {category.emotions.map((emotion, emoIdx) => (
-                    <span
-                      key={emoIdx}
-                      className="inline-flex items-center gap-1.25 rounded-full bg-[#f0f4f5] px-2.5 py-0.75 text-[12px] font-medium tracking-[-0.025em] text-[#474c52]"
-                    >
-                      {emotion.emoji && (
-                        <Image
-                          src={emotion.emoji}
-                          alt={emotion.label}
-                          width={14}
-                          height={14}
-                          loading="lazy"
-                        />
-                      )}
-                      <span>{emotion.label}</span>
-                    </span>
-                  ))}
-                </div>
-              </div>
+              <ExpenseCategoryItem
+                key={idx}
+                name={category.name}
+                amount={category.amount}
+                emotions={category.emotions}
+              />
             ))}
           </div>
 
