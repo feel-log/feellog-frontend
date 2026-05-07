@@ -12,6 +12,7 @@ export interface AssetItem {
   amount: number;
   assetDate: string;
   memo: string;
+  assetCategoryId: number;
 }
 
 export interface AssetsResponse {

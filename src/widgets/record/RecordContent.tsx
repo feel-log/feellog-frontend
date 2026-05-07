@@ -196,11 +196,11 @@ export default function RecordContent() {
           paymentMethodId: null,
           emotionIds: [],
           situationTagIds: [],
-          memo: asset.memo,
+          memo: asset.memo || '',
         });
         setAmountInput(asset.amount.toString());
         setSelectedCategoryId(asset.assetCategoryId);
-        setTempMemo(asset.memo);
+        setTempMemo(asset.memo || '');
       }
     }
   }, [isAssetEditMode, assetIdParam, assetsData?.data]);
