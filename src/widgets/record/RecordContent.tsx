@@ -437,8 +437,8 @@ export default function RecordContent() {
     return days;
   };
 
-  const date = new Date(record.date);
-  const hhmm = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+  const nowForTime = new Date();
+  const hhmm = `${String(nowForTime.getHours()).padStart(2, '0')}:${String(nowForTime.getMinutes()).padStart(2, '0')}:${String(nowForTime.getSeconds()).padStart(2, '0')}`;
 
   // API 호출
   const { mutate: houseHoldPost } = useHouseHoldPost('expense', {
