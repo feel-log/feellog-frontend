@@ -14,7 +14,7 @@ export function UserBox() {
     <div className={'user-box-wrapper px-5'}>
       <div
         className={
-          'user-box bg-gray-1푸시 알림 토글 버튼색과 크기 맞추기00 mt-5 mb-6.25 flex gap-3 rounded-[12px] p-4'
+          'user-box bg-gray-100 mt-5 mb-6.25 flex gap-3 rounded-[12px] p-4'
         }
       >
         <div className={'profile relative h-15 w-15 rounded-full'}>
