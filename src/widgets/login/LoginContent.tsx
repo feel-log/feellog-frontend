@@ -17,8 +17,8 @@ export default function LoginContent() {
   return (
     <>
       <ConfirmModal isOpen={errorBox} noCancel title={"로그인 중 문제가 발생했어요.|다시 시도해주세요."} onConfirm={() => setErrorBox(false)} onCancel={() => setErrorBox(false)} />
-      <div className={'login__content__wrapper relative h-[calc(100vh-60.99px)]'}>
-        <div className={'logo__part flex flex-col items-center pt-25'}>
+      <div className={'login__content__wrapper h-[calc(100vh-60.99px)]'}>
+        <div className={'logo__part flex flex-col items-center pt-25 pb-75'}>
           <Image
             src={'/svg/feel_log_big.svg'}
             alt={'feel_log_login'}
@@ -32,7 +32,7 @@ export default function LoginContent() {
         </div>
         <div
           className={
-            'login__part absolute right-0 bottom-10 left-0 flex flex-col items-center gap-3'
+            'login__part flex flex-col items-center gap-3'
           }
         >
           <SocialLoginButton

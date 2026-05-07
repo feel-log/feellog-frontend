@@ -170,7 +170,7 @@ export default function ExportContent() {
       </div>
 
       {/* 정렬 셀렉터 + 본문 */}
-      <div className="overflow-y-auto px-4 pt-5 pb-12 h-118.5 relative">
+      <div className="overflow-y-auto px-4 pt-5 pb-12 h-157.75 relative">
         <div className="flex justify-end">
           <SortButton sortType={sortType} onSortChange={setSortType} />
         </div>

@@ -2,7 +2,19 @@ import React from 'react';
 import Link from 'next/link';
 import { cn } from '@/shared/lib/utils';
 
-export default function HouseHoldBox({ children, isAnchor, anchor, className } : { children: React.ReactNode, isAnchor?: boolean, anchor?: string, className?: string }) {
+export default function HouseHoldBox({
+  children,
+  isAnchor,
+  anchor,
+  className,
+  onClick
+} : {
+  children: React.ReactNode,
+  isAnchor?: boolean,
+  anchor?: string,
+  className?: string,
+  onClick?: () => void
+}) {
   return (
     <div
       className={cn(
@@ -10,7 +22,13 @@ export default function HouseHoldBox({ children, isAnchor, anchor, className } :
         ,className
       )}
     >
-      {isAnchor ? <Link href={anchor!} className="block w-full">{children}</Link> : children}
+      {isAnchor && onClick ? (
+        <button onClick={onClick} className="block w-full text-left">{children}</button>
+      ) : isAnchor ? (
+        <Link href={anchor!} className="block w-full">{children}</Link>
+      ) : (
+        children
+      )}
     </div>
   );
 }

@@ -23,10 +23,14 @@ export function useGetAssets(params: GetAssetsParams) {
       // 특정 카테고리만 조회하는 경우
       if (params.categoryId) {
         const response = await getAssetsApi(params);
-        const totalAmount = response.assets.reduce((sum, asset) => sum + asset.amount, 0);
+        const assetsWithCategory = response.assets.map(asset => ({
+          ...asset,
+          assetCategoryId: params.categoryId,
+        }));
+        const totalAmount = assetsWithCategory.reduce((sum, asset) => sum + asset.amount, 0);
         return {
-          data: response.assets,
-          total: response.assets.length,
+          data: assetsWithCategory,
+          total: assetsWithCategory.length,
           totalAmount,
           categories: [],
         };
@@ -47,8 +51,13 @@ export function useGetAssets(params: GetAssetsParams) {
       );
 
       responses.forEach((response, idx) => {
-        allAssets.push(...(response.assets || []));
-        categoryTotals[categoryIds[idx]] = response.categoryTotalAmount || 0;
+        const categoryId = categoryIds[idx];
+        const assetsWithCategory = (response.assets || []).map(asset => ({
+          ...asset,
+          assetCategoryId: categoryId,
+        }));
+        allAssets.push(...assetsWithCategory);
+        categoryTotals[categoryId] = response.categoryTotalAmount || 0;
       });
 
       // 정렬 적용

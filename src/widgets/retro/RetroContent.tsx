@@ -3,21 +3,33 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { useToken } from '@/shared/store';
+import { useToken, useUser } from '@/shared/store';
 import { reportQueries } from '@/entities/report';
 import RetroEmpty from '@/widgets/retro/RetroEmpty';
 import RetroMain from '@/widgets/retro/RetroMain';
 import RetroSkeleton from '@/widgets/retro/RetroSkeleton';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 import PageHeader from '@/shared/ui/PageHeader';
 import Skeleton from '@/shared/ui/Skeleton';
 
 export default function RetroContent() {
   const router = useRouter();
   const { getAccessToken } = useToken();
+  const { getUser } = useUser();
+  const user = getUser();
   const token = getAccessToken();
 
   const [mounted, setMounted] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  const handleButtonClick = () => {
+    if (!hasData && (!user?.nickname || user?.nickname.startsWith('guest'))) {
+      setShowLoginModal(true);
+      return;
+    }
+    router.push(hasData ? '/retro/survey' : '/record?type=expense');
+  };
 
   const today = new Date();
   const year = today.getFullYear();
@@ -67,12 +79,24 @@ export default function RetroContent() {
 
       <div className="flex w-full items-center justify-center bg-white px-4 pt-6 pb-9">
         <button
-          onClick={() => router.push(hasData ? '/retro/survey' : '/record?type=expense')}
+          onClick={handleButtonClick}
           className="h-13.5 w-full rounded-[10px] bg-[#13278A] text-[20px] font-semibold leading-normal tracking-[-0.5px] text-white transition-colors hover:bg-[#0F1F6E]"
         >
           {hasData ? '소비 회고하기' : '소비 기록하러 가기'}
         </button>
       </div>
+
+      <ConfirmModal
+        isOpen={showLoginModal}
+        type="loginCheck"
+        title="로그인 후 이용 가능합니다."
+        secondary="로그인 하시겠습니까?"
+        onCancel={() => setShowLoginModal(false)}
+        onConfirm={() => {
+          setShowLoginModal(false);
+          router.push('/login');
+        }}
+      />
     </div>
   );
 }

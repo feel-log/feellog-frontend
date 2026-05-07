@@ -9,6 +9,7 @@ import { useMonthExpendStore } from '@/shared/store/month-expend-store';
 import { useTodayExpend } from '@/entities/today-expenditure/model/useTodayExpend';
 import { useMasterData } from '@/entities/master-data';
 import { useToken, useUser } from '@/shared/store';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 
 const TODAY = new Date();
 const MIN_DATE = (() => {
@@ -25,6 +26,7 @@ interface TodayExpenseBoxProps {
 export default function TodayExpenseBox({ emotions, expenseCategories }: TodayExpenseBoxProps) {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const { getUser } = useUser();
   const { setErrorBox } = useToken();
   const user = getUser();
@@ -54,7 +56,15 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
   };
 
   const { data: monthData } = useMonthExpendStore();
-  const dateString = selectedDate.toISOString().split('T')[0];
+  const dateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
+
+  const handleExportClick = () => {
+    if (!user?.nickname || user?.nickname.startsWith('guest')) {
+      setShowLoginModal(true);
+      return;
+    }
+    router?.push(`/export?date=${dateString}`);
+  };
 
   // 선택된 날짜와 일치하는 지출 데이터만 필터링
   const dailyExpenseList = useMemo(() => {
@@ -122,7 +132,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
         </div>
         <button
           className={'cursor-pointer'}
-          onClick={() => router?.push(`/export?date=${dateString}`)}
+          onClick={handleExportClick}
         >
           <Image
             src={'/svg/icon_arrow_right.svg'}
@@ -191,7 +201,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
       ) : (
         <>
           <div className="space-y-5">
-            {expenseData?.categories.map((category, idx) => (
+            {expenseData?.categories.slice(0, 3).map((category, idx) => (
               <div key={idx}>
                 <div className="mb-1.25 flex items-center justify-between">
                   <span className="text-[16px] font-medium tracking-[-0.025em] text-[#27282c]">
@@ -225,13 +235,25 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
           </div>
 
           <button
-            onClick={() => router?.push(`/export?date=${dateString}`)}
+            onClick={handleExportClick}
             className="mt-6 w-full cursor-pointer rounded-[10px] border border-[#e5e5e5] px-2.5 py-3 text-center text-[16px] font-medium tracking-[-0.025em] text-[#27282c] transition-colors hover:bg-gray-50"
           >
             더보기
           </button>
         </>
       )}
+
+      <ConfirmModal
+        isOpen={showLoginModal}
+        type="loginCheck"
+        title="로그인 후 이용 가능합니다."
+        secondary="로그인 하시겠습니까?"
+        onCancel={() => setShowLoginModal(false)}
+        onConfirm={() => {
+          setShowLoginModal(false);
+          router.push('/login');
+        }}
+      />
     </div>
   );
 }
