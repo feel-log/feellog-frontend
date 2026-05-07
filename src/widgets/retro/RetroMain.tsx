@@ -21,28 +21,43 @@ export default function RetroMain({
   const router = useRouter();
   const [emblaRef] = useEmblaCarousel({ align: 'start', dragFree: true });
 
-  const { mainMessage, subMessage, topCategories, secondCategory, extraCount } =
-    expenseGraph;
+  const {
+    mainMessage,
+    subMessage,
+    topCategories,
+    secondCategories = [],
+    topExtraCount = 0,
+    secondExtraCount = 0,
+  } = expenseGraph;
+
+  const topAmount = topCategories[0]?.amount ?? 0;
+  const secondAmount = secondCategories[0]?.amount ?? 0;
+
+  const joinLabels = (items: { label: string }[]) =>
+    items.map((c) => c.label).join(', ');
+
+  const topLabel =
+    topCategories.length > 0
+      ? topExtraCount > 0
+        ? `${joinLabels(topCategories)} 외 ${topExtraCount}개`
+        : joinLabels(topCategories)
+      : '';
+
+  const secondLabel =
+    secondCategories.length > 0
+      ? secondExtraCount > 0
+        ? `${joinLabels(secondCategories)} 외 ${secondExtraCount}개`
+        : joinLabels(secondCategories)
+      : '';
 
   const barItems = [
-    ...topCategories.slice(0, 2).map((c) => ({
-      label: c.label,
-      amount: c.amount,
-      isTop: true,
-    })),
-    ...(secondCategory && topCategories.length === 1
-      ? [{ label: secondCategory.label, amount: secondCategory.amount, isTop: false }]
+    ...(topCategories.length > 0
+      ? [{ label: topLabel, amount: topAmount, isTop: true }]
       : []),
-    ...(extraCount > 0
-      ? [
-          {
-            label: `외 ${extraCount}개`,
-            amount: topCategories[0]?.amount ?? 0,
-            isTop: false,
-          },
-        ]
+    ...(secondCategories.length > 0
+      ? [{ label: secondLabel, amount: secondAmount, isTop: secondCategories.length > 1 }]
       : []),
-  ].slice(0, 3);
+  ];
 
   const maxAmount = Math.max(...barItems.map((b) => b.amount), 1);
 
