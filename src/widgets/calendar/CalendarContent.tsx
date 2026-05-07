@@ -13,35 +13,30 @@ import CalendarSkeleton from '@/widgets/calendar/CalendarSkeleton';
 import DateBottomSheet from '@/widgets/calendar/DateBottomSheet';
 import PageHeader from '@/shared/ui/PageHeader';
 
-const INCOME_CATEGORY_NAMES: Record<number, string> = {
-  1: '급여',
-  2: '용돈',
-  3: '부수입',
-  4: '상여금',
-  5: '금융수입',
-  6: '기타',
-};
-
 function buildLookups(masterData?: MasterData) {
   const categoryMap = new Map<number, string>();
   const emotionMap = new Map<number, string>();
   const situationMap = new Map<number, string>();
   const paymentMethodMap = new Map<number, string>();
+  const incomeCategoryMap = new Map<number, string>();
 
   masterData?.categoryGroups.forEach((g) =>
     g.categories.forEach((c) => categoryMap.set(c.id, c.name)),
   );
   masterData?.emotionGroups.forEach((g) =>
-    g.emotions.forEach((e) => emotionMap.set(e.id, e.name)),
+    g.emotions.forEach((e) => emotionMap.set(e.emotionId, e.emotionName)),
   );
   masterData?.situationTags.forEach((s) =>
-    situationMap.set(s.id, s.name),
+    situationMap.set(s.situationTagId, s.situationName),
   );
   masterData?.paymentMethods.forEach((p) =>
     paymentMethodMap.set(p.id, p.name),
   );
+  masterData?.incomeCategories.forEach((c) =>
+    incomeCategoryMap.set(c.id, c.name),
+  );
 
-  return { categoryMap, emotionMap, situationMap, paymentMethodMap };
+  return { categoryMap, emotionMap, situationMap, paymentMethodMap, incomeCategoryMap };
 }
 
 export default function CalendarContent() {
@@ -72,7 +67,7 @@ export default function CalendarContent() {
   const isLoading =
     !!token && (isExpensesLoading || isIncomesLoading || isMasterDataLoading);
 
-  const { categoryMap, emotionMap, situationMap, paymentMethodMap } = useMemo(
+  const { categoryMap, emotionMap, situationMap, paymentMethodMap, incomeCategoryMap } = useMemo(
     () => buildLookups(masterData),
     [masterData],
   );
@@ -122,7 +117,7 @@ export default function CalendarContent() {
         .filter((n): n is string => !!n),
     }));
     const incomeItems = dayIncomes.map((i) => ({
-      category: INCOME_CATEGORY_NAMES[i.incomeCategoryId] ?? '',
+      category: incomeCategoryMap.get(i.incomeCategoryId) ?? '',
       amount: i.amount,
       memo: i.memo ?? undefined,
     }));
@@ -137,6 +132,7 @@ export default function CalendarContent() {
     emotionMap,
     situationMap,
     paymentMethodMap,
+    incomeCategoryMap,
   ]);
 
   const handlePrevMonth = () => {
