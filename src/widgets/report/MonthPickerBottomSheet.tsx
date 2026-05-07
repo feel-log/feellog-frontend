@@ -168,7 +168,7 @@ export default function MonthPickerBottomSheet({
             wheelMode="natural"
             height={CONTAINER_HEIGHT}
             itemHeight={ITEM_HEIGHT}
-            className="bg-transparent!"
+            className="picker-no-divider bg-transparent!"
           >
             <Picker.Column name="year">
               {yearList.map((y, idx) => {

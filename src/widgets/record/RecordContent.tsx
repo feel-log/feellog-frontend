@@ -391,7 +391,9 @@ export default function RecordContent() {
     const { year, month } = calendarMonth;
     const daysInMonth = getDaysInMonth(year, month);
     const firstDay = getFirstDayOfMonth(year, month);
-    const daysInPrevMonth = getDaysInMonth(year, month - 1);
+    const prevMonth = month === 1 ? 12 : month - 1;
+    const prevYear = month === 1 ? year - 1 : year;
+    const daysInPrevMonth = getDaysInMonth(prevYear, prevMonth);
 
     const days = [];
 
@@ -399,7 +401,7 @@ export default function RecordContent() {
       days.push({
         day: daysInPrevMonth - i,
         isCurrentMonth: false,
-        date: `${year}-${String(month - 1).padStart(2, '0')}-${String(daysInPrevMonth - i).padStart(2, '0')}`,
+        date: `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(daysInPrevMonth - i).padStart(2, '0')}`,
       });
     }
 

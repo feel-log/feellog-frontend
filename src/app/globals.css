@@ -227,3 +227,7 @@ img {
 .spending-swiper .swiper-pagination {
   display: none;
 }
+
+.picker-no-divider > div:last-child > div {
+  display: none !important;
+}
