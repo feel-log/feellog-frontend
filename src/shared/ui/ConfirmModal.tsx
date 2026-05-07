@@ -30,7 +30,7 @@ export default function ConfirmModal({
   return (
     <>
       <div className="animate-fade-in fixed inset-0 right-0 left-0 z-50 mx-auto max-w-md bg-black opacity-50" />
-      {type === 'loginCheck' || type === 'logoutCheck' ? (
+      {type === 'loginCheck' || type === 'logoutCheck' || type === 'deleteCheck' ? (
         <div
           className={
             'box__container__2 fixed top-1/2 right-0 left-0 z-60 mx-auto h-auto w-70.75 -translate-y-1/2 rounded-[10px] bg-white px-5.25 pt-12.25 pb-5'
@@ -39,7 +39,9 @@ export default function ConfirmModal({
           <span className={'mb-1 block text-center text-[14px] font-bold'}>{title}</span>
           <span className={'text-ray-600 mb-8 block text-center text-[14px]'}>{secondary}</span>
           <div className={'button__wrapper flex flex-col gap-2'}>
-            <button className={'rounded-[8px] bg-[#13278a] py-2 text-[14px] text-white'} onClick={onConfirm}>
+            <button className={`rounded-[8px] py-2 text-[14px] text-white ${
+              type === 'deleteCheck' ? 'bg-[#eb1c1c] hover:bg-[#d41a1a]' : 'bg-[#13278a] hover:bg-[#0f1f66]'
+            }`} onClick={onConfirm}>
               {confirmText}
             </button>
             <button className={'text-[14px] py-2 text-black rounded-[8px]'} onClick={onCancel}>
