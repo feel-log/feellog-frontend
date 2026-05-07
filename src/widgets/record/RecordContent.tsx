@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useReducer } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import PageHeader from '@/shared/ui/PageHeader';
@@ -12,11 +12,9 @@ import { useHouseHoldPost } from '@/features/post-house-hold/model/useHouseHoldP
 import { useUpdateExpense } from '@/features/update-expense/model/useUpdateExpense';
 import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
 import { useGetAssets } from '@/entities/get-assets/useGetAssets';
-import type { AssetItem } from '@/entities/get-assets/get-assets-api';
 import { usePostAsset } from '@/features/post-asset/model/usePostAsset';
 import { useUpdateAsset } from '@/features/post-asset/model/useUpdateAsset';
 import { usePostIncome } from '@/features/post-income/model/usePostIncome';
-import type { DailyExpendType } from '@/entities/daily-expend/model/daily-expend-type';
 import {
   formatDateDisplay,
   calculateExpression,
@@ -79,198 +77,75 @@ export default function RecordContent() {
     return assetsData.data.find((a) => a.assetId === parsedAssetId);
   }, [isAssetEditMode, assetIdParam, assetsData]);
 
-  interface FormState {
-    record: RecordState;
-    selectedCategoryId: number | null;
-    selectedPaymentId: number | null;
-    selectedEmotions: number[];
-    tempTags: number[];
-    tempMemo: string;
-    memoInput: string;
-    tempDate: string;
-    isDateSelected: boolean;
-    isCategoryOpen: boolean;
-    isPaymentOpen: boolean;
-    isEmotionOpen: boolean;
-    isMemoOpen: boolean;
-    isSituationOpen: boolean;
-    isDateOpen: boolean;
-  }
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isEmotionOpen, setIsEmotionOpen] = useState(false);
+  const [isMemoOpen, setIsMemoOpen] = useState(false);
+  const [isSituationOpen, setIsSituationOpen] = useState(false);
+  const [isDateOpen, setIsDateOpen] = useState(false);
 
-  type FormAction =
-    | { type: 'LOAD_EXPENSE'; payload: DailyExpendType }
-    | { type: 'LOAD_ASSET'; payload: AssetItem }
-    | { type: 'SET_RECORD'; payload: RecordState }
-    | { type: 'SET_CATEGORY'; payload: number | null }
-    | { type: 'SET_PAYMENT'; payload: number | null }
-    | { type: 'SET_EMOTIONS'; payload: number[] }
-    | { type: 'SET_TAGS'; payload: number[] }
-    | { type: 'SET_MEMO'; payload: string }
-    | { type: 'SET_MEMO_INPUT'; payload: string }
-    | { type: 'SET_DATE'; payload: string }
-    | { type: 'SET_DATE_SELECTED'; payload: boolean }
-    | { type: 'SET_CATEGORY_OPEN'; payload: boolean }
-    | { type: 'SET_PAYMENT_OPEN'; payload: boolean }
-    | { type: 'SET_EMOTION_OPEN'; payload: boolean }
-    | { type: 'SET_MEMO_OPEN'; payload: boolean }
-    | { type: 'SET_SITUATION_OPEN'; payload: boolean }
-    | { type: 'SET_DATE_OPEN'; payload: boolean };
-
-  const initialFormState: FormState = {
-    record: {
-      amount: 0,
-      type: initialType,
-      date: selectedDate,
-      categoryId: null,
-      paymentMethodId: null,
-      emotionIds: [],
-      situationTagIds: [],
-      memo: '',
-    },
-    selectedCategoryId: null,
-    selectedPaymentId: null,
-    selectedEmotions: [],
-    tempTags: [],
-    tempMemo: '',
-    memoInput: '',
-    tempDate: selectedDate,
-    isDateSelected: false,
-    isCategoryOpen: false,
-    isPaymentOpen: false,
-    isEmotionOpen: false,
-    isMemoOpen: false,
-    isSituationOpen: false,
-    isDateOpen: false,
-  };
-
-  const formReducer = (state: FormState, action: FormAction): FormState => {
-    switch (action.type) {
-      case 'LOAD_EXPENSE':
-        return {
-          ...state,
-          record: {
-            amount: action.payload.amount,
-            type: 'expense',
-            date: action.payload.expenseDate,
-            categoryId: action.payload.categoryId,
-            paymentMethodId: action.payload.paymentMethodId,
-            emotionIds: action.payload.emotionIds,
-            situationTagIds: action.payload.situationTagIds,
-            memo: action.payload.memo,
-          },
-          selectedCategoryId: action.payload.categoryId,
-          selectedPaymentId: action.payload.paymentMethodId,
-          selectedEmotions: action.payload.emotionIds,
-          tempTags: action.payload.situationTagIds,
-          tempMemo: action.payload.memo,
-        };
-      case 'LOAD_ASSET':
-        return {
-          ...state,
-          record: {
-            amount: action.payload.amount,
-            type: 'income',
-            date: action.payload.assetDate,
-            categoryId: action.payload.assetCategoryId,
-            paymentMethodId: null,
-            emotionIds: [],
-            situationTagIds: [],
-            memo: action.payload.memo || '',
-          },
-          selectedCategoryId: action.payload.assetCategoryId,
-          tempMemo: action.payload.memo || '',
-        };
-      case 'SET_RECORD':
-        return { ...state, record: action.payload };
-      case 'SET_CATEGORY':
-        return { ...state, selectedCategoryId: action.payload };
-      case 'SET_PAYMENT':
-        return { ...state, selectedPaymentId: action.payload };
-      case 'SET_EMOTIONS':
-        return { ...state, selectedEmotions: action.payload };
-      case 'SET_TAGS':
-        return { ...state, tempTags: action.payload };
-      case 'SET_MEMO':
-        return { ...state, tempMemo: action.payload };
-      case 'SET_MEMO_INPUT':
-        return { ...state, memoInput: action.payload };
-      case 'SET_DATE':
-        return { ...state, tempDate: action.payload };
-      case 'SET_DATE_SELECTED':
-        return { ...state, isDateSelected: action.payload };
-      case 'SET_CATEGORY_OPEN':
-        return { ...state, isCategoryOpen: action.payload };
-      case 'SET_PAYMENT_OPEN':
-        return { ...state, isPaymentOpen: action.payload };
-      case 'SET_EMOTION_OPEN':
-        return { ...state, isEmotionOpen: action.payload };
-      case 'SET_MEMO_OPEN':
-        return { ...state, isMemoOpen: action.payload };
-      case 'SET_SITUATION_OPEN':
-        return { ...state, isSituationOpen: action.payload };
-      case 'SET_DATE_OPEN':
-        return { ...state, isDateOpen: action.payload };
-      default:
-        return state;
-    }
-  };
-
-  const [formState, dispatch] = useReducer(formReducer, initialFormState);
-  const {
-    record,
-    selectedCategoryId,
-    selectedPaymentId,
-    selectedEmotions,
-    tempTags,
-    tempMemo,
-    memoInput,
-    tempDate,
-    isDateSelected,
-    isCategoryOpen,
-    isPaymentOpen,
-    isEmotionOpen,
-    isMemoOpen,
-    isSituationOpen,
-    isDateOpen,
-  } = formState;
-
-  const setRecord = (newRecord: RecordState | ((prev: RecordState) => RecordState)) => {
-    if (typeof newRecord === 'function') {
-      dispatch({ type: 'SET_RECORD', payload: newRecord(record) });
-    } else {
-      dispatch({ type: 'SET_RECORD', payload: newRecord });
-    }
-  };
-  const setSelectedCategoryId = (id: number | null) => dispatch({ type: 'SET_CATEGORY', payload: id });
-  const setSelectedPaymentId = (id: number | null) => dispatch({ type: 'SET_PAYMENT', payload: id });
-  const setSelectedEmotions = (emotions: number[]) => dispatch({ type: 'SET_EMOTIONS', payload: emotions });
-  const setTempTags = (tags: number[]) => dispatch({ type: 'SET_TAGS', payload: tags });
-  const setTempMemo = (memo: string) => dispatch({ type: 'SET_MEMO', payload: memo });
-  const setMemoInput = (memo: string) => dispatch({ type: 'SET_MEMO_INPUT', payload: memo });
-  const setTempDate = (date: string) => dispatch({ type: 'SET_DATE', payload: date });
-  const setIsDateSelected = (selected: boolean) => dispatch({ type: 'SET_DATE_SELECTED', payload: selected });
-  const setIsCategoryOpen = (open: boolean) => dispatch({ type: 'SET_CATEGORY_OPEN', payload: open });
-  const setIsPaymentOpen = (open: boolean) => dispatch({ type: 'SET_PAYMENT_OPEN', payload: open });
-  const setIsEmotionOpen = (open: boolean) => dispatch({ type: 'SET_EMOTION_OPEN', payload: open });
-  const setIsMemoOpen = (open: boolean) => dispatch({ type: 'SET_MEMO_OPEN', payload: open });
-  const setIsSituationOpen = (open: boolean) => dispatch({ type: 'SET_SITUATION_OPEN', payload: open });
-  const setIsDateOpen = (open: boolean) => dispatch({ type: 'SET_DATE_OPEN', payload: open });
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedPaymentId, setSelectedPaymentId] = useState<number | null>(null);
+  const [selectedEmotions, setSelectedEmotions] = useState<number[]>([]);
+  const [memoInput, setMemoInput] = useState('');
+  const [tempTags, setTempTags] = useState<number[]>([]);
+  const [tempMemo, setTempMemo] = useState('');
+  const [isDateSelected, setIsDateSelected] = useState(false);
+  const [tempDate, setTempDate] = useState(selectedDate);
 
   const { amountInput, setAmountInput, isAmountEditing, setIsAmountEditing, handleAmountChange, displayAmount } = useAmountInput();
 
+  const [record, setRecord] = useState<RecordState>({
+    amount: 0,
+    type: initialType,
+    date: selectedDate,
+    categoryId: null,
+    paymentMethodId: null,
+    emotionIds: [],
+    situationTagIds: [],
+    memo: '',
+  });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (targetExpense) {
-      dispatch({ type: 'LOAD_EXPENSE', payload: targetExpense });
+      setRecord({
+        amount: targetExpense.amount,
+        type: 'expense',
+        date: targetExpense.expenseDate,
+        categoryId: targetExpense.categoryId,
+        paymentMethodId: targetExpense.paymentMethodId,
+        emotionIds: targetExpense.emotionIds,
+        situationTagIds: targetExpense.situationTagIds,
+        memo: targetExpense.memo,
+      });
       setAmountInput(targetExpense.amount.toString());
+      setSelectedCategoryId(targetExpense.categoryId);
+      setSelectedPaymentId(targetExpense.paymentMethodId);
+      setSelectedEmotions(targetExpense.emotionIds);
+      setTempTags(targetExpense.situationTagIds);
+      setTempMemo(targetExpense.memo);
     }
-  }, [targetExpense, setAmountInput]);
+  }, [targetExpense]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (targetAsset) {
-      dispatch({ type: 'LOAD_ASSET', payload: targetAsset });
+      setRecord({
+        amount: targetAsset.amount,
+        type: 'income',
+        date: targetAsset.assetDate,
+        categoryId: targetAsset.assetCategoryId,
+        paymentMethodId: null,
+        emotionIds: [],
+        situationTagIds: [],
+        memo: targetAsset.memo || '',
+      });
       setAmountInput(targetAsset.amount.toString());
+      setSelectedCategoryId(targetAsset.assetCategoryId);
+      setTempMemo(targetAsset.memo || '');
     }
-  }, [targetAsset, setAmountInput]);
+  }, [targetAsset]);
 
   // userId 가져오기
   const { getAccessToken } = useToken();

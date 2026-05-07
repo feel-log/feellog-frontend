@@ -89,7 +89,7 @@ export default function RecordFieldsSection({
         label="카테고리"
         value={
           isAssetMode
-            ? assetCategories.find((c) => c.id === record.categoryId)?.name ?? ''
+            ? assetCategories.find((c) => c.id === record.categoryId)?.label ?? ''
             : record.type === 'income'
             ? incomeCategories.find((c) => c.id === record.categoryId)?.label ?? ''
             : expenseCategories
