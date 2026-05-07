@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { useToken } from '@/shared/store';
+import { useToken, useUser } from '@/shared/store';
 import { expenseQueries } from '@/entities/expense';
 import { incomeQueries } from '@/entities/income';
 import { masterDataQueries, type MasterData } from '@/entities/master-data';
@@ -11,6 +11,7 @@ import CalendarHeader from '@/widgets/calendar/CalendarHeader';
 import CalendarGrid from '@/widgets/calendar/CalendarGrid';
 import CalendarSkeleton from '@/widgets/calendar/CalendarSkeleton';
 import DateBottomSheet from '@/widgets/calendar/DateBottomSheet';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 import PageHeader from '@/shared/ui/PageHeader';
 
 const INCOME_CATEGORY_NAMES: Record<number, string> = {
@@ -50,9 +51,20 @@ export default function CalendarContent() {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const { getAccessToken } = useToken();
+  const { getUser } = useUser();
+  const user = getUser();
   const token = getAccessToken();
+
+  const handleAddExpense = () => {
+    if (!user?.nickname || user?.nickname.startsWith('guest')) {
+      setShowLoginModal(true);
+      return;
+    }
+    router.push('/record?type=expense');
+  };
 
   const { data: expenses, isLoading: isExpensesLoading } = useQuery({
     ...expenseQueries.monthly(token || '', year, month + 1),
@@ -187,13 +199,25 @@ export default function CalendarContent() {
 
       <div className="pointer-events-none fixed bottom-0 left-1/2 flex w-full max-w-md -translate-x-1/2 justify-end">
         <button
-          onClick={() => router.push('/record?type=expense')}
+          onClick={handleAddExpense}
           aria-label="지출 추가"
           className="pointer-events-auto z-40 mb-32.5 mr-4 flex size-14.5 items-center justify-center rounded-full bg-[#13278A] p-2.75 shadow-[2px_3px_7px_0px_rgba(49,49,49,0.3)]"
         >
           <img src="/svg/icon_plus_white.svg" alt="" width={36} height={36} />
         </button>
       </div>
+
+      <ConfirmModal
+        isOpen={showLoginModal}
+        type="loginCheck"
+        title="로그인 후 이용 가능합니다."
+        secondary="로그인 하시겠습니까?"
+        onCancel={() => setShowLoginModal(false)}
+        onConfirm={() => {
+          setShowLoginModal(false);
+          router.push('/login');
+        }}
+      />
 
       {selectedDay !== null && (
         <DateBottomSheet

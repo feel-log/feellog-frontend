@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import PageHeader from '@/shared/ui/PageHeader';
 import Footer from '@/shared/ui/Footer';
 import SortButton, { SortType } from '@/shared/ui/SortButton';
@@ -41,6 +42,7 @@ function formatRecordDate(date: string): string {
 
 export default function AssetDetailContent({ categoryId }: AssetDetailContentProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const category = ASSET_CATEGORIES.find(cat => cat.id === categoryId);
   const apiCategoryId = CATEGORY_ID_MAP[categoryId];
   const [sortType, setSortType] = useState<SortType>('latest');
@@ -87,7 +89,10 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
       await deleteAssetApi(deleteTargetId);
       setDeleteTargetId(null);
       setSwipedId(null);
-      // 목록 새로고침을 위해 쿼리 재실행 (useGetAssets가 자동으로 처리)
+      // 캐시 무효화하여 목록 새로고침
+      await queryClient.invalidateQueries({
+        queryKey: ['assets']
+      });
     } catch (error) {
       alert('삭제 중 오류가 발생했습니다.');
       setIsDeleting(false);

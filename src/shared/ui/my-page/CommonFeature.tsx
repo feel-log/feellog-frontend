@@ -1,21 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useToken, useUser } from '@/shared/store';
 import { useRouter } from 'next/navigation';
 import { usePostDeviceToken } from '@/features/post-device-token';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 
 export default function CommonFeature({ title, secondary, changeLogoutModal }: { title: string; secondary: string; changeLogoutModal?: (isOpen: boolean) => void; }) {
-  const [isPushedNotification, setIsPushedNotification] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('isPushNotificationEnabled') === 'true';
-    }
-    return false;
-  });
+  const [isPushedNotification, setIsPushedNotification] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { clearTokens } = useToken();
   const { clearUser } = useUser();
   const router = useRouter();
   const { mutate: registerDeviceToken } = usePostDeviceToken();
+
+  useEffect(() => {
+    setIsPushedNotification(localStorage.getItem('isPushNotificationEnabled') === 'true');
+    setIsMounted(true);
+  }, []);
 
   const switchNotification = async () => {
     setIsLoading(true);
@@ -23,24 +26,9 @@ export default function CommonFeature({ title, secondary, changeLogoutModal }: {
       const nextState = !isPushedNotification;
 
       if (nextState) {
-        const token = localStorage.getItem('fcmToken') || 'temp-token';
-        const deviceType = 'WEB';
-
-        registerDeviceToken(
-          { token, deviceType },
-          {
-            onSuccess: () => {
-              setIsPushedNotification(true);
-              localStorage.setItem('isPushNotificationEnabled', 'true');
-            },
-            onError: () => {
-              console.error('Failed to register device token');
-            },
-            onSettled: () => {
-              setIsLoading(false);
-            },
-          }
-        );
+        setIsModalOpen(true);
+        setIsLoading(false);
+        setIsPushedNotification(false);
       } else {
         setIsPushedNotification(false);
         localStorage.setItem('isPushNotificationEnabled', 'false');
@@ -85,6 +73,14 @@ export default function CommonFeature({ title, secondary, changeLogoutModal }: {
           </button>
         </div>
       )}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        title="준비중인 기능입니다"
+        message="푸시 알림 기능은 곧 서비스될 예정입니다."
+        confirmText="확인"
+        onConfirm={() => setIsModalOpen(false)}
+        noCancel={true}
+      />
     </div>
   );
 }

@@ -17,6 +17,7 @@ import { useUpdateExpense } from '@/features/update-expense/model/useUpdateExpen
 import { useDailyExpend } from '@/entities/daily-expend/model/useDailyExpend';
 import { useGetAssets } from '@/entities/get-assets/useGetAssets';
 import { usePostAsset } from '@/features/post-asset/model/usePostAsset';
+import { useUpdateAsset } from '@/features/post-asset/model/useUpdateAsset';
 import { usePostIncome } from '@/features/post-income/model/usePostIncome';
 import { evaluate } from 'mathjs';
 
@@ -140,7 +141,7 @@ export default function RecordContent() {
   const { data: assetsData } = useGetAssets({
     sort: 'LATEST',
     page: 0,
-    size: 100,
+    size: 1000,
   });
 
   const [record, setRecord] = useState<RecordState>({
@@ -183,11 +184,14 @@ export default function RecordContent() {
 
   // 자산 edit 모드일 때 초기값 설정
   useEffect(() => {
-    if (isAssetEditMode && assetIdParam && assetsData?.data) {
-      const asset = assetsData.data.find(
-        (a) => a.assetId === parseInt(assetIdParam)
-      );
-      if (asset) {
+    if (!isAssetEditMode || !assetIdParam || !assetsData?.data) return;
+
+    try {
+      const assetsList = Array.isArray(assetsData.data) ? assetsData.data : (assetsData.data?.data || []);
+      const parsedAssetId = parseInt(assetIdParam);
+      const asset = assetsList.find((a) => a.assetId === parsedAssetId);
+
+      if (asset && asset.assetCategoryId) {
         setRecord({
           amount: asset.amount,
           type: 'income',
@@ -202,6 +206,8 @@ export default function RecordContent() {
         setSelectedCategoryId(asset.assetCategoryId);
         setTempMemo(asset.memo || '');
       }
+    } catch (error) {
+      console.error('Error loading asset for edit:', error);
     }
   }, [isAssetEditMode, assetIdParam, assetsData?.data]);
 
@@ -447,21 +453,32 @@ export default function RecordContent() {
 
   const updateExpenseMutation = useUpdateExpense();
   const postAssetMutation = usePostAsset();
+  const updateAssetMutation = useUpdateAsset();
   const postIncomeMutation = usePostIncome();
 
   const isFormValid = () => {
     if (record.type === 'expense') {
-      return record.amount > 0 && isDateSelected && record.paymentMethodId !== null && record.categoryId !== null;
+      return record.amount > 0 && record.paymentMethodId !== null && record.categoryId !== null;
     }
     if (isAssetMode) {
-      return isDateSelected && record.amount > 0 && record.categoryId !== null;
+      return record.amount > 0 && record.categoryId !== null;
     }
     return record.amount > 0 && record.categoryId !== null;
   };
 
   const submitHouseHoldPost = () => {
     if (isFormValid()) {
-      if (isAssetMode) {
+      if (isAssetEditMode && assetIdParam) {
+        updateAssetMutation.mutate({
+          assetId: parseInt(assetIdParam),
+          request: {
+            assetCategoryId: record.categoryId ?? 0,
+            amount: record.amount ?? 0,
+            assetDate: record.date,
+            memo: record.memo ?? ""
+          }
+        });
+      } else if (isAssetMode) {
         postAssetMutation.mutate({
           assetCategoryId: record.categoryId ?? 0,
           amount: record.amount ?? 0,
@@ -499,8 +516,19 @@ export default function RecordContent() {
   }
 
 
+  const handleOutsideClick = () => {
+    if (isAmountEditing) {
+      const calculated = calculateExpression(amountInput);
+      setRecord((rec) => ({
+        ...rec,
+        amount: calculated,
+      }));
+      setIsAmountEditing(false);
+    }
+  };
+
   return (
-    <div className="min-h-dvh bg-white" onClick={() => isAmountEditing && setIsAmountEditing(false)}>
+    <div className="min-h-dvh bg-white" onClick={handleOutsideClick}>
       <PageHeader title={isEditMode ? '지출 수정' : isAssetEditMode ? '자산 수정' : isAssetMode ? '자산 추가' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">
@@ -611,7 +639,10 @@ export default function RecordContent() {
                 .find((item) => item.id === record.categoryId)?.label ?? ''
           }
           placeholder="카테고리를 선택하세요"
-          onClick={() => setIsCategoryOpen(true)}
+          onClick={() => {
+            setSelectedCategoryId(record.categoryId);
+            setIsCategoryOpen(true);
+          }}
         />
 
         {/* Emotion Section (Expense Only) */}
@@ -691,7 +722,13 @@ export default function RecordContent() {
                   setCalendarMonth({ ...calendarMonth, month: calendarMonth.month + 1 });
                 }
               }}
-              className="cursor-pointer"
+              disabled={calendarMonth.year > now.getFullYear() || (calendarMonth.year === now.getFullYear() && calendarMonth.month >= now.getMonth() + 1)}
+              className={cn(
+                'transition-opacity',
+                calendarMonth.year > now.getFullYear() || (calendarMonth.year === now.getFullYear() && calendarMonth.month >= now.getMonth() + 1)
+                  ? 'cursor-not-allowed opacity-40'
+                  : 'cursor-pointer'
+              )}
               aria-label="다음 달"
             >
               <Image
@@ -715,7 +752,9 @@ export default function RecordContent() {
           <div className="grid grid-cols-7 gap-y-5 text-center">
             {getCalendarDays().map((item, idx) => {
               const isSelected = item.date === tempDate;
+              const isFutureDate = new Date(item.date) > new Date(today);
               const handleDayClick = () => {
+                if (isFutureDate) return;
                 if (!item.isCurrentMonth) {
                   const [y, m] = item.date.split('-').map(Number);
                   setCalendarMonth({ year: y, month: m });
@@ -726,13 +765,16 @@ export default function RecordContent() {
                 <button
                   key={idx}
                   onClick={handleDayClick}
+                  disabled={isFutureDate}
                   className={cn(
-                    'relative mx-auto flex h-7.5 w-7.5 cursor-pointer items-center justify-center text-[18px] font-semibold tracking-[-0.025em] transition-colors',
-                    isSelected
-                      ? 'rounded-full bg-[#13278a] text-white'
-                      : item.isCurrentMonth
-                        ? 'text-[#030303]'
-                        : 'text-[#9fa4a8]'
+                    'relative mx-auto flex h-7.5 w-7.5 items-center justify-center text-[18px] font-semibold tracking-[-0.025em] transition-colors',
+                    isFutureDate
+                      ? 'cursor-not-allowed text-[#d0d0d0] opacity-50'
+                      : isSelected
+                        ? 'rounded-full bg-[#13278a] text-white cursor-pointer'
+                        : item.isCurrentMonth
+                          ? 'text-[#030303] cursor-pointer'
+                          : 'text-[#9fa4a8] cursor-pointer'
                   )}
                 >
                   {item.day}

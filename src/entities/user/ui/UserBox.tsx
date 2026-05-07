@@ -18,7 +18,7 @@ export function UserBox() {
         }
       >
         <div className={'profile relative h-15 w-15 rounded-full'}>
-          <Image src={'/svg/free_log_chc.png'} alt={'profile'} fill />
+          <Image src={'/svg/profile_chc.svg'} alt={'profile'} fill />
         </div>
         <div className={'info flex flex-col justify-center p-1.25'}>
           {(query.isLoading || !user) && (

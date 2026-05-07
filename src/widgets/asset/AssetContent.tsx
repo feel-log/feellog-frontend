@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import Footer from '@/shared/ui/Footer';
 import PageHeader from '@/shared/ui/PageHeader';
 import SortButton, { SortType } from '@/shared/ui/SortButton';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { useGetAssets } from '@/entities/get-assets/useGetAssets';
+import { useUser } from '@/shared/store';
 
 const SORT_MAPPING: Record<SortType, 'LATEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC'> = {
   latest: 'LATEST',
@@ -16,7 +18,10 @@ const SORT_MAPPING: Record<SortType, 'LATEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC'> = 
 
 export default function AssetContent() {
   const router = useRouter();
+  const { getUser } = useUser();
+  const user = getUser();
   const [sortType, setSortType] = useState<SortType>('latest');
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const { data: assetsData, isLoading } = useGetAssets({
     sort: SORT_MAPPING[sortType],
@@ -26,6 +31,14 @@ export default function AssetContent() {
 
   const totalAsset = assetsData?.totalAmount ?? 0;
   const groupedAssets = assetsData?.categories ?? [];
+
+  const handleAddAsset = () => {
+    if (!user?.nickname || user?.nickname.startsWith('guest')) {
+      setShowLoginModal(true);
+      return;
+    }
+    router.push('/record?type=asset');
+  };
 
   if (isLoading) {
     return (
@@ -62,13 +75,25 @@ export default function AssetContent() {
         showBack={false}
         rightAction={
           <button
-            onClick={() => router.push('/record?type=asset')}
+            onClick={handleAddAsset}
             aria-label="자산 추가"
             className="cursor-pointer"
           >
             <img src="/svg/icon_plus_black.svg" alt="" width={28} height={28} />
           </button>
         }
+      />
+
+      <ConfirmModal
+        isOpen={showLoginModal}
+        type="loginCheck"
+        title="로그인 후 이용 가능합니다."
+        secondary="로그인 하시겠습니까?"
+        onCancel={() => setShowLoginModal(false)}
+        onConfirm={() => {
+          setShowLoginModal(false);
+          router.push('/login');
+        }}
       />
 
 

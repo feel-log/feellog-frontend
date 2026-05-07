@@ -28,7 +28,7 @@ export default function BackgroundProvider({ children }: { children: React.React
   }, [pathname]);
 
   return (
-    <div className="min-h-screen w-full bg-gray-100">
+    <div className="min-h-dvh w-full bg-gray-100">
       <div
         className={cn(
           'mx-auto flex min-h-dvh w-full max-w-md flex-col',

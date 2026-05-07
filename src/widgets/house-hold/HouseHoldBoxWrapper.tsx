@@ -1,14 +1,17 @@
 "use client";
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import HouseHoldBox from '@/shared/ui/house-hold/HouseHoldBox';
 import ThisWeekBox from '@/shared/ui/house-hold/ThisWeekBox';
 import TodayExpenseBox from '@/shared/ui/house-hold/TodayExpenseBox';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 import HouseHoldBoxSkeleton from './HouseHoldBoxSkeleton';
 import { greetingMessages } from '@/shared/constants/greetingMessages';
 import { type GreetingMessage } from '@/shared/constants/greetingMessages';
 import { useWeekExpend } from '@/entities/week-expenditure/model/useWeekExpend';
-import { useToken } from '@/shared/store';
+import { useToken, useUser } from '@/shared/store';
 import { useMasterData } from '@/entities/master-data';
 import { useMemo } from 'react';
 
@@ -22,11 +25,24 @@ const getRandomNumberByDate = (): number => {
 };
 
 export default function HouseHoldBoxWrapper() {
+  const router = useRouter();
   const { getAccessToken, isLoaded } = useToken();
+  const { getUser } = useUser();
+  const user = getUser();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
   const accessToken = getAccessToken();
   const query = useWeekExpend(accessToken || '');
   const { emotions, expenseCategories } = useMasterData();
   const randomNumber = useMemo(() => getRandomNumberByDate(), []);
+
+  const handleWeekBoxClick = () => {
+    if (!user?.nickname || user?.nickname.startsWith('guest')) {
+      setShowLoginModal(true);
+      return;
+    }
+    router.push('/calendar');
+  };
 
   if (!isLoaded || !accessToken) {
     return <HouseHoldBoxSkeleton />;
@@ -55,7 +71,7 @@ export default function HouseHoldBoxWrapper() {
             ></div>
           </HouseHoldBox>
           {query.data && (
-            <HouseHoldBox isAnchor anchor={'/calendar'}>
+            <HouseHoldBox isAnchor onClick={handleWeekBoxClick}>
               <div className={'mb-4.5 flex items-center justify-between'}>
                 <div className={'flex flex-col'}>
                   <span className={'text-[16px] font-medium tracking-[-0.025em] text-[#73787e]'}>이번 주 지출 비용</span>
@@ -80,6 +96,18 @@ export default function HouseHoldBoxWrapper() {
               ></div>
             </div>
           </HouseHoldBox>
+
+          <ConfirmModal
+            isOpen={showLoginModal}
+            type="loginCheck"
+            title="로그인 후 이용 가능합니다."
+            secondary="로그인 하시겠습니까?"
+            onCancel={() => setShowLoginModal(false)}
+            onConfirm={() => {
+              setShowLoginModal(false);
+              router.push('/login');
+            }}
+          />
         </>
       )}
     </div>
