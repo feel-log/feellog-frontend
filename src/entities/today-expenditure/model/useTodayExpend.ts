@@ -3,10 +3,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { todayExpendQueries } from '@/entities/today-expenditure/api/today-expend-queries';
 import { useMonthExpendStore } from '@/shared/store/month-expend-store';
+import { useToken } from '@/shared/store';
 import { useEffect, useRef } from 'react';
 
 export function useTodayExpend(year: number, month: number) {
   const prevMonthRef = useRef<string | null>(null);
+  const { getAccessToken } = useToken();
+  const accessToken = getAccessToken();
 
   const query = useQuery({
     ...todayExpendQueries.getTodayQueries(year, month),
@@ -23,6 +26,11 @@ export function useTodayExpend(year: number, month: number) {
     }
     prevMonthRef.current = currentMonth;
   }, [year, month, query]);
+
+  // 토큰이 변경될 때 refetch (로그아웃/로그인 시)
+  useEffect(() => {
+    query.refetch();
+  }, [accessToken, query]);
 
   const { setData } = useMonthExpendStore();
 
