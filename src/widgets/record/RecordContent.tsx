@@ -187,8 +187,7 @@ export default function RecordContent() {
     if (!isAssetEditMode || !assetIdParam || !assetsData?.data) return;
 
     try {
-      const data = assetsData.data;
-      const assetsList = Array.isArray(data) ? data : (data?.data || []);
+      const assetsList = assetsData.data;
       const parsedAssetId = parseInt(assetIdParam);
       const asset = assetsList.find((a) => a.assetId === parsedAssetId);
 
