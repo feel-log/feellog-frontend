@@ -464,7 +464,7 @@ export default function RecordContent() {
 
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" onClick={() => isAmountEditing && setIsAmountEditing(false)}>
       <PageHeader title={isEditMode ? '지출 수정' : isAssetMode ? '자산 추가' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">
@@ -927,7 +927,7 @@ export default function RecordContent() {
       )}
 
       {/* Save Button */}
-      <div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md bg-white">
+      <div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md bg-white" onClick={(e) => e.stopPropagation()}>
         {!isAmountEditing && (
           <div className="px-4 pt-6 pb-12">
             <Button
