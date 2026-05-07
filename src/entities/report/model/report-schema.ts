@@ -150,8 +150,9 @@ const DailyExpenseGraphSchema = z.object({
   subMessage: z.string(),
   topRatio: z.number(),
   topCategories: z.array(DailyTopCategorySchema),
-  secondCategory: DailyTopCategorySchema.nullable(),
-  extraCount: z.number(),
+  secondCategories: z.array(DailyTopCategorySchema).optional().default([]),
+  topExtraCount: z.number().optional().default(0),
+  secondExtraCount: z.number().optional().default(0),
 });
 
 const DailyEmotionItemSchema = z.object({
