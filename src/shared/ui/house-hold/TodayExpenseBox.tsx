@@ -18,7 +18,7 @@ const MIN_DATE = (() => {
 })();
 
 export default function TodayExpenseBox() {
-  const { emotions } = useMasterData();
+  const { emotions, expenseCategories } = useMasterData();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
   const { getUser } = useUser();
@@ -63,8 +63,12 @@ export default function TodayExpenseBox() {
 
     dailyExpenseList.forEach((expense) => {
       if (!categoryMap.has(expense.categoryId)) {
+        const categoryLabel = expenseCategories
+          .flatMap((g) => g.items)
+          .find((item) => item.id === expense.categoryId)?.label || '기타';
+
         categoryMap.set(expense.categoryId, {
-          name: expense.merchantName || '기타',
+          name: categoryLabel,
           amount: 0,
           emotions: [],
         });
@@ -87,7 +91,7 @@ export default function TodayExpenseBox() {
       totalAmount: dailyExpenseList.reduce((sum, item) => sum + item.amount, 0),
       categories: Array.from(categoryMap.values()),
     };
-  }, [dailyExpenseList]);
+  }, [dailyExpenseList, emotions, expenseCategories]);
 
   const formattedDate = useFormattedDate(selectedDate.toISOString(), {
     year: undefined,
