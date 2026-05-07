@@ -17,12 +17,12 @@ export default function HouseHoldWrapper() {
           blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
         />
       </div>
-      <div className="absolute right-25.5 top-14 z-10">
+      <div className="absolute right-23 top-13.5 z-10">
         <Image
           src="/svg/free_log_chc_hand.png"
           alt="decoration hand"
-          width={44}
-          height={12}
+          width={64}
+          height={22}
           priority
           placeholder="blur"
           blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="

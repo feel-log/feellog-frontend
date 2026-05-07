@@ -38,7 +38,7 @@ export default function LoginContent() {
           <SocialLoginButton
             social={'google'}
             imageUrl={'/svg/google.svg'}
-            text={'구글로 로그인하기'}
+            text={'구글로 로그인'}
             color={'#ffffff'}
             textColor={'#000'}
             isPriority={true}

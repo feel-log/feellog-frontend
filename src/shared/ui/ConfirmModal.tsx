@@ -33,10 +33,10 @@ export default function ConfirmModal({
       {type === 'loginCheck' || type === 'logoutCheck' ? (
         <div
           className={
-            'box__container__2 fixed top-1/2 right-0 left-0 z-60 mx-auto h-auto w-70 -translate-y-1/2 rounded-[10px] bg-white px-6 pt-8 pb-5'
+            'box__container__2 fixed top-1/2 right-0 left-0 z-60 mx-auto h-auto w-70.75 -translate-y-1/2 rounded-[10px] bg-white px-5.25 pt-12.25 pb-5'
           }
         >
-          <span className={'mb-4 block text-center text-[14px] font-bold'}>{title}</span>
+          <span className={'mb-1 block text-center text-[14px] font-bold'}>{title}</span>
           <span className={'text-ray-600 mb-8 block text-center text-[14px]'}>{secondary}</span>
           <div className={'button__wrapper flex flex-col gap-2'}>
             <button className={'rounded-[8px] bg-[#13278a] py-2 text-[14px] text-white'} onClick={onConfirm}>

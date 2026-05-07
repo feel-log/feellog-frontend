@@ -12,8 +12,8 @@ const CategoryGroupSchema = z.object({
 });
 
 const EmotionSchema = z.object({
-  emotionId: z.number(),
-  emotionName: z.string(),
+  id: z.number(),
+  name: z.string(),
 });
 
 const EmotionGroupSchema = z.object({
@@ -23,8 +23,8 @@ const EmotionGroupSchema = z.object({
 });
 
 const SituationTagSchema = z.object({
-  situationTagId: z.number(),
-  situationName: z.string(),
+  id: z.number(),
+  name: z.string(),
 });
 
 const PaymentMethodSchema = z.object({

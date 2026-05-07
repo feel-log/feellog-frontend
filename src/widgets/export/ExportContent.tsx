@@ -170,10 +170,15 @@ export default function ExportContent() {
       </div>
 
       {/* 정렬 셀렉터 + 본문 */}
-      <div className="overflow-y-auto px-4 pt-5 pb-12">
+      <div className="overflow-y-auto px-4 pt-5 pb-12 h-118.5 relative">
         <div className="flex justify-end">
           <SortButton sortType={sortType} onSortChange={setSortType} />
         </div>
+
+        {/* 날짜 라벨 */}
+        <p className="mb-4 text-[14px] font-semibold tracking-[-0.025em] text-gray-500">
+          {formattedDate}
+        </p>
 
         {totalAmount === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -186,11 +191,6 @@ export default function ExportContent() {
           </div>
         ) : (
           <div>
-            {/* 날짜 라벨 */}
-            <p className="mb-2.5 text-[14px] font-medium tracking-[-0.025em] text-[#474c52]">
-              {formattedDate}
-            </p>
-
             {/* 항목 리스트 */}
             <div className="flex flex-col gap-5">
               {expenses.map((expense) => (
@@ -250,13 +250,15 @@ export default function ExportContent() {
                               <span className="h-3.5 w-px shrink-0 bg-[#e5e5e5]" />
                               <div className="flex items-center gap-1.5">
                                 {expense.emotions.map((emotion) => (
-                                  <Image
-                                    key={emotion.label}
-                                    src={emotion.emoji}
-                                    alt={emotion.label}
-                                    width={20}
-                                    height={20}
-                                  />
+                                  emotion.emoji && (
+                                    <Image
+                                      key={emotion.label}
+                                      src={emotion.emoji}
+                                      alt={emotion.label}
+                                      width={20}
+                                      height={20}
+                                    />
+                                  )
                                 ))}
                               </div>
                             </>

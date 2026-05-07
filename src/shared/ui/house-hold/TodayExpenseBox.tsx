@@ -18,7 +18,7 @@ const MIN_DATE = (() => {
 })();
 
 export default function TodayExpenseBox() {
-  const { emotions } = useMasterData();
+  const { emotions, expenseCategories } = useMasterData();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
   const { getUser } = useUser();
@@ -63,8 +63,12 @@ export default function TodayExpenseBox() {
 
     dailyExpenseList.forEach((expense) => {
       if (!categoryMap.has(expense.categoryId)) {
+        const categoryLabel = expenseCategories
+          .flatMap((g) => g.items)
+          .find((item) => item.id === expense.categoryId)?.label || '기타';
+
         categoryMap.set(expense.categoryId, {
-          name: expense.merchantName || '기타',
+          name: categoryLabel,
           amount: 0,
           emotions: [],
         });
@@ -87,7 +91,7 @@ export default function TodayExpenseBox() {
       totalAmount: dailyExpenseList.reduce((sum, item) => sum + item.amount, 0),
       categories: Array.from(categoryMap.values()),
     };
-  }, [dailyExpenseList]);
+  }, [dailyExpenseList, emotions, expenseCategories]);
 
   const formattedDate = useFormattedDate(selectedDate.toISOString(), {
     year: undefined,
@@ -197,13 +201,15 @@ export default function TodayExpenseBox() {
                       key={emoIdx}
                       className="inline-flex items-center gap-1.25 rounded-full bg-[#f0f4f5] px-2.5 py-0.75 text-[12px] font-medium tracking-[-0.025em] text-[#474c52]"
                     >
-                      <Image
-                        src={emotion.emoji}
-                        alt={emotion.label}
-                        width={14}
-                        height={14}
-                        loading="lazy"
-                      />
+                      {emotion.emoji && (
+                        <Image
+                          src={emotion.emoji}
+                          alt={emotion.label}
+                          width={14}
+                          height={14}
+                          loading="lazy"
+                        />
+                      )}
                       <span>{emotion.label}</span>
                     </span>
                   ))}

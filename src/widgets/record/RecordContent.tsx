@@ -415,7 +415,7 @@ export default function RecordContent() {
 
   const isFormValid = () => {
     if (record.type === 'expense') {
-      return isDateSelected && record.paymentMethodId !== null && record.categoryId !== null;
+      return record.amount > 0 && isDateSelected && record.paymentMethodId !== null && record.categoryId !== null;
     }
     if (isAssetMode) {
       return isDateSelected && record.amount > 0 && record.categoryId !== null;
@@ -464,7 +464,7 @@ export default function RecordContent() {
 
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" onClick={() => isAmountEditing && setIsAmountEditing(false)}>
       <PageHeader title={isEditMode ? '지출 수정' : isAssetMode ? '자산 추가' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">
@@ -539,8 +539,9 @@ export default function RecordContent() {
         {/* Date Section */}
         <SelectField
           label="날짜"
-          value={isDateSelected ? formatDateDisplay(record.date) : ''}
+          value={formatDateDisplay(record.date)}
           placeholder="날짜를 선택하세요"
+          isDefault={!isDateSelected}
           onClick={() => {
             setTempDate(record.date);
             setCalendarMonth(() => {
@@ -843,7 +844,7 @@ export default function RecordContent() {
                           : 'border-[#e5e5e5] text-[#27282c]'
                       )}
                     >
-                      <Image src={item.emoji} alt={item.label} width={24} height={24} />
+                      {item.emoji && <Image src={item.emoji} alt={item.label} width={24} height={24} />}
                       <span>{item.label}</span>
                     </button>
                   ))}
@@ -926,7 +927,7 @@ export default function RecordContent() {
       )}
 
       {/* Save Button */}
-      <div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md bg-white">
+      <div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md bg-white" onClick={(e) => e.stopPropagation()}>
         {!isAmountEditing && (
           <div className="px-4 pt-6 pb-12">
             <Button

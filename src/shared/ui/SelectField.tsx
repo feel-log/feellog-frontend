@@ -7,6 +7,7 @@ interface SelectFieldProps {
   value: React.ReactNode;
   placeholder: string;
   onClick: () => void;
+  isDefault?: boolean;
 }
 
 export default function SelectField({
@@ -14,6 +15,7 @@ export default function SelectField({
   value,
   placeholder,
   onClick,
+  isDefault = false,
 }: SelectFieldProps) {
   const hasValue = typeof value === 'string' ? value !== '' : !!value;
 
@@ -26,7 +28,9 @@ export default function SelectField({
       >
         {hasValue ? (
           typeof value === 'string' ? (
-            <span className="text-[17px] font-semibold tracking-[-0.025em] text-[#13278a] transition-colors">
+            <span className={`text-[17px] font-semibold tracking-[-0.025em] transition-colors ${
+              isDefault ? 'text-[#9fa4a8]' : 'text-[#13278a]'
+            }`}>
               {value}
             </span>
           ) : (
