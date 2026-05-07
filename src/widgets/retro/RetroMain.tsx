@@ -57,7 +57,7 @@ export default function RetroMain({
     ...(secondCategories.length > 0
       ? [{ label: secondLabel, amount: secondAmount, isTop: secondCategories.length > 1 }]
       : []),
-  ];
+  ].slice(0, 2);
 
   const maxAmount = Math.max(...barItems.map((b) => b.amount), 1);
 
