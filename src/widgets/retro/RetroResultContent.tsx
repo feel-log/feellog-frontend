@@ -43,7 +43,7 @@ export default function RetroResultContent() {
         <div className="flex flex-col gap-10 px-4 pt-5 pb-25">
           {/* 섹션 1: 타이틀 + 결과 카드 */}
           <div className="flex flex-col gap-5">
-            <p className="text-[22px] font-bold leading-normal tracking-[-0.55px] text-[#1C1D1F]">
+            <p className="whitespace-pre-line text-[22px] font-bold leading-normal tracking-[-0.55px] text-[#1C1D1F]">
               {data.title.prefixText}
               <br />
               <span className="text-[#13278A]">{data.title.highlightText}</span>
@@ -62,7 +62,7 @@ export default function RetroResultContent() {
                 <p className="w-18.75 whitespace-nowrap text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
                   소비 이유:
                 </p>
-                <p className="text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#030303]">
+                <p className="whitespace-pre-line text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#030303]">
                   {data.options.situationTagName}
                 </p>
               </div>
@@ -87,7 +87,7 @@ export default function RetroResultContent() {
                 <p className="w-18.75 whitespace-nowrap text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
                   내일의 다짐:
                 </p>
-                <p className="text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#030303]">
+                <p className="whitespace-pre-line text-[16px] font-semibold leading-normal tracking-[-0.4px] text-[#030303]">
                   {data.options.nextActionOptionText}
                 </p>
               </div>
@@ -131,7 +131,7 @@ export default function RetroResultContent() {
                       />
                     </svg>
                   </span>
-                  <p className="text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#27282C]">
+                  <p className="whitespace-pre-line text-[14px] font-medium leading-normal tracking-[-0.35px] text-[#27282C]">
                     {item}
                   </p>
                 </div>
