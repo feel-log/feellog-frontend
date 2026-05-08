@@ -64,12 +64,12 @@ export default function HouseHoldBoxWrapper() {
               <h2 className={'text-[18px] font-semibold tracking-[-0.025em] text-[#030303]'}>{greetingMessages[randomNumber].title}</h2>
               <h3 className={'text-[14px] font-medium tracking-[-0.025em] text-[#474c52]'}>{greetingMessages[randomNumber].secondary}</h3>
             </div>
-            <div className="h-19 w-19 shrink-0">
+            <div className="h-[79px] w-19 shrink-0">
               <Image
                 src={greetingMessages[randomNumber].image}
                 alt="greeting"
                 width={76}
-                height={76}
+                height={79}
                 priority
                 unoptimized
               />
@@ -94,12 +94,12 @@ export default function HouseHoldBoxWrapper() {
                 <h2 className={'text-[18px] font-semibold tracking-[-0.025em] text-[#030303]'}>오늘 지출 회고하기</h2>
                 <h3 className={'text-[14px] font-medium tracking-[-0.025em] text-[#474c52]'}>지출 속에 담긴 오늘의 마음을 살펴봐요</h3>
               </div>
-              <div className="note h-19 w-19 shrink-0">
+              <div className="note h-[79px] w-19 shrink-0">
                 <Image
-                  src="/svg/Icon_Review.svg"
+                  src="/svg/Icon_Review.png"
                   alt="review"
                   width={76}
-                  height={76}
+                  height={79}
                   unoptimized
                 />
               </div>

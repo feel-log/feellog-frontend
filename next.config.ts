@@ -9,20 +9,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/',
-        headers: [
-          {
-            key: 'Link',
-            value: '</svg/free_log_chc.png>; rel=preload; as=image, </svg/free_log_chc_hand.png>; rel=preload; as=image, </svg/free_log_chc_second.png>; rel=preload; as=image, </svg/subtract.png>; rel=preload; as=image'
-          }
-        ]
-      },
-      {
         source: '/svg/:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable'
+            value: 'public, max-age=0, must-revalidate'
           }
         ]
       },
@@ -31,7 +22,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable'
+            value: 'public, max-age=0, must-revalidate'
           }
         ]
       },
