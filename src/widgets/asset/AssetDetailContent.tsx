@@ -25,11 +25,11 @@ const CATEGORY_ID_MAP: Record<string, number> = {
   etc: 6,
 };
 
-const SORT_MAPPING: Record<SortType, 'LATEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC'> = {
+const SORT_MAPPING: Record<SortType, 'LATEST' | 'OLDEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC'> = {
   latest: 'LATEST',
   expensive: 'AMOUNT_DESC',
   cheap: 'AMOUNT_ASC',
-  oldest: 'LATEST',
+  oldest: 'OLDEST',
 };
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const;

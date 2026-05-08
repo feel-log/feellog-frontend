@@ -9,11 +9,11 @@ import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { useGetAssets } from '@/entities/get-assets/useGetAssets';
 import { useUser } from '@/shared/store';
 
-const SORT_MAPPING: Record<SortType, 'LATEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC'> = {
+const SORT_MAPPING: Record<SortType, 'LATEST' | 'OLDEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC'> = {
   latest: 'LATEST',
   expensive: 'AMOUNT_DESC',
   cheap: 'AMOUNT_ASC',
-  oldest: 'LATEST',
+  oldest: 'OLDEST',
 };
 
 export default function AssetContent() {
