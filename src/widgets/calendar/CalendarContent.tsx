@@ -117,6 +117,7 @@ export default function CalendarContent() {
       (i) => Number(i.incomeDate.split('-')[2]) === selectedDay,
     );
     const expenseItems = dayExpenses.map((e) => ({
+      id: e.expenseId,
       category: categoryMap.get(e.categoryId) ?? '',
       tags: e.situationTagIds
         .map((id) => situationMap.get(id))
@@ -129,6 +130,7 @@ export default function CalendarContent() {
         .filter((n): n is string => !!n),
     }));
     const incomeItems = dayIncomes.map((i) => ({
+      id: i.incomeId,
       category: incomeCategoryMap.get(i.incomeCategoryId) ?? '',
       amount: i.amount,
       memo: i.memo ?? undefined,

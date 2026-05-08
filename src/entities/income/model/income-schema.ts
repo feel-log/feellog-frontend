@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const IncomeSchema = z.object({
+  incomeId: z.number(),
   userId: z.number(),
   amount: z.number(),
   incomeCategoryId: z.number(),
