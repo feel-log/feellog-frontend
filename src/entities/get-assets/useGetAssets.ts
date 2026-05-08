@@ -73,13 +73,48 @@ export function useGetAssets(params: GetAssetsParams, enabled = true) {
 
       const totalAmount = allAssets.reduce((sum, asset) => sum + asset.amount, 0);
 
+      // 카테고리별 최신/오래된 자산 (날짜 + assetId 보조 정렬)
+      // 같은 날짜라면 assetId가 큰 게 더 나중에 등록된 것으로 처리
+      const categoryDates: Record<number, { latest: number; oldest: number; latestId: number; oldestId: number }> = {};
+      allAssets.forEach((asset) => {
+        const time = new Date(asset.assetDate).getTime();
+        const cur = categoryDates[asset.assetCategoryId];
+        if (!cur) {
+          categoryDates[asset.assetCategoryId] = { latest: time, oldest: time, latestId: asset.assetId, oldestId: asset.assetId };
+        } else {
+          if (time > cur.latest || (time === cur.latest && asset.assetId > cur.latestId)) {
+            cur.latest = time;
+            cur.latestId = asset.assetId;
+          }
+          if (time < cur.oldest || (time === cur.oldest && asset.assetId < cur.oldestId)) {
+            cur.oldest = time;
+            cur.oldestId = asset.assetId;
+          }
+        }
+      });
+
       // 카테고리별 정보 구성
       const categories = ASSET_CATEGORIES
         .map((cat, idx) => ({
           ...cat,
           total: categoryTotals[idx + 1] || 0,
+          latest: categoryDates[idx + 1]?.latest ?? 0,
+          oldest: categoryDates[idx + 1]?.oldest ?? 0,
+          latestId: categoryDates[idx + 1]?.latestId ?? 0,
+          oldestId: categoryDates[idx + 1]?.oldestId ?? 0,
         }))
-        .filter(cat => cat.total > 0);
+        .filter(cat => cat.total > 0)
+        .sort((a, b) => {
+          if (params.sort === 'AMOUNT_DESC') return b.total - a.total;
+          if (params.sort === 'AMOUNT_ASC') return a.total - b.total;
+          if (params.sort === 'OLDEST') {
+            if (a.oldest !== b.oldest) return a.oldest - b.oldest;
+            return a.oldestId - b.oldestId;
+          }
+          // LATEST
+          if (a.latest !== b.latest) return b.latest - a.latest;
+          return b.latestId - a.latestId;
+        });
 
       return {
         data: paginatedAssets,
