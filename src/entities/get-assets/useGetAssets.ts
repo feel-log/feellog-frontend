@@ -73,13 +73,11 @@ export function useGetAssets(params: GetAssetsParams, enabled = true) {
 
       const totalAmount = allAssets.reduce((sum, asset) => sum + asset.amount, 0);
 
-      // 카테고리별 정보 구성
-      const categories = ASSET_CATEGORIES
-        .map((cat, idx) => ({
-          ...cat,
-          total: categoryTotals[idx + 1] || 0,
-        }))
-        .filter(cat => cat.total > 0);
+      // 카테고리별 정보 구성 (메인 페이지: 0원 포함, 정의 순서 유지)
+      const categories = ASSET_CATEGORIES.map((cat, idx) => ({
+        ...cat,
+        total: categoryTotals[idx + 1] || 0,
+      }));
 
       return {
         data: paginatedAssets,

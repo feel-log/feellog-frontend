@@ -166,7 +166,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
             </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-5 mt-4">
+          <div className="flex flex-col gap-5 mt-3.75">
             {records.map((record, idx) => (
               <div
                 key={idx}

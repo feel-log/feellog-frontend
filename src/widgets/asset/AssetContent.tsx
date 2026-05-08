@@ -4,27 +4,17 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Footer from '@/shared/ui/Footer';
 import PageHeader from '@/shared/ui/PageHeader';
-import SortButton, { SortType } from '@/shared/ui/SortButton';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { useGetAssets } from '@/entities/get-assets/useGetAssets';
 import { useUser } from '@/shared/store';
-
-const SORT_MAPPING: Record<SortType, 'LATEST' | 'OLDEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC'> = {
-  latest: 'LATEST',
-  expensive: 'AMOUNT_DESC',
-  cheap: 'AMOUNT_ASC',
-  oldest: 'OLDEST',
-};
 
 export default function AssetContent() {
   const router = useRouter();
   const { getUser } = useUser();
   const user = getUser();
-  const [sortType, setSortType] = useState<SortType>('latest');
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const { data: assetsData, isLoading } = useGetAssets({
-    sort: SORT_MAPPING[sortType],
     page: 0,
     size: 100,
   });
@@ -117,9 +107,7 @@ export default function AssetContent() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3.75 px-4 pt-12.5">
-          <SortButton sortType={sortType} onSortChange={setSortType} />
-
+        <div className="flex flex-col gap-3.75 px-4 pt-7.5">
           {groupedAssets.map((category) => (
             <button
               key={category.id}
@@ -135,11 +123,13 @@ export default function AssetContent() {
                   {category.label}
                 </span>
               </div>
-              <div className="flex items-center gap-1.25">
+              <div className="flex items-center gap-2">
                 <p className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
                   {category.total.toLocaleString()}원
                 </p>
-                <img src="/svg/icon_arrow_right.svg" alt="" width={26} height={26} />
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M8.7998 18.4L15.1998 12L8.7998 5.59998" stroke="#9FA4A8" strokeWidth="1.73333" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </div>
             </button>
           ))}
