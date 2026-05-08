@@ -2,7 +2,7 @@ import { apiClient } from '@/shared/api/api-instance';
 
 export interface GetAssetsParams {
   categoryId?: number;
-  sort?: 'LATEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC';
+  sort?: 'LATEST' | 'OLDEST' | 'AMOUNT_ASC' | 'AMOUNT_DESC';
   page?: number;
   size?: number;
 }

@@ -98,6 +98,8 @@ function applySorting(assets: AssetItem[], sort?: string): AssetItem[] {
     sorted.sort((a, b) => b.amount - a.amount);
   } else if (sort === 'AMOUNT_ASC') {
     sorted.sort((a, b) => a.amount - b.amount);
+  } else if (sort === 'OLDEST') {
+    sorted.sort((a, b) => new Date(a.assetDate).getTime() - new Date(b.assetDate).getTime());
   } else {
     // LATEST (최신순) - assetDate 역순
     sorted.sort((a, b) => new Date(b.assetDate).getTime() - new Date(a.assetDate).getTime());
