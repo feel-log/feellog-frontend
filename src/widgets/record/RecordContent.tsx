@@ -15,6 +15,9 @@ import { useGetAssets } from '@/entities/get-assets/useGetAssets';
 import { usePostAsset } from '@/features/post-asset/model/usePostAsset';
 import { useUpdateAsset } from '@/features/post-asset/model/useUpdateAsset';
 import { usePostIncome } from '@/features/post-income/model/usePostIncome';
+import { useUpdateIncome } from '@/features/update-income/model/useUpdateIncome';
+import { useQuery } from '@tanstack/react-query';
+import { incomeQueries } from '@/entities/income';
 import {
   formatDateDisplay,
   calculateExpression,
@@ -41,12 +44,14 @@ export default function RecordContent() {
   const typeParam = searchParams?.get('type');
   const expenseIdParam = searchParams?.get('expenseId');
   const assetIdParam = searchParams?.get('assetId');
+  const incomeIdParam = searchParams?.get('incomeId');
   const modeParam = searchParams?.get('mode');
   const isEditMode = !!(modeParam === 'edit' && expenseIdParam);
   const isAssetEditMode = !!(typeParam === 'asset' && assetIdParam);
+  const isIncomeEditMode = !!(modeParam === 'edit' && incomeIdParam);
   const isAssetMode = typeParam === 'asset';
   const initialType: 'income' | 'expense' =
-    typeParam === 'income' || isAssetMode ? 'income' : 'expense';
+    typeParam === 'income' || isAssetMode || isIncomeEditMode ? 'income' : 'expense';
 
   // Edit 모드일 때 기존 데이터 로드
   const expenseYear = parseInt(selectedDate.split('-')[0]);
@@ -154,6 +159,37 @@ export default function RecordContent() {
   const { getUser } = useUser();
   const user = getUser();
 
+  // 수입 edit 모드용 데이터 로드
+  const { data: monthlyIncomes = [] } = useQuery({
+    ...incomeQueries.monthly(accessToken || '', expenseYear, expenseMonth),
+    enabled: isIncomeEditMode && !!accessToken,
+  });
+
+  const targetIncome = useMemo(() => {
+    if (!isIncomeEditMode || !incomeIdParam || monthlyIncomes.length === 0) return null;
+    return monthlyIncomes.find((i) => i.incomeId === parseInt(incomeIdParam));
+  }, [isIncomeEditMode, incomeIdParam, monthlyIncomes]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (targetIncome) {
+      setRecord({
+        amount: targetIncome.amount,
+        type: 'income',
+        date: targetIncome.incomeDate,
+        categoryId: targetIncome.incomeCategoryId,
+        paymentMethodId: null,
+        emotionIds: [],
+        situationTagIds: [],
+        memo: targetIncome.memo || '',
+      });
+      setAmountInput(targetIncome.amount.toString());
+      setSelectedCategoryId(targetIncome.incomeCategoryId);
+      setTempMemo(targetIncome.memo || '');
+    }
+  }, [targetIncome]);
+
+  const updateIncomeMutation = useUpdateIncome();
 
   const handleCategorySelect = (category: number) => {
     setSelectedCategoryId(category);
@@ -202,11 +238,12 @@ export default function RecordContent() {
     setIsMemoOpen(false);
   };
 
-  const handleDateSave = () => {
+  const handleDateSave = (date: string) => {
     setRecord((prev) => ({
       ...prev,
-      date: tempDate,
+      date,
     }));
+    setTempDate(date);
     setIsDateOpen(false);
     setIsDateSelected(true);
   };
@@ -281,6 +318,25 @@ export default function RecordContent() {
           assetDate: record.date,
           memo: record.memo ?? ""
         });
+      } else if (isIncomeEditMode && incomeIdParam) {
+        updateIncomeMutation.mutate(
+          {
+            incomeId: parseInt(incomeIdParam),
+            body: {
+              amount: record.amount ?? 0,
+              incomeCategoryId: record.categoryId ?? 0,
+              incomeDate: record.date,
+              memo: record.memo ?? '',
+            },
+            year: expenseYear,
+            month: expenseMonth,
+          },
+          {
+            onSuccess: () => {
+              window.history.back();
+            },
+          },
+        );
       } else if (record.type === 'income') {
         postIncomeMutation.mutate({
           userId: user?.id ?? 0,
@@ -333,7 +389,7 @@ export default function RecordContent() {
 
   return (
     <div className="min-h-dvh bg-white" onClick={handleOutsideClick}>
-      <PageHeader title={isEditMode ? '지출 수정' : isAssetEditMode ? '자산 수정' : isAssetMode ? '자산 추가' : '가계부'} />
+      <PageHeader title={isEditMode ? '지출 수정' : isIncomeEditMode ? '수입 수정' : isAssetEditMode ? '자산 수정' : isAssetMode ? '자산 추가' : '가계부'} />
 
       <div className="px-6 py-6 pb-40">
         {/* Amount Section */}
