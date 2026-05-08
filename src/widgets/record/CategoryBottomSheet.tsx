@@ -52,13 +52,13 @@ export default function CategoryBottomSheet({
       height={recordType === 'expense' ? 636 : 492}
     >
       {isAssetMode ? (
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap gap-2">
           {assetCategories.map((category) => (
             <button
               key={category.id}
               onClick={() => onCategorySelect(category.id)}
               className={cn(
-                'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
+                'flex h-[38px] w-[105px] cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
                 selectedCategoryId === category.id
                   ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                   : 'border-[#e5e5e5] text-[#474c52]'
@@ -69,13 +69,13 @@ export default function CategoryBottomSheet({
           ))}
         </div>
       ) : recordType === 'income' ? (
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap gap-2">
           {incomeCategories.map((category) => (
             <button
               key={category.id}
               onClick={() => onCategorySelect(category.id)}
               className={cn(
-                'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
+                'flex h-[38px] w-[105px] cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
                 selectedCategoryId === category.id
                   ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                   : 'border-[#e5e5e5] text-[#474c52]'
@@ -90,13 +90,13 @@ export default function CategoryBottomSheet({
           {expenseCategories.map((group) => (
             <div key={group.group} className="flex flex-col gap-3">
               <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
-              <div className="flex flex-wrap gap-2.5">
+              <div className="flex flex-wrap gap-2">
                 {group.items.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => onCategorySelect(item.id)}
                     className={cn(
-                      'flex h-8 px-4 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
+                      'flex h-[38px] w-[105px] cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
                       selectedCategoryId === item.id
                         ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                         : 'border-[#e5e5e5] text-[#474c52]'
