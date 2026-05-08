@@ -25,16 +25,21 @@ export default function ConfirmModal({
   onCancel,
   isDangerous = false,
 }: ConfirmModalProps) {
-  if (!isOpen) return null;
+  const visibilityClass = isOpen
+    ? 'opacity-100 pointer-events-auto'
+    : 'opacity-0 pointer-events-none';
 
   return (
     <>
-      <div className="animate-fade-in fixed inset-0 right-0 left-0 z-50 mx-auto max-w-md bg-black opacity-50" />
+      <div
+        className={`fixed inset-0 right-0 left-0 z-50 mx-auto max-w-md bg-black transition-opacity duration-200 ${
+          isOpen ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        aria-hidden="true"
+      />
       {type === 'loginCheck' || type === 'logoutCheck' || type === 'deleteCheck' ? (
         <div
-          className={
-            'box__container__2 fixed top-1/2 right-0 left-0 z-60 mx-auto h-auto w-70.75 -translate-y-1/2 rounded-[10px] bg-white px-5.25 pt-12.25 pb-5'
-          }
+          className={`box__container__2 fixed top-1/2 right-0 left-0 z-60 mx-auto h-auto w-70.75 -translate-y-1/2 rounded-[10px] bg-white px-5.25 pt-12.25 pb-5 transition-opacity duration-200 ${visibilityClass}`}
         >
           <span className={'mb-1 block text-center text-[14px] font-bold'}>{title}</span>
           <span className={'text-ray-600 mb-8 block text-center text-[14px]'}>{secondary}</span>
@@ -50,7 +55,9 @@ export default function ConfirmModal({
           </div>
         </div>
       ) : (
-        <div className="box__container fixed top-1/2 right-0 left-0 z-60 mx-auto h-auto w-70 -translate-y-1/2 rounded-[10px] bg-white px-6 pt-8 pb-5">
+        <div
+          className={`box__container fixed top-1/2 right-0 left-0 z-60 mx-auto h-auto w-70 -translate-y-1/2 rounded-[10px] bg-white px-6 pt-8 pb-5 transition-opacity duration-200 ${visibilityClass}`}
+        >
           <span className="block text-center text-[16px] font-bold text-[#030303]">
             {title.includes('|')
               ? title.split('|').map((item) => (
