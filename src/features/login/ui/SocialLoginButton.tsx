@@ -59,7 +59,12 @@ export function SocialLoginButton({ social, imageUrl, text, isPriority = false }
         className="flex h-11 w-[300px] cursor-pointer items-center justify-center gap-3 rounded-[4px] border border-[#747775] bg-white px-4"
       >
         <Image src={imageUrl} alt={text} width={20} height={20} priority={isPriority} unoptimized />
-        <span className="text-[15px] font-medium leading-[150%] text-[#1F1F1F]">{text}</span>
+        <span
+          className="text-[15px] font-medium leading-[150%] tracking-normal text-[#1F1F1F]"
+          style={{ fontFamily: 'Roboto, sans-serif' }}
+        >
+          {text}
+        </span>
       </button>
     );
   }
@@ -72,7 +77,12 @@ export function SocialLoginButton({ social, imageUrl, text, isPriority = false }
       className="flex h-[45px] w-[300px] cursor-pointer items-center justify-center gap-2 rounded-[6px] bg-[#FEE500] px-[14px]"
     >
       <Image src={imageUrl} alt={text} width={18} height={18} priority={isPriority} unoptimized />
-      <span className="text-[15px] font-semibold leading-[150%] text-black/85">{text}</span>
+      <span
+        className="text-[15px] font-semibold leading-[150%] tracking-normal text-black/85"
+        style={{ fontFamily: '"Apple SD Gothic Neo", sans-serif' }}
+      >
+        {text}
+      </span>
     </button>
   );
 }
