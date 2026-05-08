@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import Image from 'next/image';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
 
 export type InsightType = 'categoryChange' | 'emotionTrend' | 'situationTrend';
@@ -49,28 +50,6 @@ function CategoryDownIcon() {
   );
 }
 
-
-function ShoppingBagIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clipPath="url(#ric-bag-clip)">
-        <path
-          d="M16 2C16.8755 2 17.7424 2.17244 18.5512 2.50747C19.3601 2.8425 20.095 3.33356 20.714 3.95262C21.3331 4.57168 21.8242 5.30661 22.1592 6.11544C22.4942 6.92428 22.6667 7.79119 22.6667 8.66667V11.3333H26.6667C27.0203 11.3333 27.3594 11.4738 27.6095 11.7239C27.8595 11.9739 28 12.313 28 12.6667V28.6667C28 29.0203 27.8595 29.3594 27.6095 29.6095C27.3594 29.8595 27.0203 30 26.6667 30H5.33333C4.97971 30 4.64057 29.8595 4.39052 29.6095C4.14048 29.3594 4 29.0203 4 28.6667V12.6667C4 12.313 4.14048 11.9739 4.39052 11.7239C4.64057 11.4738 4.97971 11.3333 5.33333 11.3333H9.33333V8.66667C9.33333 6.89856 10.0357 5.20286 11.286 3.95262C12.5362 2.70238 14.2319 2 16 2ZM22.6667 15.3333H20V16.6667C20.0004 17.0065 20.1305 17.3334 20.3638 17.5805C20.5971 17.8276 20.9159 17.9763 21.2552 17.9962C21.5944 18.0161 21.9285 17.9058 22.1891 17.6876C22.4497 17.4695 22.6172 17.1601 22.6573 16.8227L22.6667 16.6667V15.3333ZM12 15.3333H9.33333V16.6667C9.33371 17.0065 9.46384 17.3334 9.69713 17.5805C9.93042 17.8276 10.2493 17.9763 10.5885 17.9962C10.9278 18.0161 11.2618 17.9058 11.5224 17.6876C11.783 17.4695 11.9505 17.1601 11.9907 16.8227L12 16.6667V15.3333ZM16 4.66667C14.9797 4.66661 13.998 5.05643 13.2557 5.75638C12.5133 6.45632 12.0665 7.41348 12.0067 8.432L12 8.66667V11.3333H20V8.66667C20.0001 7.64639 19.6102 6.66465 18.9103 5.92232C18.2103 5.17999 17.2532 4.73319 16.2347 4.67333L16 4.66667Z"
-          fill="url(#ric-bag-fill)"
-        />
-      </g>
-      <defs>
-        <linearGradient id="ric-bag-fill" x1="8.1036" y1="3.4081" x2="28" y2="33.5396" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#49E9B7" />
-          <stop offset="1" stopColor="#43CBA1" />
-        </linearGradient>
-        <clipPath id="ric-bag-clip">
-          <rect width="32" height="32" fill="white" />
-        </clipPath>
-      </defs>
-    </svg>
-  );
-}
 
 function renderMessageWithTarget(message: string, target: string | null | undefined) {
   if (!target || !message.includes(target)) {
@@ -142,7 +121,15 @@ function InsightCard({ insight }: { insight: InsightItem }) {
           {insight.type === 'emotionTrend' && (
             <EmotionIcon name={insight.targetName!} size={28} />
           )}
-          {insight.type === 'situationTrend' && <ShoppingBagIcon />}
+          {insight.type === 'situationTrend' && (
+            <Image
+              src="/svg/icon_shopping_bag.svg"
+              alt="shopping bag"
+              width={32}
+              height={32}
+              unoptimized
+            />
+          )}
         </div>
       )}
     </div>
