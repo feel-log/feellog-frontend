@@ -18,7 +18,7 @@ export const greetingMessages: GreetingMessage[] = [
   {
     title: '지갑 대신 마음을 채워봐요',
     secondary: '공원을 산책하며 여유를 가져볼까요?',
-    image: '/svg/gm/clover.png'
+    image: '/svg/gm/clover.svg'
   },
   {
     title: '오늘은 무지출 Day!',

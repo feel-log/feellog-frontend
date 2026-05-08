@@ -36,13 +36,13 @@ export default function PaymentMethodBottomSheet({
       isSaveDisabled={selectedPaymentId === null}
       height={492}
     >
-      <div className="flex flex-wrap gap-2.5">
+      <div className="flex flex-wrap gap-2">
         {paymentMethods.map((method) => (
           <button
             key={method.id}
             onClick={() => onPaymentSelect(method.id)}
             className={cn(
-              'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
+              'flex h-[38px] w-[105px] cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
               selectedPaymentId === method.id
                 ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                 : 'border-[#e5e5e5] text-[#474c52]'

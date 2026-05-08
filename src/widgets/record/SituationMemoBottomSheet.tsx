@@ -43,7 +43,7 @@ export default function SituationMemoBottomSheet({
       <div className="flex flex-col gap-10">
         <div className="flex flex-col gap-3">
           <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">상황 태그</h3>
-          <div className="flex flex-wrap gap-2.5">
+          <div className="flex flex-wrap gap-2">
             {isLoading ? (
               <div className="text-[#9fa4a8]">데이터를 불러오는 중입니다...</div>
             ) : situationTags.length === 0 ? (
@@ -54,7 +54,7 @@ export default function SituationMemoBottomSheet({
                   key={tag.id}
                   onClick={() => onTagToggle(tag.id)}
                   className={cn(
-                    'flex h-8 px-4 cursor-pointer items-center justify-center rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
+                    'flex h-[38px] w-[105px] cursor-pointer items-center justify-center rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
                     tempTags.includes(tag.id)
                       ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                       : 'border-[#e5e5e5] text-[#27282c]'

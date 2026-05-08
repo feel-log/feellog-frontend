@@ -8,35 +8,32 @@ export default function HouseHoldWrapper() {
     <div className={"house__hold__wrapper relative px-4"}>
       <div className="absolute right-20 top-0">
         <Image
-          src="/svg/free_log_chc.png"
+          src="/svg/character1.svg"
           alt="decoration"
           width={88}
           height={88}
           priority
-          placeholder="blur"
-          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+          unoptimized
         />
       </div>
       <div className="absolute right-23 top-13.5 z-10">
         <Image
-          src="/svg/free_log_chc_hand.png"
+          src="/svg/character_hand.svg"
           alt="decoration hand"
           width={64}
           height={22}
           priority
-          placeholder="blur"
-          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+          unoptimized
         />
       </div>
       <div className="absolute right-8 top-9 z-1">
         <Image
-          src="/svg/free_log_chc_second.png"
+          src="/svg/character2.svg"
           alt="decoration second"
           width={40}
           height={40}
           priority
-          placeholder="blur"
-          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+          unoptimized
         />
       </div>
       <h2 className={"text-[18px] font-semibold tracking-[-0.025em] text-[#27282c] pt-7.5 pb-2"}>

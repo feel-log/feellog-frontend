@@ -49,19 +49,19 @@ export default function EmotionBottomSheet({
           emotions.map((group) => (
             <div key={group.group} className="flex flex-col gap-3">
               <h3 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">{group.group}</h3>
-              <div className="flex flex-wrap gap-2.5">
+              <div className="flex flex-wrap gap-2">
                 {group.items.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => onEmotionToggle(item.id)}
                     className={cn(
-                      'flex h-8 px-4 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-[14px] font-medium tracking-[-0.025em] transition-colors',
+                      'flex h-[38px] w-[105px] cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] font-medium tracking-[-0.025em] transition-colors',
                       selectedEmotions.includes(item.id)
                         ? 'border-[#13278a] bg-[#ecf2fb] text-[#13278a]'
                         : 'border-[#e5e5e5] text-[#27282c]'
                     )}
                   >
-                    {item.emoji && <Image src={item.emoji} alt={item.label} width={18} height={18} />}
+                    {item.emoji && <Image src={item.emoji} alt={item.label} width={24} height={24} />}
                     <span>{item.label}</span>
                   </button>
                 ))}

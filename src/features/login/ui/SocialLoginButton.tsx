@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import { useKakaoLogin, useGoogleLogin } from '@/features/login';
 
-
 declare global {
   interface Window {
     Kakao: any;
@@ -11,20 +10,13 @@ declare global {
 }
 
 interface SocialLoginButtonProps {
+  social: 'kakao' | 'google';
   imageUrl: string;
-  imageSize?: number;
   text: string;
-  bgColor: string;
-  textColor: string;
-  borderColor?: string;
-  rounded?: string;
-  fontFamily?: string;
-  fontWeight?: 'medium' | 'semibold';
-  gap?: string;
-  onClick?: () => void;
+  isPriority?: boolean;
 }
 
-export function SocialLoginButton({ social, imageUrl, text, color, textColor, isPriority = false }: { social:"kakao" | "google", imageUrl: string, text: string, color: string, textColor: string, isPriority?: boolean }) {
+export function SocialLoginButton({ social, imageUrl, text, isPriority = false }: SocialLoginButtonProps) {
   const { mutate: loginKakao, isPending } = useKakaoLogin();
   const { mutate: loginGoogle } = useGoogleLogin();
 
@@ -58,10 +50,39 @@ export function SocialLoginButton({ social, imageUrl, text, color, textColor, is
     }
   }
 
+  if (social === 'google') {
+    return (
+      <button
+        type="button"
+        onClick={handleLoginButton}
+        disabled={isPending}
+        className="flex h-11 w-[300px] cursor-pointer items-center justify-center gap-3 rounded-[4px] border border-[#747775] bg-white px-4"
+      >
+        <Image src={imageUrl} alt={text} width={20} height={20} priority={isPriority} unoptimized />
+        <span
+          className="text-[15px] font-medium leading-[150%] tracking-normal text-[#1F1F1F]"
+          style={{ fontFamily: 'Roboto, sans-serif' }}
+        >
+          {text}
+        </span>
+      </button>
+    );
+  }
+
   return (
-    <button className={"w-3/4 py-4 px-5 rounded-[8px] flex items-center cursor-pointer"} style={{ backgroundColor: color}} onClick={handleLoginButton} disabled={isPending}>
-      <Image src={imageUrl} alt={text} width={20} height={20} priority={isPriority} loading={isPriority ? undefined : "lazy"} />
-      <span className={"absolute left-1/2 -translate-x-1/2 text-[13px]"} style={{ color: textColor }}>{text}</span>
+    <button
+      type="button"
+      onClick={handleLoginButton}
+      disabled={isPending}
+      className="flex h-[45px] w-[300px] cursor-pointer items-center justify-center gap-2 rounded-[6px] bg-[#FEE500] px-[14px]"
+    >
+      <Image src={imageUrl} alt={text} width={18} height={18} priority={isPriority} unoptimized />
+      <span
+        className="text-[15px] font-semibold leading-[150%] tracking-normal text-black/85"
+        style={{ fontFamily: '"Apple SD Gothic Neo", sans-serif' }}
+      >
+        {text}
+      </span>
     </button>
   );
 }
