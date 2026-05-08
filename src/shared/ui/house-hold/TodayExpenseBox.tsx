@@ -70,41 +70,35 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
     return monthData.filter((item) => item.expenseDate === dateString);
   }, [monthData, dateString]);
 
-  // 카테고리별로 그룹핑
+  // 개별 지출 항목으로 매핑 (같은 카테고리도 합산하지 않고 각각 표시)
   const expenseData = useMemo(() => {
-    const categoryMap = new Map<number, { name: string; amount: number; emotions: any[] }>();
+    const items = dailyExpenseList.map((expense) => {
+      const categoryLabel = expenseCategories && Array.isArray(expenseCategories)
+        ? expenseCategories.flatMap((g) => g.items).find((item) => item.id === expense.categoryId)?.label || '기타'
+        : '기타';
 
-    dailyExpenseList.forEach((expense) => {
-      if (!categoryMap.has(expense.categoryId)) {
-        const categoryLabel = expenseCategories && Array.isArray(expenseCategories)
-          ? expenseCategories.flatMap((g) => g.items).find((item) => item.id === expense.categoryId)?.label || '기타'
-          : '기타';
-
-        categoryMap.set(expense.categoryId, {
-          name: categoryLabel,
-          amount: 0,
-          emotions: [],
-        });
-      }
-      const category = categoryMap.get(expense.categoryId)!;
-      category.amount += expense.amount;
-
-      // emotionIds를 사용해서 emotion 정보 추가
+      const expenseEmotions: any[] = [];
       if (expense.emotionIds && expense.emotionIds.length > 0) {
         expense.emotionIds.forEach((emotionId) => {
           const emotion = emotions && Array.isArray(emotions)
             ? emotions.flatMap((g) => g.items).find((item) => item.id === emotionId)
             : undefined;
-          if (emotion && !category.emotions.find((e) => e.id === emotion.id)) {
-            category.emotions.push(emotion);
+          if (emotion && !expenseEmotions.find((e) => e.id === emotion.id)) {
+            expenseEmotions.push(emotion);
           }
         });
       }
+
+      return {
+        name: categoryLabel,
+        amount: expense.amount,
+        emotions: expenseEmotions,
+      };
     });
 
     return {
       totalAmount: dailyExpenseList.reduce((sum, item) => sum + item.amount, 0),
-      categories: Array.from(categoryMap.values()),
+      categories: items,
     };
   }, [dailyExpenseList, emotions, expenseCategories]);
 
