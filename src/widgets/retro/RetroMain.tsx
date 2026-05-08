@@ -55,7 +55,7 @@ export default function RetroMain({
       ? [{ label: topLabel, amount: topAmount, isTop: true }]
       : []),
     ...(secondCategories.length > 0
-      ? [{ label: secondLabel, amount: secondAmount, isTop: secondCategories.length > 1 }]
+      ? [{ label: secondLabel, amount: secondAmount, isTop: false }]
       : []),
   ].slice(0, 2);
 
