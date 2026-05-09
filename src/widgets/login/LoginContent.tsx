@@ -17,7 +17,7 @@ export default function LoginContent() {
   return (
     <>
       <ConfirmModal isOpen={errorBox} noCancel title={"로그인 중 문제가 발생했어요.|다시 시도해주세요."} onConfirm={() => setErrorBox(false)} onCancel={() => setErrorBox(false)} />
-      <div className={'login__content__wrapper flex flex-1 flex-col'}>
+      <div className={'login__content__wrapper flex flex-col min-h-dvh'}>
         <div className={'logo__part flex flex-col items-center pt-[146px]'}>
           <Image
             src={'/svg/login_logo.png'}
