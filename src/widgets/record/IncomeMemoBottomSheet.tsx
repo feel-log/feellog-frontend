@@ -29,7 +29,6 @@ export default function IncomeMemoBottomSheet({
         value={memoInput}
         onChange={(e) => onMemoChange(e.target.value.slice(0, 50))}
         placeholder="50자 이내로 입력해주세요"
-        autoFocus
         className="h-25.25 w-full resize-none rounded-[10px] border border-[#e5e5e5] p-4 text-[16px] font-medium tracking-[-0.025em] text-[#27282c] placeholder:font-medium placeholder:text-[#9fa4a8] focus:border-[#13278a] focus:outline-none"
       />
       <div className="mt-2 text-right text-[14px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
