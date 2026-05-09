@@ -1,7 +1,7 @@
 "use client";
 
 import { useToken, useUser } from '@/shared/store';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { logoutApi } from '@/features/logout';
 import { deleteDeviceTokenApi } from '@/features/post-device-token';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 export function useLogout() {
   const { clearTokens } = useToken();
   const { clearUser } = useUser();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   return useMutation({
@@ -29,6 +30,7 @@ export function useLogout() {
 
       clearTokens();
       clearUser();
+      queryClient.clear();
       router.push('/login');
     },
     onError: (error) => {
