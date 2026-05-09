@@ -1,7 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToken, useUser } from '@/shared/store';
 import { useIsMounted } from '@/shared/hooks';
 import { useUserGetter } from '@/entities/user';
@@ -38,6 +39,11 @@ export default function ReportContent() {
   const isMounted = useIsMounted();
   const { getAccessToken, isLoaded, setErrorBox } = useToken();
   const token = getAccessToken();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ refetchType: 'all' });
+  }, [queryClient]);
   useUserGetter(token);
   const nickname = useUser((s) => s.nickname);
   const { getUser } = useUser();

@@ -8,20 +8,10 @@ export function usePostIncome() {
 
   const mutation = useMutation<void, unknown, PostIncomeRequest>({
     mutationFn: async (request) => postIncomeApi(request),
-    onSuccess: async (_, request) => {
-      const year = request.incomeDate.split('-')[0];
-      const month = request.incomeDate.split('-')[1];
-
-      await Promise.all([
-        queryClient.refetchQueries({
-          queryKey: ['today-expend', Number(year), Number(month)],
-        }),
-        queryClient.refetchQueries({
-          queryKey: ['week_expend_queries'],
-        }),
-      ]);
-
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ refetchType: 'all' });
       router.push('/');
+      router.refresh();
     },
     onError: (error: unknown) => {
       console.error('수입 추가 실패');

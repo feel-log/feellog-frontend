@@ -1,8 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToken, useUser } from '@/shared/store';
 import { expenseQueries } from '@/entities/expense';
 import { incomeQueries } from '@/entities/income';
@@ -52,6 +52,12 @@ export default function CalendarContent() {
   const { getUser } = useUser();
   const user = getUser();
   const token = getAccessToken();
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ refetchType: 'all' });
+  }, [queryClient]);
 
   const handleAddExpense = () => {
     if (!user?.nickname || user?.nickname.startsWith('guest')) {
