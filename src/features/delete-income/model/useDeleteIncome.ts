@@ -8,7 +8,7 @@ export function useDeleteIncome(year: number, month: number) {
   return useMutation<void, unknown, number>({
     mutationFn: (incomeId: number) => deleteIncomeApi(incomeId),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
+      await queryClient.refetchQueries({
         queryKey: incomeQueries.monthly('', year, month).queryKey,
       });
     },

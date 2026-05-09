@@ -1,6 +1,7 @@
 import { deleteExpenseApi } from '@/features/delete-expense/api/delete-expense-api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { expenseQueries } from '@/entities/expense';
+import { todayExpendQueries } from '@/entities/today-expenditure/api/today-expend-queries';
 
 export function useDeleteExpense(year: number, month: number, day: number) {
   const queryClient = useQueryClient();
@@ -12,8 +13,11 @@ export function useDeleteExpense(year: number, month: number, day: number) {
         queryClient.refetchQueries({
           queryKey: ['daily-expend', year, month, day],
         }),
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: expenseQueries.monthly('', year, month).queryKey,
+        }),
+        queryClient.refetchQueries({
+          queryKey: todayExpendQueries.getTodayQueries(year, month).queryKey,
         }),
       ]);
     },

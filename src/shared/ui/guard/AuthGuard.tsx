@@ -14,7 +14,7 @@ interface IAuthGuard {
 export function AuthGuard({ children }: IAuthGuard) {
   const router = useRouter();
   const pathname = usePathname();
-  const { getAccessToken, getRefreshToken, errorBox, setErrorBox, clearTokens } = useToken();
+  const { getAccessToken, getRefreshToken, isLoaded, errorBox, setErrorBox, clearTokens } = useToken();
   const { mutate: refreshMutate } = useRefreshToken();
   const notificationTestCalled = useRef(false);
 
@@ -29,13 +29,15 @@ export function AuthGuard({ children }: IAuthGuard) {
 
   // 토큰 상태 감시 - 토큰이 없으면 로그인 페이지로 이동
   useEffect(() => {
+    if (!isLoaded) return;
+
     if (!accessToken || !refreshToken) {
       clearTokens();
       router.replace('/login');
     } else if (pathname === '/login') {
       router.replace('/');
     }
-  }, [accessToken, refreshToken, pathname]);
+  }, [isLoaded, accessToken, refreshToken, pathname]);
 
   // 테스트 API는 '/' 라우트에서만 한 번 호출
   useEffect(() => {
