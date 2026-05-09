@@ -41,16 +41,15 @@ export const useUser = create<UserState>()(
 
       getUser: () => {
         const state = get();
-        return state.isLoaded
-          ? {
-              id: state.id,
-              email: state.email,
-              nickname: state.nickname,
-              birthDate: state.birthDate,
-              gender: state.gender,
-              provider: state.provider,
-            }
-          : null;
+        if (!state.id && !state.nickname) return null;
+        return {
+          id: state.id,
+          email: state.email,
+          nickname: state.nickname,
+          birthDate: state.birthDate,
+          gender: state.gender,
+          provider: state.provider,
+        };
       },
     }),
     {
@@ -63,6 +62,9 @@ export const useUser = create<UserState>()(
         gender: state.gender,
         provider: state.provider,
       }),
+      onRehydrateStorage: () => () => {
+        setTimeout(() => useUser.setState({ isLoaded: true }), 0);
+      },
     }
   )
 );

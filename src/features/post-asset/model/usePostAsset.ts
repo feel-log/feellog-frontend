@@ -9,8 +9,9 @@ export function usePostAsset() {
   return useMutation<unknown, unknown, AssetRequestBody>({
     mutationFn: (req) => postAssetApi(req),
     onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ['assets'] });
+      await queryClient.invalidateQueries({ refetchType: 'all' });
       router.push('/asset');
+      router.refresh();
     }
   });
 }

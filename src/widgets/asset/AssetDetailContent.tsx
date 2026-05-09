@@ -89,10 +89,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
       await deleteAssetApi(deleteTargetId);
       setDeleteTargetId(null);
       setSwipedId(null);
-      // 캐시 무효화하여 목록 새로고침
-      await queryClient.invalidateQueries({
-        queryKey: ['assets']
-      });
+      await queryClient.invalidateQueries({ refetchType: 'all' });
     } catch (error) {
       alert('삭제 중 오류가 발생했습니다.');
       setIsDeleting(false);

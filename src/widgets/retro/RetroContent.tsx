@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToken, useUser } from '@/shared/store';
 import { reportQueries } from '@/entities/report';
 import RetroEmpty from '@/widgets/retro/RetroEmpty';
@@ -23,8 +23,13 @@ export default function RetroContent() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    queryClient.invalidateQueries({ refetchType: 'all' });
+  }, [queryClient]);
+
   const handleButtonClick = () => {
-    if (!hasData && (!user?.nickname || user?.nickname.startsWith('guest'))) {
+    if (!hasData && (!token || user?.nickname?.startsWith('guest'))) {
       setShowLoginModal(true);
       return;
     }

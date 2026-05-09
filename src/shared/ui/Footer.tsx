@@ -169,7 +169,7 @@ export default function Footer() {
 
   const handleNavigation = (path: string) => {
     if (router) {
-      if(condition && (path === '/my-page' || path === '/record')) {
+      if(condition && path === '/record') {
         setErrorBox(condition)
         return;
       }

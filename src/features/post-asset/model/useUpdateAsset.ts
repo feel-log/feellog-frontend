@@ -9,8 +9,9 @@ export function useUpdateAsset() {
   return useMutation<unknown, unknown, { assetId: number; request: AssetRequestBody }>({
     mutationFn: ({ assetId, request }) => patchAssetApi(assetId, request),
     onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ['assets'] });
+      await queryClient.invalidateQueries({ refetchType: 'all' });
       router.push('/asset');
+      router.refresh();
     }
   });
 }
