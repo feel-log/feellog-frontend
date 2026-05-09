@@ -96,6 +96,7 @@ export default function DatePickerBottomSheet({
         <div className="grid grid-cols-7 gap-y-5 text-center">
           {getCalendarDays(calendarMonth.year, calendarMonth.month, today).map((item, idx) => {
             const isSelected = item.date === tempDate;
+            const isToday = item.date === today;
             const isFutureDate = new Date(item.date) > new Date(today);
             const handleDayClick = () => {
               if (isFutureDate) return;
@@ -116,9 +117,11 @@ export default function DatePickerBottomSheet({
                     ? 'cursor-not-allowed text-[#d0d0d0] opacity-50'
                     : isSelected
                       ? 'rounded-full bg-[#13278a] text-white cursor-pointer'
-                      : item.isCurrentMonth
-                        ? 'text-[#030303] cursor-pointer'
-                        : 'text-[#9fa4a8] cursor-pointer'
+                      : isToday
+                        ? 'rounded-full bg-[#e5e5e5] text-[#030303] cursor-pointer'
+                        : item.isCurrentMonth
+                          ? 'text-[#030303] cursor-pointer'
+                          : 'text-[#9fa4a8] cursor-pointer'
                 )}
               >
                 {item.day}
