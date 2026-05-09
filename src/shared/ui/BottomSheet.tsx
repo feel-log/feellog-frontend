@@ -15,20 +15,23 @@ interface BottomSheetProps {
 }
 
 export default function BottomSheet({ isOpen, title, subtitle, onClose, children, onSave, isSaveDisabled, height }: BottomSheetProps) {
-  if (!isOpen) return null;
-
   return (
     <>
       {/* Backdrop */}
       <div
-        className="fixed left-0 right-0 max-w-md mx-auto inset-0 z-40 bg-black opacity-50 animate-fade-in"
+        className={`fixed left-0 right-0 max-w-md mx-auto inset-0 z-40 bg-black transition-opacity duration-200 ${
+          isOpen ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Bottom Sheet */}
       <div
         style={{ height: `${height}px` }}
-        className="fixed bottom-0 left-0 max-w-md mx-auto right-0 z-50 flex w-full flex-col overflow-hidden rounded-t-[20px] bg-white animate-slide-up"
+        className={`fixed bottom-0 left-0 max-w-md mx-auto right-0 z-50 flex w-full flex-col overflow-hidden rounded-t-[20px] bg-white transition-transform duration-300 ease-out ${
+          isOpen ? 'translate-y-0 pointer-events-auto' : 'translate-y-full pointer-events-none'
+        }`}
       >
         {/* Header */}
         <div className="flex shrink-0 items-start justify-between bg-white px-4 pt-7.5 pb-7.5">
