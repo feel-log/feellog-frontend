@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { loginKakaoApi } from '@/features/login/api/login-api';
 import { useToken } from '@/shared/store';
 import { useUser } from '@/shared/store';
@@ -10,6 +10,7 @@ import { getUserByTokenApi } from '@/entities/user/api/user-api';
 export function useKakaoLogin() {
   const { setTokens, setErrorBox } = useToken();
   const { setUser } = useUser();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   return useMutation({
@@ -17,6 +18,7 @@ export function useKakaoLogin() {
       accessToken,
     }),
     onSuccess: async (data) => {
+      queryClient.clear();
       setTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken

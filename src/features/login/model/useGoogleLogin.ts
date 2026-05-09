@@ -3,13 +3,14 @@
 import { useToken } from '@/shared/store';
 import { useUser } from '@/shared/store';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { loginGoogleApi } from '@/features/login/api/login-api';
 import { getUserByTokenApi } from '@/entities/user/api/user-api';
 
 export function useGoogleLogin() {
   const { setTokens, setErrorBox } = useToken();
   const { setUser } = useUser();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   return useMutation({
@@ -18,6 +19,7 @@ export function useGoogleLogin() {
         accessToken,
       }),
     onSuccess: async (data) => {
+      queryClient.clear();
       setTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
