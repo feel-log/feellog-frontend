@@ -38,7 +38,7 @@ export default function HouseHoldBoxWrapper() {
   const randomNumber = useMemo(() => getRandomNumberByDate(), []);
 
   const handleWeekBoxClick = () => {
-    if (!user?.nickname || user?.nickname.startsWith('guest')) {
+    if (!accessToken || user?.nickname?.startsWith('guest')) {
       setShowLoginModal(true);
       return;
     }

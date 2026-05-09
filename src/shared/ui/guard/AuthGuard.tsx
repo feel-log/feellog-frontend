@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useToken, useUser } from '@/shared/store';
 import { useRefreshToken } from '@/features/refresh/model/useRefreshToken';
 import { notificationTestApi } from '@/features/notification-test/api/notification-test-api';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
+import FullScreenLoader from '@/shared/ui/FullScreenLoader';
 
 interface IAuthGuard {
   children: React.ReactNode
@@ -14,9 +15,14 @@ interface IAuthGuard {
 export function AuthGuard({ children }: IAuthGuard) {
   const router = useRouter();
   const pathname = usePathname();
-  const { getAccessToken, getRefreshToken, isLoaded, errorBox, setErrorBox, clearTokens } = useToken();
+  const { getAccessToken, getRefreshToken, errorBox, setErrorBox, clearTokens } = useToken();
   const { mutate: refreshMutate } = useRefreshToken();
   const notificationTestCalled = useRef(false);
+
+  const [hasHydrated, setHasHydrated] = useState(false);
+  useEffect(() => {
+    setHasHydrated(true);
+  }, []);
 
   const accessToken = getAccessToken();
   const refreshToken = getRefreshToken();
@@ -29,7 +35,7 @@ export function AuthGuard({ children }: IAuthGuard) {
 
   // 토큰 상태 감시 - 토큰이 없으면 로그인 페이지로 이동
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!hasHydrated) return;
 
     if (!accessToken || !refreshToken) {
       clearTokens();
@@ -37,7 +43,7 @@ export function AuthGuard({ children }: IAuthGuard) {
     } else if (pathname === '/login') {
       router.replace('/');
     }
-  }, [isLoaded, accessToken, refreshToken, pathname]);
+  }, [hasHydrated, accessToken, refreshToken, pathname]);
 
   // 테스트 API는 '/' 라우트에서만 한 번 호출
   useEffect(() => {
@@ -66,6 +72,10 @@ export function AuthGuard({ children }: IAuthGuard) {
       if(intervalId) clearInterval(intervalId);
     }
   },[pathname])
+
+  if (!hasHydrated) {
+    return <FullScreenLoader isLoading />;
+  }
 
   return (
     <>

@@ -11,8 +11,9 @@ interface EmptyExpenseStateProps {
 export default function EmptyExpenseState({ dateString }: EmptyExpenseStateProps) {
   const router = useRouter();
   const { getUser } = useUser();
-  const { setErrorBox } = useToken();
+  const { setErrorBox, getAccessToken } = useToken();
   const user = getUser();
+  const accessToken = getAccessToken();
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -21,7 +22,7 @@ export default function EmptyExpenseState({ dateString }: EmptyExpenseStateProps
       </p>
       <button
         onClick={() => {
-          if (!user?.nickname || user?.nickname.startsWith('guest')) {
+          if (!accessToken || user?.nickname?.startsWith('guest')) {
             setErrorBox(true);
             return;
           }

@@ -6,12 +6,14 @@ import Footer from '@/shared/ui/Footer';
 import PageHeader from '@/shared/ui/PageHeader';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { useGetAssets } from '@/entities/get-assets/useGetAssets';
-import { useUser } from '@/shared/store';
+import { useToken, useUser } from '@/shared/store';
 
 export default function AssetContent() {
   const router = useRouter();
   const { getUser } = useUser();
+  const { getAccessToken } = useToken();
   const user = getUser();
+  const accessToken = getAccessToken();
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const { data: assetsData, isLoading } = useGetAssets({
@@ -23,7 +25,7 @@ export default function AssetContent() {
   const groupedAssets = assetsData?.categories ?? [];
 
   const handleAddAsset = () => {
-    if (!user?.nickname || user?.nickname.startsWith('guest')) {
+    if (!accessToken || user?.nickname?.startsWith('guest')) {
       setShowLoginModal(true);
       return;
     }

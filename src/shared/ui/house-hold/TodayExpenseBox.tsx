@@ -28,7 +28,9 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
   const [selectedDate, setSelectedDate] = useState<Date>(TODAY);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { getUser } = useUser();
+  const { getAccessToken } = useToken();
   const user = getUser();
+  const accessToken = getAccessToken();
 
   const canGoPrev = selectedDate > MIN_DATE;
   const canGoNext = selectedDate < TODAY;
@@ -58,7 +60,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
   const dateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
 
   const handleExportClick = () => {
-    if (!user?.nickname || user?.nickname.startsWith('guest')) {
+    if (!accessToken || user?.nickname?.startsWith('guest')) {
       setShowLoginModal(true);
       return;
     }

@@ -60,7 +60,7 @@ export default function CalendarContent() {
   }, [queryClient]);
 
   const handleAddExpense = () => {
-    if (!user?.nickname || user?.nickname.startsWith('guest')) {
+    if (!token || user?.nickname?.startsWith('guest')) {
       setShowLoginModal(true);
       return;
     }

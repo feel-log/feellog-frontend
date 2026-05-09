@@ -151,7 +151,7 @@ export default function ReportContent() {
             expense={expense}
             onYearMonthChange={handleYearMonthChange}
             onExpenseDetailClick={() => {
-              if (!user?.nickname || user?.nickname.startsWith('guest')) {
+              if (!token || user?.nickname?.startsWith('guest')) {
                 setErrorBox(true);
                 return;
               }

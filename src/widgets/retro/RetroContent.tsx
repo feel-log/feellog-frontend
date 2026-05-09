@@ -29,7 +29,7 @@ export default function RetroContent() {
   }, [queryClient]);
 
   const handleButtonClick = () => {
-    if (!hasData && (!user?.nickname || user?.nickname.startsWith('guest'))) {
+    if (!hasData && (!token || user?.nickname?.startsWith('guest'))) {
       setShowLoginModal(true);
       return;
     }
