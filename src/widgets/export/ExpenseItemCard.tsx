@@ -101,32 +101,30 @@ export default function ExpenseItemCard({
             </p>
           </div>
 
-          {/* 태그 + 메모 */}
+          {/* 태그 | 감정 + 결제수단 */}
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               {tag && tag.length > 0 && (
                 <span className="text-[16px] font-medium tracking-[-0.025em] text-[#13278a]">
                   {tag.join(', ')}
                 </span>
               )}
-              {tag && tag.length > 0 && memo && (
-                <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
-                  |
-                </span>
+              {tag && tag.length > 0 && emotions && emotions.length > 0 && (
+                <span className="h-3.5 w-px bg-[#D9D9D9]" />
               )}
-              {memo && (
-                <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
-                  {memo}
-                </span>
-              )}
+              <EmotionDisplay emotions={emotions} />
             </div>
             <span className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8]">
               {paymentMethod}
             </span>
           </div>
 
-          {/* 감정 */}
-          <EmotionDisplay emotions={emotions} />
+          {/* 메모 (별도 줄) */}
+          {memo && (
+            <p className="text-[16px] font-medium tracking-[-0.025em] text-[#9fa4a8] break-all">
+              {memo}
+            </p>
+          )}
         </div>
       </div>
     </div>

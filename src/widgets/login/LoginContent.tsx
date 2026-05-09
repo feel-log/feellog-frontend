@@ -20,13 +20,11 @@ export default function LoginContent() {
       <div className={'login__content__wrapper flex flex-col min-h-dvh'}>
         <div className={'logo__part flex flex-col items-center pt-[146px]'}>
           <Image
-            src={'/svg/feel_log_big.svg'}
+            src={'/svg/login_logo.png'}
             alt={'feel_log_login'}
             width={181}
             height={53}
             priority
-            placeholder="blur"
-            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IGZpbGw9IiNlNWU3ZWIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48L3N2Zz4="
           />
           <span className={'mt-2.5 block text-[14px] text-white'}>감정으로 읽는 소비 기록</span>
         </div>

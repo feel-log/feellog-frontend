@@ -1,6 +1,48 @@
-import type { ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
+
+const MAX_FONT = 16;
+const MIN_FONT = 10;
+
+function AutoFitText({
+  children,
+  className,
+  deps = [],
+}: {
+  children: ReactNode;
+  className?: string;
+  deps?: unknown[];
+}) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [fontSize, setFontSize] = useState(MAX_FONT);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    let size = MAX_FONT;
+    el.style.fontSize = `${size}px`;
+
+    while (el.scrollWidth > el.clientWidth && size > MIN_FONT) {
+      size -= 0.5;
+      el.style.fontSize = `${size}px`;
+    }
+
+    setFontSize(size);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+
+  return (
+    <p
+      ref={ref}
+      style={{ fontSize: `${fontSize}px` }}
+      className={className}
+    >
+      {children}
+    </p>
+  );
+}
 
 export type InsightType = 'categoryChange' | 'emotionTrend' | 'situationTrend';
 
@@ -76,12 +118,12 @@ function InsightCard({ insight }: { insight: InsightItem }) {
 
   return (
     <div className="flex items-center justify-between gap-2.5 rounded-[8px] bg-white p-4">
-      <p className="min-w-0 flex-1 whitespace-pre-line text-[16px] font-medium leading-normal tracking-[-0.4px] text-[#474C52]">
-        {renderMessageWithTarget(
-          insight.message.replace(/\s비슷한/, '\n비슷한'),
-          insight.targetName ?? undefined
-        )}
-      </p>
+      <AutoFitText
+        className="min-w-0 flex-1 overflow-hidden whitespace-nowrap font-medium leading-normal tracking-[-0.4px] text-[#474C52]"
+        deps={[insight.message, insight.targetName]}
+      >
+        {renderMessageWithTarget(insight.message, insight.targetName ?? undefined)}
+      </AutoFitText>
       {hasTarget && (
         <div className="size-8 shrink-0">
           {insight.type === 'categoryChange' && (
