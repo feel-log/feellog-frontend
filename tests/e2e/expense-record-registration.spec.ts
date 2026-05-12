@@ -3,12 +3,13 @@ import { test, expect } from '@playwright/test';
 test.describe('지출 기록 등록', () => {
   test.beforeEach(async ({ page }) => {
     // 로그인 상태로 설정
-    await page.goto('/household');
+    await page.goto('/record');
     await page.waitForLoadState('domcontentloaded');
     await page.evaluate(() => {
       localStorage.setItem('authToken', 'test-token-' + Date.now());
     });
   });
+
 
   test('기본 지출 정보 입력 및 저장', async ({ page }) => {
     // 새 기록 추가 버튼 클릭
@@ -59,7 +60,7 @@ test.describe('지출 기록 등록', () => {
   });
 
   test('카테고리 선택 바텀시트', async ({ page }) => {
-    await page.goto('/expense/new');
+    await page.goto('/record');
 
     // 카테고리 선택 버튼 클릭
     const categoryButton = page.locator('button:has-text("카테고리")').first();
@@ -80,7 +81,7 @@ test.describe('지출 기록 등록', () => {
   });
 
   test('감정 태그 선택', async ({ page }) => {
-    await page.goto('/expense/new');
+    await page.goto('/record');
 
     // 금액 입력
     await page.fill('input[name="amount"], input[placeholder*="금액"]', '15000');
@@ -102,7 +103,7 @@ test.describe('지출 기록 등록', () => {
   });
 
   test('상황 태그 및 메모 입력', async ({ page }) => {
-    await page.goto('/expense/new');
+    await page.goto('/record');
 
     // 필수 정보 입력
     await page.fill('input[name="amount"], input[placeholder*="금액"]', '8000');
@@ -121,7 +122,7 @@ test.describe('지출 기록 등록', () => {
   });
 
   test('결제 수단 선택 - 카드, 현금, 계좌, 기타', async ({ page }) => {
-    await page.goto('/expense/new');
+    await page.goto('/record');
 
     // 결제 수단 선택 버튼
     const paymentButton = page.locator('button:has-text("결제수단"), button:has-text("결제"), button:has-text("카드")').first();
@@ -170,7 +171,7 @@ test.describe('지출 기록 등록', () => {
   });
 
   test('선택적 필드 없이 최소 필수 정보만으로 저장', async ({ page }) => {
-    await page.goto('/expense/new');
+    await page.goto('/record');
 
     // 필수 필드만 입력 (금액, 카테고리)
     await page.fill('input[name="amount"], input[placeholder*="금액"]', '3000');
@@ -186,7 +187,7 @@ test.describe('지출 기록 등록', () => {
   });
 
   test('바텀시트 외부 클릭으로 닫기', async ({ page }) => {
-    await page.goto('/expense/new');
+    await page.goto('/record');
 
     // 바텀시트 열기
     await page.click('button:has-text("카테고리")');

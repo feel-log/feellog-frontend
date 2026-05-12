@@ -25,7 +25,7 @@ test.describe('공통 / 오류 대응', () => {
   });
 
   test('중복 클릭 방지 - 저장 버튼 중복 클릭', async ({ page }) => {
-    await page.goto('/expense/new');
+    await page.goto('/record');
 
     // 필수 필드 채우기
     await page.fill('input[name="amount"]', '10000');
@@ -50,7 +50,7 @@ test.describe('공통 / 오류 대응', () => {
     // 네트워크 오류 시뮬레이션
     await context.setOffline(true);
 
-    await page.goto('/expense/new');
+    await page.goto('/record');
     await page.fill('input[name="amount"]', '5000');
     await page.click('button:has-text("저장")');
 
@@ -77,7 +77,7 @@ test.describe('공통 / 오류 대응', () => {
     tomorrow.setDate(tomorrow.getDate() + 30);
     const dateStr = tomorrow.toISOString().split('T')[0];
 
-    await page.goto(`/household?date=${dateStr}`);
+    await page.goto(`/export?date=${dateStr}`);
 
     // 빈 상태 메시지 확인
     const emptyState = page.locator('text=/아직|없어요|기록/');
@@ -94,7 +94,7 @@ test.describe('공통 / 오류 대응', () => {
       setTimeout(() => route.continue(), 2000);
     });
 
-    await page.goto('/household');
+    await page.goto('/export');
 
     // 로딩 표시 확인
     const loader = page.locator('[role="status"], .spinner, .loading');
@@ -112,7 +112,7 @@ test.describe('공통 / 오류 대응', () => {
     });
 
     // 보호된 페이지 접근 시도
-    await page.goto('/household', { waitUntil: 'networkidle' });
+    await page.goto('/export', { waitUntil: 'networkidle' });
 
     // 로그인 페이지로 리다이렉트 확인
     await expect(page).toHaveURL(/\/login|\/auth/);
@@ -130,7 +130,7 @@ test.describe('공통 / 오류 대응', () => {
       localStorage.setItem('authToken', expiredToken);
     });
 
-    await page.goto('/household');
+    await page.goto('/export');
 
     // 세션 만료 메시지 또는 로그인 페이지로 리다이렉트
     await expect(page).toHaveURL(/\/login|\/auth/);

@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('일별 지출 내역 조회', () => {
   test.beforeEach(async ({ page }) => {
     // 로그인 상태로 설정
-    await page.goto('/household');
+    await page.goto('/export');
     await page.waitForLoadState('domcontentloaded');
     await page.evaluate(() => {
       localStorage.setItem('authToken', 'test-token-' + Date.now());
