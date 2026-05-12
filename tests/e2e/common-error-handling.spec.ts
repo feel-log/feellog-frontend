@@ -1,0 +1,138 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('공통 / 오류 대응', () => {
+  test.beforeEach(async ({ page }) => {
+    // 로그인 상태로 설정
+    await page.goto('/');
+    await page.waitForLoadState('domcontentloaded');
+    await page.evaluate(() => {
+      localStorage.setItem('authToken', 'test-token-' + Date.now());
+    });
+  });
+
+  test('필수 입력 누락 시 에러 메시지 표시', async ({ page }) => {
+    // 지출 기록 페이지로 이동 (+ 버튼 클릭)
+    await page.click('button[aria-label="새로운 기록 추가"]');
+
+    // 필수 입력 없이 저장 시도
+    const saveButton = page.locator('button:has-text("저장")');
+    await saveButton.click();
+
+    // 에러 메시지 확인
+    const errorMessage = page.locator('[role="alert"]');
+    await expect(errorMessage).toBeVisible();
+    await expect(errorMessage).toContainText('필수');
+  });
+
+  test('중복 클릭 방지 - 저장 버튼 중복 클릭', async ({ page }) => {
+    await page.goto('/expense/new');
+
+    // 필수 필드 채우기
+    await page.fill('input[name="amount"]', '10000');
+    await page.click('button:has-text("카테고리")');
+    await page.click('button:has-text("식비")');
+
+    // 저장 버튼 빠르게 여러 번 클릭
+    const saveButton = page.locator('button:has-text("저장")');
+
+    // 첫 클릭 후 버튼 비활성화 확인
+    await saveButton.click();
+    await expect(saveButton).toBeDisabled();
+
+    // 네트워크 요청 완료 대기
+    await page.waitForLoadState('networkidle');
+
+    // 중복 저장 방지 - 1개의 요청만 전송되어야 함
+    await expect(page).toHaveURL(/\/(household|expense)/);
+  });
+
+  test('네트워크 오류 발생 시 재시도 옵션 제공', async ({ page, context }) => {
+    // 네트워크 오류 시뮬레이션
+    await context.setOffline(true);
+
+    await page.goto('/expense/new');
+    await page.fill('input[name="amount"]', '5000');
+    await page.click('button:has-text("저장")');
+
+    // 오류 메시지 표시
+    const errorMessage = page.locator('[role="alert"]');
+    await expect(errorMessage).toBeVisible();
+    await expect(errorMessage).toContainText('네트워크');
+
+    // 재시도 버튼 확인
+    const retryButton = page.locator('button:has-text("재시도")');
+    await expect(retryButton).toBeVisible();
+
+    // 네트워크 복구
+    await context.setOffline(false);
+    await retryButton.click();
+
+    // 성공 확인
+    await page.waitForLoadState('networkidle');
+  });
+
+  test('빈 상태(No Data) 표시', async ({ page }) => {
+    // 지출 기록이 없는 날짜로 이동
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 30);
+    const dateStr = tomorrow.toISOString().split('T')[0];
+
+    await page.goto(`/household?date=${dateStr}`);
+
+    // 빈 상태 메시지 확인
+    const emptyState = page.locator('text=/아직|없어요|기록/');
+    await expect(emptyState).toBeVisible();
+
+    // 기록 추가 버튼 확인
+    const addButton = page.locator('button:has-text("기록하러")');
+    await expect(addButton).toBeVisible();
+  });
+
+  test('로딩 상태 표시', async ({ page }) => {
+    // 느린 네트워크 시뮬레이션
+    await page.route('**/api/**', (route) => {
+      setTimeout(() => route.continue(), 2000);
+    });
+
+    await page.goto('/household');
+
+    // 로딩 표시 확인
+    const loader = page.locator('[role="status"], .spinner, .loading');
+    await expect(loader).toBeVisible({ timeout: 1000 });
+
+    // 로딩 완료 대기
+    await page.waitForLoadState('networkidle');
+  });
+
+  test('권한 / 로그인 정책 점검 - 로그아웃 상태에서 접근 차단', async ({ page }) => {
+    // 로그인 상태 제거
+    await page.waitForLoadState('domcontentloaded');
+    await page.evaluate(() => {
+      localStorage.removeItem('authToken');
+    });
+
+    // 보호된 페이지 접근 시도
+    await page.goto('/household', { waitUntil: 'networkidle' });
+
+    // 로그인 페이지로 리다이렉트 확인
+    await expect(page).toHaveURL(/\/login|\/auth/);
+  });
+
+  test('세션 만료 처리', async ({ page, context }) => {
+    // 만료된 토큰 설정
+    await page.waitForLoadState('domcontentloaded');
+    await page.evaluate(() => {
+      const expiredToken = btoa(
+        JSON.stringify({
+          exp: Math.floor(Date.now() / 1000) - 3600, // 1시간 전
+        })
+      );
+      localStorage.setItem('authToken', expiredToken);
+    });
+
+    await page.goto('/household');
+
+    // 세션 만료 메시지 또는 로그인 페이지로 리다이렉트
+    await expect(page).toHaveURL(/\/login|\/auth/);
+  });
+});

@@ -1,0 +1,241 @@
+{
+  "config": {
+    "configFile": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/playwright.config.ts",
+    "rootDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.60.0",
+    "workers": 6,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "daily-expense-inquiry.spec.ts",
+      "file": "daily-expense-inquiry.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "일별 지출 내역 조회",
+          "file": "daily-expense-inquiry.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "특정 날짜의 소비 내역과 총 지출 금액 확인",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 123,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:304:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:304:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:304:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/daily-expense-inquiry.spec.ts:6:16",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 304
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 304
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:304:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:304:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/daily-expense-inquiry.spec.ts:6:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-12T05:14:36.144Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-특정-날짜의-소비-내역과-총-지출-금액-확인-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-특정-날짜의-소비-내역과-총-지출-금액-확인-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-특정-날짜의-소비-내역과-총-지출-금액-확인-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-특정-날짜의-소비-내역과-총-지출-금액-확인-chromium/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 304
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "82eae1b667a60e1906aa-7d2fb3c16ae51e32ef0e",
+              "file": "daily-expense-inquiry.spec.ts",
+              "line": 12,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-05-12T05:14:35.648Z",
+    "duration": 721.6800000000003,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}
