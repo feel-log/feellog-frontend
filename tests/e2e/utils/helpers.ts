@@ -85,7 +85,7 @@ export async function navigateToDailyExpense(page: Page) {
   await page.waitForLoadState('networkidle');
 }
 
-export async function getExpenseAmount(text: string): number {
+export function getExpenseAmount(text: string): number {
   const match = text.match(/(\d+),?(\d+)?/);
   if (match) {
     const amount = match[1] + (match[2] || '');
