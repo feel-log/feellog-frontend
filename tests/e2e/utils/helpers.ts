@@ -81,7 +81,7 @@ export async function saveExpense(page: Page) {
 }
 
 export async function navigateToDailyExpense(page: Page) {
-  await page.click('button:has-text("오늘의 지출"), a[href*="/expense/daily"]').first();
+  await page.locator('button:has-text("오늘의 지출"), a[href*="/expense/daily"]').first().click();
   await page.waitForLoadState('networkidle');
 }
 
