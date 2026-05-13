@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('월별 소비 리포트 조회', () => {
   test.beforeEach(async ({ page }) => {
     // 로그인 상태로 설정
-    await page.goto('/household');
+    await page.goto('/report');
     await page.waitForLoadState('domcontentloaded');
     await page.evaluate(() => {
       localStorage.setItem('authToken', 'test-token-' + Date.now());
@@ -93,7 +93,7 @@ test.describe('월별 소비 리포트 조회', () => {
 test.describe('회고 설문 및 결과 제공', () => {
   test.beforeEach(async ({ page }) => {
     // 로그인 상태로 설정
-    await page.goto('/household');
+    await page.goto('/report');
     await page.waitForLoadState('domcontentloaded');
     await page.evaluate(() => {
       localStorage.setItem('authToken', 'test-token-' + Date.now());

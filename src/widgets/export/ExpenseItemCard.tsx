@@ -71,6 +71,7 @@ export default function ExpenseItemCard({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       style={{ touchAction: 'pan-y' }}
+      data-testid="expense-item"
     >
       {/* 삭제 버튼 배경 */}
       <div className="absolute inset-y-0 right-0 z-0 flex items-center justify-end pr-4">
@@ -96,7 +97,7 @@ export default function ExpenseItemCard({
             <h4 className="text-[18px] font-semibold tracking-[-0.025em] text-[#27282c]">
               {name}
             </h4>
-            <p className="text-[20px] font-semibold tracking-[-0.025em] text-[#030303]">
+            <p className="text-[20px] font-semibold tracking-[-0.025em] text-[#030303]" data-testid="expense-amount">
               {amount.toLocaleString()}원
             </p>
           </div>

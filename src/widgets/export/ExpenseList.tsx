@@ -33,7 +33,7 @@ export default function ExpenseList({
   onDelete,
 }: ExpenseListProps) {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5" data-testid="expense-list">
       {expenses.map((expense) => (
         <ExpenseItemCard
           key={expense.expenseId}

@@ -222,6 +222,7 @@ export default function Footer() {
         <button
           onClick={() => handleNavigation('/record')}
           className="absolute cursor-pointer -top-7.5 left-1/2 transform -translate-x-1/2 w-15 h-15 rounded-full bg-[#13278a] text-white flex items-center justify-center shadow-[2px_4px_4px_0px_rgba(49,49,49,0.3)] hover:bg-[#0e1f6e] transition-colors"
+          aria-label="새로운 기록 추가"
         >
           <Image
             src={"/svg/icon_plus.svg"}
