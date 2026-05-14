@@ -1,13 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { mockLogin } from './helpers/auth';
 
 test.describe('월별 소비 리포트 조회', () => {
   test.beforeEach(async ({ page }) => {
     // 로그인 상태로 설정
+    await mockLogin(page);
     await page.goto('/report');
     await page.waitForLoadState('domcontentloaded');
-    await page.evaluate(() => {
-      localStorage.setItem('authToken', 'test-token-' + Date.now());
-    });
   });
 
   test('월별 소비 흐름을 카테고리 기준으로 확인', async ({ page }) => {

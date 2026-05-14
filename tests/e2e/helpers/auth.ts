@@ -1,36 +1,59 @@
-import { BrowserContext, Page } from '@playwright/test';
+import { Page, BrowserContext } from '@playwright/test';
 
-export const setupAuth = async (context: BrowserContext) => {
-  await context.addInitScript(() => {
-    const tokenData = {
-      state: {
-        accessToken: 'test-access-token-' + Math.random().toString(36),
-        refreshToken: 'test-refresh-token-' + Math.random().toString(36),
-      },
-      version: 0,
-    };
-    localStorage.setItem('token-storage', JSON.stringify(tokenData));
+interface MockUserData {
+  id?: number;
+  email?: string;
+  nickname?: string;
+  birthDay?: string | null;
+  gender?: string | null;
+}
+
+interface MockTokenData {
+  accessToken?: string;
+  refreshToken?: string;
+}
+
+export async function mockLogin(
+  pageOrContext: Page | BrowserContext,
+  userData: MockUserData = {},
+  tokenData: MockTokenData = {}
+) {
+  const defaultUser = {
+    id: 1,
+    email: 'test@test.com',
+    nickname: 'test_user',
+    birthDay: null,
+    gender: null,
+  };
+
+  const defaultTokens = {
+    accessToken: 'mocked-access-token',
+    refreshToken: 'mocked-refresh-token',
+  };
+
+  const user = { ...defaultUser, ...userData };
+  const tokens = { ...defaultTokens, ...tokenData };
+
+  await pageOrContext.addInitScript(({ user, tokens }) => {
+    localStorage.setItem(
+      'token-storage',
+      JSON.stringify({
+        state: tokens,
+      })
+    );
+
+    localStorage.setItem(
+      'user-storage',
+      JSON.stringify({
+        state: user,
+      })
+    );
+  }, { user, tokens });
+}
+
+export async function mockLogout(pageOrContext: Page | BrowserContext) {
+  await pageOrContext.addInitScript(() => {
+    localStorage.removeItem('token-storage');
+    localStorage.removeItem('user-storage');
   });
-};
-
-export const mockAuthApis = async (page: Page) => {
-  await page.route('**/api/v1/auth/refresh', (route) => {
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        accessToken: 'test-access-token-' + Math.random().toString(36),
-        refreshToken: 'test-refresh-token-' + Math.random().toString(36),
-      }),
-    });
-  });
-
-  await page.route('**/api/v1/auth/**', (route) => {
-    route.continue();
-  });
-};
-
-export const setupAuthAndMock = async (page: Page, context: BrowserContext) => {
-  await setupAuth(context);
-  await mockAuthApis(page);
-};
+}

@@ -1,10 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { setupAuth, mockAuthApis } from './helpers/auth';
+import { mockLogin } from './helpers/auth';
 
 test.describe('공통 / 오류 대응', () => {
-  test.beforeEach(async ({ page, context }) => {
-    await setupAuth(context);
-    await mockAuthApis(page);
+  test.beforeEach(async ({ page }) => {
+    await mockLogin(page);
   });
 
   test('필수 입력 누락 시 에러 메시지 표시', async ({ page }) => {

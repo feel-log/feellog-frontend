@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { mockLogin } from './helpers/auth';
 
 const MOCK_MASTER_DATA = {
   categoryGroups: [
@@ -74,9 +75,7 @@ const MOCK_DAILY_EXPENSES_YESTERDAY = [
 test.describe('일별 지출 내역 조회', () => {
   test.beforeEach(async ({ page, context }) => {
     // 로그인 상태로 먼저 설정
-    await context.addInitScript(() => {
-      localStorage.setItem('authToken', 'test-token-' + Date.now());
-    });
+    await mockLogin(context);
 
     // 마스터 데이터 API 모킹
     await page.route('**/api/v1/master-data', (route) => {

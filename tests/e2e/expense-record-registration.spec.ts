@@ -1,13 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { mockLogin } from './helpers/auth';
 
 test.describe('지출 기록 등록', () => {
   test.beforeEach(async ({ page }) => {
     // 로그인 상태로 설정
+    await mockLogin(page);
     await page.goto('/record');
     await page.waitForLoadState('domcontentloaded');
-    await page.evaluate(() => {
-      localStorage.setItem('authToken', 'test-token-' + Date.now());
-    });
   });
 
 
