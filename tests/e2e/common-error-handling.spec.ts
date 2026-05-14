@@ -1,26 +1,18 @@
 import { test, expect } from '@playwright/test';
+import { setupAuth, mockAuthApis } from './helpers/auth';
 
 test.describe('공통 / 오류 대응', () => {
-  test.beforeEach(async ({ page }) => {
-    // API 인증 모킹 - 보호된 페이지 접근 허용
-    await page.route('**/api/auth/**', (route) => {
-      route.continue();
-    });
-
-    // localStorage 설정 후 페이지 이동
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-    await page.evaluate(() => {
-      localStorage.setItem('authToken', 'test-token-' + Date.now());
-    });
+  test.beforeEach(async ({ page, context }) => {
+    await setupAuth(context);
+    await mockAuthApis(page);
   });
 
   test('필수 입력 누락 시 에러 메시지 표시', async ({ page }) => {
-    await page.goto('/record');
-    await page.waitForLoadState('networkidle');
+    await page.goto('/record', { waitUntil: 'networkidle' });
 
     // 필수 입력 없이 저장 시도
-    await page.locator('button:has-text("저장")').first().click();
+    const saveButton = page.locator('button:has-text("저장")').first();
+    await saveButton.click();
 
     // 에러 메시지 확인
     const errorMessage = page.locator('[role="alert"]');
@@ -29,8 +21,7 @@ test.describe('공통 / 오류 대응', () => {
   });
 
   test('중복 클릭 방지 - 저장 버튼 중복 클릭', async ({ page }) => {
-    await page.goto('/record');
-    await page.waitForLoadState('networkidle');
+    await page.goto('/record', { waitUntil: 'networkidle' });
 
     // 필수 필드 채우기
     await page.fill('input[name="amount"]', '10000');
@@ -39,8 +30,6 @@ test.describe('공통 / 오류 대응', () => {
 
     // 저장 버튼 빠르게 여러 번 클릭
     const saveButton = page.locator('button:has-text("저장")');
-
-    // 첫 클릭 후 버튼 비활성화 확인
     await saveButton.click();
     await expect(saveButton).toBeDisabled();
 
@@ -52,8 +41,7 @@ test.describe('공통 / 오류 대응', () => {
   });
 
   test('네트워크 오류 발생 시 재시도 옵션 제공', async ({ page, context }) => {
-    await page.goto('/record');
-    await page.waitForLoadState('networkidle');
+    await page.goto('/record', { waitUntil: 'networkidle' });
 
     // 네트워크 오류 시뮬레이션
     await context.setOffline(true);
@@ -72,18 +60,15 @@ test.describe('공통 / 오류 대응', () => {
     // 네트워크 복구
     await context.setOffline(false);
     await retryButton.click();
-
-    // 성공 확인
     await page.waitForLoadState('networkidle');
   });
 
   test('빈 상태(No Data) 표시', async ({ page }) => {
-    // 지출 기록이 없는 날짜로 이동
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 30);
     const dateStr = tomorrow.toISOString().split('T')[0];
 
-    await page.goto(`/export?date=${dateStr}`, { waitUntil: 'networkidle' });
+    await page.goto(`/household?date=${dateStr}`, { waitUntil: 'networkidle' });
 
     // 빈 상태 메시지 확인
     const emptyState = page.locator('text=/아직|없어요|기록/');
@@ -100,7 +85,7 @@ test.describe('공통 / 오류 대응', () => {
       setTimeout(() => route.continue(), 2000);
     });
 
-    await page.goto('/export', { waitUntil: 'domcontentloaded' });
+    await page.goto('/household', { waitUntil: 'domcontentloaded' });
 
     // 로딩 표시 확인
     const loader = page.locator('[role="status"], .spinner, .loading');
@@ -110,33 +95,41 @@ test.describe('공통 / 오류 대응', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('권한 / 로그인 정책 점검 - 로그아웃 상태에서 접근 차단', async ({ page }) => {
-    // 로그인 상태 제거
-    await page.evaluate(() => {
-      localStorage.removeItem('authToken');
-    });
+  test('권한 / 로그인 정책 점검 - 로그아웃 상태에서 접근 차단', async ({ context }) => {
+    // 새로운 context 사용 (인증 없음)
+    const newPage = await context.newPage();
 
-    // 보호된 페이지 접근 시도
-    await page.goto('/export');
+    await newPage.goto('/household', { waitUntil: 'networkidle' });
+    await expect(newPage).toHaveURL(/\/login|\/auth/);
 
-    // 로그인 페이지로 리다이렉트 확인
-    await expect(page).toHaveURL(/\/login|\/auth/);
+    await newPage.close();
   });
 
-  test('세션 만료 처리', async ({ page }) => {
-    // 만료된 토큰 설정
-    await page.evaluate(() => {
-      const expiredToken = btoa(
-        JSON.stringify({
-          exp: Math.floor(Date.now() / 1000) - 3600, // 1시간 전
-        })
-      );
-      localStorage.setItem('authToken', expiredToken);
+  test('세션 만료 처리', async ({ page, context }) => {
+    // 만료된 토큰으로 새로운 context 설정
+    await context.addInitScript(() => {
+      const expiredTokens = {
+        state: {
+          accessToken: 'expired-token',
+          refreshToken: 'expired-token',
+        },
+        version: 0,
+      };
+      localStorage.setItem('token-storage', JSON.stringify(expiredTokens));
     });
 
-    await page.goto('/export', { waitUntil: 'networkidle' });
+    // refresh API를 실패로 모킹
+    await page.route('**/api/v1/auth/refresh', (route) => {
+      route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Unauthorized' }),
+      });
+    });
 
-    // 세션 만료 메시지 또는 로그인 페이지로 리다이렉트
+    await page.goto('/household', { waitUntil: 'networkidle' });
+
+    // 세션 만료 시 로그인 페이지로 리다이렉트
     await expect(page).toHaveURL(/\/login|\/auth/);
   });
 });

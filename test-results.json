@@ -11,7 +11,7 @@
     "grepInvert": null,
     "maxFailures": 0,
     "metadata": {
-      "actualWorkers": 1
+      "actualWorkers": 6
     },
     "preserveOutput": "always",
     "projects": [
@@ -20,7 +20,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 6
         },
         "id": "chromium",
         "name": "chromium",
@@ -36,7 +36,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 6
         },
         "id": "firefox",
         "name": "firefox",
@@ -52,7 +52,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 6
         },
         "id": "webkit",
         "name": "webkit",
@@ -68,7 +68,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 6
         },
         "id": "Mobile Chrome",
         "name": "Mobile Chrome",
@@ -84,7 +84,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 1
+          "actualWorkers": 6
         },
         "id": "Mobile Safari",
         "name": "Mobile Safari",
@@ -143,7 +143,7 @@
         {
           "title": "공통 / 오류 대응",
           "file": "common-error-handling.spec.ts",
-          "line": 3,
+          "line": 4,
           "column": 6,
           "specs": [
             {
@@ -159,10 +159,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 2,
                       "parallelIndex": 0,
                       "status": "timedOut",
-                      "duration": 30525,
+                      "duration": 31439,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -174,16 +174,16 @@
                         {
                           "location": {
                             "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
-                            "column": 57,
-                            "line": 23
+                            "column": 16,
+                            "line": 11
                           },
-                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"저장\")').first()\u001b[22m\n\n\n\u001b[0m \u001b[90m 21 |\u001b[39m\n \u001b[90m 22 |\u001b[39m     \u001b[90m// 필수 입력 없이 저장 시도\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"저장\")'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 24 |\u001b[39m\n \u001b[90m 25 |\u001b[39m     \u001b[90m// 에러 메시지 확인\u001b[39m\n \u001b[90m 26 |\u001b[39m     \u001b[36mconst\u001b[39m errorMessage \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[role=\"alert\"]'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:23:57\u001b[22m"
+                          "message": "Error: page.goto: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/record\", waiting until \"networkidle\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  9 |\u001b[39m\n \u001b[90m 10 |\u001b[39m   test(\u001b[32m'필수 입력 누락 시 에러 메시지 표시'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/record'\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'networkidle'\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 12 |\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[90m// 필수 입력 없이 저장 시도\u001b[39m\n \u001b[90m 14 |\u001b[39m     \u001b[36mconst\u001b[39m saveButton \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"저장\")'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:11:16\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-05-13T00:16:34.440Z",
+                      "startTime": "2026-05-14T05:10:50.938Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -214,7 +214,1859 @@
               ],
               "id": "b9cd372a0fb4c696b6e6-44d5cf6def6ac7a0521d",
               "file": "common-error-handling.spec.ts",
-              "line": 18,
+              "line": 10,
+              "column": 7
+            },
+            {
+              "title": "중복 클릭 방지 - 저장 버튼 중복 클릭",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 31331,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                            "column": 16,
+                            "line": 24
+                          },
+                          "message": "Error: page.goto: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/record\", waiting until \"networkidle\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 22 |\u001b[39m\n \u001b[90m 23 |\u001b[39m   test(\u001b[32m'중복 클릭 방지 - 저장 버튼 중복 클릭'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 24 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/record'\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'networkidle'\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 25 |\u001b[39m\n \u001b[90m 26 |\u001b[39m     \u001b[90m// 필수 필드 채우기\u001b[39m\n \u001b[90m 27 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'input[name=\"amount\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'10000'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:24:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:10:50.928Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-중복-클릭-방지---저장-버튼-중복-클릭-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-중복-클릭-방지---저장-버튼-중복-클릭-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-중복-클릭-방지---저장-버튼-중복-클릭-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-중복-클릭-방지---저장-버튼-중복-클릭-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9cd372a0fb4c696b6e6-c9efe68ad2a2d8cd0579",
+              "file": "common-error-handling.spec.ts",
+              "line": 23,
+              "column": 7
+            },
+            {
+              "title": "네트워크 오류 발생 시 재시도 옵션 제공",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 31346,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                            "column": 16,
+                            "line": 44
+                          },
+                          "message": "Error: page.goto: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/record\", waiting until \"networkidle\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m   test(\u001b[32m'네트워크 오류 발생 시 재시도 옵션 제공'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page\u001b[33m,\u001b[39m context }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 44 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/record'\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'networkidle'\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 45 |\u001b[39m\n \u001b[90m 46 |\u001b[39m     \u001b[90m// 네트워크 오류 시뮬레이션\u001b[39m\n \u001b[90m 47 |\u001b[39m     \u001b[36mawait\u001b[39m context\u001b[33m.\u001b[39msetOffline(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:44:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:10:50.908Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-네트워크-오류-발생-시-재시도-옵션-제공-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-네트워크-오류-발생-시-재시도-옵션-제공-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-네트워크-오류-발생-시-재시도-옵션-제공-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-네트워크-오류-발생-시-재시도-옵션-제공-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9cd372a0fb4c696b6e6-8d35a97552f385fa250a",
+              "file": "common-error-handling.spec.ts",
+              "line": 43,
+              "column": 7
+            },
+            {
+              "title": "빈 상태(No Data) 표시",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 6794,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=/아직|없어요|기록/')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=/아직|없어요|기록/')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=/아직|없어요|기록/')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=/아직|없어요|기록/')\u001b[22m\n\n    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:75:30",
+                        "location": {
+                          "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                          "column": 30,
+                          "line": 75
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 73 |\u001b[39m     \u001b[90m// 빈 상태 메시지 확인\u001b[39m\n \u001b[90m 74 |\u001b[39m     \u001b[36mconst\u001b[39m emptyState \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'text=/아직|없어요|기록/'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 75 |\u001b[39m     \u001b[36mawait\u001b[39m expect(emptyState)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 76 |\u001b[39m\n \u001b[90m 77 |\u001b[39m     \u001b[90m// 기록 추가 버튼 확인\u001b[39m\n \u001b[90m 78 |\u001b[39m     \u001b[36mconst\u001b[39m addButton \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"기록하러\")'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                            "column": 30,
+                            "line": 75
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=/아직|없어요|기록/')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=/아직|없어요|기록/')\u001b[22m\n\n\n\u001b[0m \u001b[90m 73 |\u001b[39m     \u001b[90m// 빈 상태 메시지 확인\u001b[39m\n \u001b[90m 74 |\u001b[39m     \u001b[36mconst\u001b[39m emptyState \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'text=/아직|없어요|기록/'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 75 |\u001b[39m     \u001b[36mawait\u001b[39m expect(emptyState)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 76 |\u001b[39m\n \u001b[90m 77 |\u001b[39m     \u001b[90m// 기록 추가 버튼 확인\u001b[39m\n \u001b[90m 78 |\u001b[39m     \u001b[36mconst\u001b[39m addButton \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"기록하러\")'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:75:30\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:10:50.928Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-빈-상태-No-Data-표시-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-빈-상태-No-Data-표시-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-빈-상태-No-Data-표시-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-빈-상태-No-Data-표시-chromium/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                        "column": 30,
+                        "line": 75
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9cd372a0fb4c696b6e6-9e971a31766a2942c20f",
+              "file": "common-error-handling.spec.ts",
+              "line": 66,
+              "column": 7
+            },
+            {
+              "title": "로딩 상태 표시",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 1750,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[role=\"status\"], .spinner, .loading')\nExpected: visible\nTimeout: 1000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 1000ms\u001b[22m\n\u001b[2m  - waiting for locator('[role=\"status\"], .spinner, .loading')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[role=\"status\"], .spinner, .loading')\nExpected: visible\nTimeout: 1000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 1000ms\u001b[22m\n\u001b[2m  - waiting for locator('[role=\"status\"], .spinner, .loading')\u001b[22m\n\n    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:92:26",
+                        "location": {
+                          "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                          "column": 26,
+                          "line": 92
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 90 |\u001b[39m     \u001b[90m// 로딩 표시 확인\u001b[39m\n \u001b[90m 91 |\u001b[39m     \u001b[36mconst\u001b[39m loader \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[role=\"status\"], .spinner, .loading'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 92 |\u001b[39m     \u001b[36mawait\u001b[39m expect(loader)\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m1000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 93 |\u001b[39m\n \u001b[90m 94 |\u001b[39m     \u001b[90m// 로딩 완료 대기\u001b[39m\n \u001b[90m 95 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                            "column": 26,
+                            "line": 92
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[role=\"status\"], .spinner, .loading')\nExpected: visible\nTimeout: 1000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 1000ms\u001b[22m\n\u001b[2m  - waiting for locator('[role=\"status\"], .spinner, .loading')\u001b[22m\n\n\n\u001b[0m \u001b[90m 90 |\u001b[39m     \u001b[90m// 로딩 표시 확인\u001b[39m\n \u001b[90m 91 |\u001b[39m     \u001b[36mconst\u001b[39m loader \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[role=\"status\"], .spinner, .loading'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 92 |\u001b[39m     \u001b[36mawait\u001b[39m expect(loader)\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m1000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 93 |\u001b[39m\n \u001b[90m 94 |\u001b[39m     \u001b[90m// 로딩 완료 대기\u001b[39m\n \u001b[90m 95 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:92:26\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:10:50.915Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-로딩-상태-표시-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-로딩-상태-표시-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-로딩-상태-표시-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-로딩-상태-표시-chromium/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                        "column": 26,
+                        "line": 92
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9cd372a0fb4c696b6e6-3c595602a73f2bc7f375",
+              "file": "common-error-handling.spec.ts",
+              "line": 82,
+              "column": 7
+            },
+            {
+              "title": "권한 / 로그인 정책 점검 - 로그아웃 상태에서 접근 차단",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 6849,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/login|\\/auth/\u001b[39m\nReceived string:  \u001b[31m\"http://localhost:3000/household\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    14 × unexpected value \"http://localhost:3000/household\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/login|\\/auth/\u001b[39m\nReceived string:  \u001b[31m\"http://localhost:3000/household\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    14 × unexpected value \"http://localhost:3000/household\"\u001b[22m\n\n    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:103:27",
+                        "location": {
+                          "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                          "column": 27,
+                          "line": 103
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 101 |\u001b[39m\n \u001b[90m 102 |\u001b[39m     \u001b[36mawait\u001b[39m newPage\u001b[33m.\u001b[39mgoto(\u001b[32m'/household'\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'networkidle'\u001b[39m })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 103 |\u001b[39m     \u001b[36mawait\u001b[39m expect(newPage)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/\\/login|\\/auth/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 104 |\u001b[39m\n \u001b[90m 105 |\u001b[39m     \u001b[36mawait\u001b[39m newPage\u001b[33m.\u001b[39mclose()\u001b[33m;\u001b[39m\n \u001b[90m 106 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                            "column": 27,
+                            "line": 103
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/login|\\/auth/\u001b[39m\nReceived string:  \u001b[31m\"http://localhost:3000/household\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    14 × unexpected value \"http://localhost:3000/household\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 101 |\u001b[39m\n \u001b[90m 102 |\u001b[39m     \u001b[36mawait\u001b[39m newPage\u001b[33m.\u001b[39mgoto(\u001b[32m'/household'\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'networkidle'\u001b[39m })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 103 |\u001b[39m     \u001b[36mawait\u001b[39m expect(newPage)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/\\/login|\\/auth/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 104 |\u001b[39m\n \u001b[90m 105 |\u001b[39m     \u001b[36mawait\u001b[39m newPage\u001b[33m.\u001b[39mclose()\u001b[33m;\u001b[39m\n \u001b[90m 106 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:103:27\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:10:50.924Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오-94d20-로그인-정책-점검---로그아웃-상태에서-접근-차단-chromium/test-failed-2.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오-94d20-로그인-정책-점검---로그아웃-상태에서-접근-차단-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오-94d20-로그인-정책-점검---로그아웃-상태에서-접근-차단-chromium/video.webm"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오-94d20-로그인-정책-점검---로그아웃-상태에서-접근-차단-chromium/video-1.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오-94d20-로그인-정책-점검---로그아웃-상태에서-접근-차단-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오-94d20-로그인-정책-점검---로그아웃-상태에서-접근-차단-chromium/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                        "column": 27,
+                        "line": 103
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9cd372a0fb4c696b6e6-dc13c4debe22d01af3df",
+              "file": "common-error-handling.spec.ts",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "세션 만료 처리",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 6426,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/login|\\/auth/\u001b[39m\nReceived string:  \u001b[31m\"http://localhost:3000/household\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    14 × unexpected value \"http://localhost:3000/household\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/login|\\/auth/\u001b[39m\nReceived string:  \u001b[31m\"http://localhost:3000/household\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    14 × unexpected value \"http://localhost:3000/household\"\u001b[22m\n\n    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:133:24",
+                        "location": {
+                          "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                          "column": 24,
+                          "line": 133
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 131 |\u001b[39m\n \u001b[90m 132 |\u001b[39m     \u001b[90m// 세션 만료 시 로그인 페이지로 리다이렉트\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 133 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/\\/login|\\/auth/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 134 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 135 |\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 136 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                            "column": 24,
+                            "line": 133
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/login|\\/auth/\u001b[39m\nReceived string:  \u001b[31m\"http://localhost:3000/household\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    14 × unexpected value \"http://localhost:3000/household\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 131 |\u001b[39m\n \u001b[90m 132 |\u001b[39m     \u001b[90m// 세션 만료 시 로그인 페이지로 리다이렉트\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 133 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/\\/login|\\/auth/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 134 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 135 |\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 136 |\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts:133:24\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:10:53.530Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-세션-만료-처리-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-세션-만료-처리-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-세션-만료-처리-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/common-error-handling-공통-오류-대응-세션-만료-처리-chromium/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/common-error-handling.spec.ts",
+                        "column": 24,
+                        "line": 133
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9cd372a0fb4c696b6e6-71a705148000eed2c18d",
+              "file": "common-error-handling.spec.ts",
+              "line": 108,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "daily-expense-inquiry.spec.ts",
+      "file": "daily-expense-inquiry.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "일별 지출 내역 조회",
+          "file": "daily-expense-inquiry.spec.ts",
+          "line": 74,
+          "column": 6,
+          "specs": [
+            {
+              "title": "특정 날짜의 소비 내역과 총 지출 금액 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1142,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:10:58.606Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-특정-날짜의-소비-내역과-총-지출-금액-확인-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "82eae1b667a60e1906aa-7d2fb3c16ae51e32ef0e",
+              "file": "daily-expense-inquiry.spec.ts",
+              "line": 109,
+              "column": 7
+            },
+            {
+              "title": "지출 내역 2건 이상 조회",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 1045,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:10:58.690Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-지출-내역-2건-이상-조회-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "82eae1b667a60e1906aa-b3b846f95028d8caf1fc",
+              "file": "daily-expense-inquiry.spec.ts",
+              "line": 129,
+              "column": 7
+            },
+            {
+              "title": "날짜 이동으로 다른 날짜의 지출 조회",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 2342,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:00.228Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-날짜-이동으로-다른-날짜의-지출-조회-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "82eae1b667a60e1906aa-53eec51a0672912d0475",
+              "file": "daily-expense-inquiry.spec.ts",
+              "line": 139,
+              "column": 7
+            },
+            {
+              "title": "카테고리별 지출 내역 필터링",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 1572,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:00.232Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-카테고리별-지출-내역-필터링-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "82eae1b667a60e1906aa-f9a0ad18a3c38aa7901c",
+              "file": "daily-expense-inquiry.spec.ts",
+              "line": 160,
+              "column": 7
+            },
+            {
+              "title": "지출 내역 정렬 기능",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 1389,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:00.845Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-지출-내역-정렬-기능-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "82eae1b667a60e1906aa-b4b65f4128594d6b56dd",
+              "file": "daily-expense-inquiry.spec.ts",
+              "line": 176,
+              "column": 7
+            },
+            {
+              "title": "개별 지출 항목 상세 조회",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 5773,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/expense\\/detail|\\/expense\\/\\d+/\u001b[39m\nReceived string:  \u001b[31m\"http://localhost:3000/login\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    4 × unexpected value \"http://localhost:3000/export\"\u001b[22m\n\u001b[2m    10 × unexpected value \"http://localhost:3000/login\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/expense\\/detail|\\/expense\\/\\d+/\u001b[39m\nReceived string:  \u001b[31m\"http://localhost:3000/login\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    4 × unexpected value \"http://localhost:3000/export\"\u001b[22m\n\u001b[2m    10 × unexpected value \"http://localhost:3000/login\"\u001b[22m\n\n    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/daily-expense-inquiry.spec.ts:219:24",
+                        "location": {
+                          "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/daily-expense-inquiry.spec.ts",
+                          "column": 24,
+                          "line": 219
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 217 |\u001b[39m\n \u001b[90m 218 |\u001b[39m     \u001b[90m// 상세 페이지로 이동 확인\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 219 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/\\/expense\\/detail|\\/expense\\/\\d+/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 220 |\u001b[39m\n \u001b[90m 221 |\u001b[39m     \u001b[90m// 상세 정보 확인\u001b[39m\n \u001b[90m 222 |\u001b[39m     \u001b[36mawait\u001b[39m expect(\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/daily-expense-inquiry.spec.ts",
+                            "column": 24,
+                            "line": 219
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/\\/expense\\/detail|\\/expense\\/\\d+/\u001b[39m\nReceived string:  \u001b[31m\"http://localhost:3000/login\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    4 × unexpected value \"http://localhost:3000/export\"\u001b[22m\n\u001b[2m    10 × unexpected value \"http://localhost:3000/login\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 217 |\u001b[39m\n \u001b[90m 218 |\u001b[39m     \u001b[90m// 상세 페이지로 이동 확인\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 219 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/\\/expense\\/detail|\\/expense\\/\\d+/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 220 |\u001b[39m\n \u001b[90m 221 |\u001b[39m     \u001b[90m// 상세 정보 확인\u001b[39m\n \u001b[90m 222 |\u001b[39m     \u001b[36mawait\u001b[39m expect(\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/daily-expense-inquiry.spec.ts:219:24\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:02.307Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-개별-지출-항목-상세-조회-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-개별-지출-항목-상세-조회-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-개별-지출-항목-상세-조회-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/daily-expense-inquiry-일별-지출-내역-조회-개별-지출-항목-상세-조회-chromium/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/daily-expense-inquiry.spec.ts",
+                        "column": 24,
+                        "line": 219
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "82eae1b667a60e1906aa-5771d0733bece50ab08d",
+              "file": "daily-expense-inquiry.spec.ts",
+              "line": 213,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "expense-record-registration.spec.ts",
+      "file": "expense-record-registration.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "지출 기록 등록",
+          "file": "expense-record-registration.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "기본 지출 정보 입력 및 저장",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 30257,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts",
+                            "column": 16,
+                            "line": 16
+                          },
+                          "message": "Error: page.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button[aria-label=\"새로운 기록 추가\"], button:has-text(\"새로운\"), button:has-text(\"\\\\+\")')\u001b[22m\n\n\n\u001b[0m \u001b[90m 14 |\u001b[39m   test(\u001b[32m'기본 지출 정보 입력 및 저장'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 15 |\u001b[39m     \u001b[90m// 새 기록 추가 버튼 클릭\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 16 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'button[aria-label=\"새로운 기록 추가\"], button:has-text(\"새로운\"), button:has-text(\"\\\\+\")'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 17 |\u001b[39m\n \u001b[90m 18 |\u001b[39m     \u001b[90m// 지출 페이지 확인\u001b[39m\n \u001b[90m 19 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/\\/expense|\\/record/\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts:16:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:02.696Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-기본-지출-정보-입력-및-저장-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-기본-지출-정보-입력-및-저장-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-기본-지출-정보-입력-및-저장-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-기본-지출-정보-입력-및-저장-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c07fb193aca127ed8845-4bcab313e308b01c3520",
+              "file": "expense-record-registration.spec.ts",
+              "line": 14,
+              "column": 7
+            },
+            {
+              "title": "날짜 선택 바텀시트를 통한 지출 날짜 변경",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 30225,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts",
+                            "column": 16,
+                            "line": 40
+                          },
+                          "message": "Error: page.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[name=\"amount\"], input[placeholder*=\"금액\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 38 |\u001b[39m\n \u001b[90m 39 |\u001b[39m     \u001b[90m// 필수 정보 입력\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'input[name=\"amount\"], input[placeholder*=\"금액\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'5000'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m\n \u001b[90m 42 |\u001b[39m     \u001b[90m// 날짜 선택 버튼 클릭\u001b[39m\n \u001b[90m 43 |\u001b[39m     \u001b[36mconst\u001b[39m dateButton \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"날짜\"), [data-testid=\"date-selector\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts:40:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:02.747Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-날짜-선택-바텀시트를-통한-지출-날짜-변경-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-날짜-선택-바텀시트를-통한-지출-날짜-변경-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-날짜-선택-바텀시트를-통한-지출-날짜-변경-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-날짜-선택-바텀시트를-통한-지출-날짜-변경-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c07fb193aca127ed8845-9299854ef6299df6f2de",
+              "file": "expense-record-registration.spec.ts",
+              "line": 36,
+              "column": 7
+            },
+            {
+              "title": "카테고리 선택 바텀시트",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 5,
+                      "status": "timedOut",
+                      "duration": 30281,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts",
+                            "column": 26,
+                            "line": 67
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"카테고리\")').first()\u001b[22m\n\n\n\u001b[0m \u001b[90m 65 |\u001b[39m     \u001b[90m// 카테고리 선택 버튼 클릭\u001b[39m\n \u001b[90m 66 |\u001b[39m     \u001b[36mconst\u001b[39m categoryButton \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"카테고리\")'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 67 |\u001b[39m     \u001b[36mawait\u001b[39m categoryButton\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 68 |\u001b[39m\n \u001b[90m 69 |\u001b[39m     \u001b[90m// 바텀시트 확인\u001b[39m\n \u001b[90m 70 |\u001b[39m     \u001b[36mconst\u001b[39m bottomSheet \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[role=\"dialog\"], .bottom-sheet'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts:67:26\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:08.903Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-카테고리-선택-바텀시트-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-카테고리-선택-바텀시트-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-카테고리-선택-바텀시트-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-카테고리-선택-바텀시트-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c07fb193aca127ed8845-586dfd7c652305d5ea76",
+              "file": "expense-record-registration.spec.ts",
+              "line": 62,
+              "column": 7
+            },
+            {
+              "title": "감정 태그 선택",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 30520,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts",
+                            "column": 16,
+                            "line": 87
+                          },
+                          "message": "Error: page.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[name=\"amount\"], input[placeholder*=\"금액\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 85 |\u001b[39m\n \u001b[90m 86 |\u001b[39m     \u001b[90m// 금액 입력\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 87 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'input[name=\"amount\"], input[placeholder*=\"금액\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'15000'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 88 |\u001b[39m\n \u001b[90m 89 |\u001b[39m     \u001b[90m// 감정 선택 버튼 클릭\u001b[39m\n \u001b[90m 90 |\u001b[39m     \u001b[36mconst\u001b[39m emotionButton \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"감정\")'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts:87:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:23.709Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-감정-태그-선택-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-감정-태그-선택-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-감정-태그-선택-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-감정-태그-선택-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c07fb193aca127ed8845-f603218901247b4f0f81",
+              "file": "expense-record-registration.spec.ts",
+              "line": 83,
+              "column": 7
+            },
+            {
+              "title": "상황 태그 및 메모 입력",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 30500,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts",
+                            "column": 16,
+                            "line": 109
+                          },
+                          "message": "Error: page.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[name=\"amount\"], input[placeholder*=\"금액\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 107 |\u001b[39m\n \u001b[90m 108 |\u001b[39m     \u001b[90m// 필수 정보 입력\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 109 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'input[name=\"amount\"], input[placeholder*=\"금액\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'8000'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 110 |\u001b[39m\n \u001b[90m 111 |\u001b[39m     \u001b[90m// 메모 입력\u001b[39m\n \u001b[90m 112 |\u001b[39m     \u001b[36mconst\u001b[39m memoInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'textarea[name=\"memo\"], input[placeholder*=\"메모\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts:109:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:23.769Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-상황-태그-및-메모-입력-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-상황-태그-및-메모-입력-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-상황-태그-및-메모-입력-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-상황-태그-및-메모-입력-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c07fb193aca127ed8845-03174635c9ff04caa143",
+              "file": "expense-record-registration.spec.ts",
+              "line": 105,
+              "column": 7
+            },
+            {
+              "title": "결제 수단 선택 - 카드, 현금, 계좌, 기타",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1540,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:24.217Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-결제-수단-선택---카드-현금-계좌-기타-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c07fb193aca127ed8845-43a575ad0fa9059b58f2",
+              "file": "expense-record-registration.spec.ts",
+              "line": 124,
+              "column": 7
+            },
+            {
+              "title": "지출 기록 저장 후 목록에 반영",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30647,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts",
+                            "column": 16,
+                            "line": 157
+                          },
+                          "message": "Error: page.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button[aria-label=\"새로운 기록 추가\"], button:has-text(\"\\\\+\")')\u001b[22m\n\n\n\u001b[0m \u001b[90m 155 |\u001b[39m\n \u001b[90m 156 |\u001b[39m     \u001b[90m// 새 지출 기록 추가\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 157 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'button[aria-label=\"새로운 기록 추가\"], button:has-text(\"\\\\+\")'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 158 |\u001b[39m\n \u001b[90m 159 |\u001b[39m     \u001b[90m// 정보 입력\u001b[39m\n \u001b[90m 160 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'input[name=\"amount\"], input[placeholder*=\"금액\"]'\u001b[39m\u001b[33m,\u001b[39m uniqueAmount\u001b[33m.\u001b[39mtoString())\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts:157:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:26.024Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-지출-기록-저장-후-목록에-반영-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-지출-기록-저장-후-목록에-반영-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-지출-기록-저장-후-목록에-반영-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-지출-기록-저장-후-목록에-반영-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c07fb193aca127ed8845-fb0b1008feffe85486ee",
+              "file": "expense-record-registration.spec.ts",
+              "line": 152,
+              "column": 7
+            },
+            {
+              "title": "선택적 필드 없이 최소 필수 정보만으로 저장",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 30649,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts",
+                            "column": 16,
+                            "line": 177
+                          },
+                          "message": "Error: page.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[name=\"amount\"], input[placeholder*=\"금액\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 175 |\u001b[39m\n \u001b[90m 176 |\u001b[39m     \u001b[90m// 필수 필드만 입력 (금액, 카테고리)\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 177 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'input[name=\"amount\"], input[placeholder*=\"금액\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'3000'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 178 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'button:has-text(\"카테고리\")'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 179 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'button:has-text(\"식비\")'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 180 |\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts:177:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:33.451Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registratio-f6fb7-등록-선택적-필드-없이-최소-필수-정보만으로-저장-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registratio-f6fb7-등록-선택적-필드-없이-최소-필수-정보만으로-저장-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registratio-f6fb7-등록-선택적-필드-없이-최소-필수-정보만으로-저장-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registratio-f6fb7-등록-선택적-필드-없이-최소-필수-정보만으로-저장-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c07fb193aca127ed8845-7a03ed89f46464a8c70e",
+              "file": "expense-record-registration.spec.ts",
+              "line": 173,
+              "column": 7
+            },
+            {
+              "title": "바텀시트 외부 클릭으로 닫기",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 30650,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts",
+                            "column": 16,
+                            "line": 193
+                          },
+                          "message": "Error: page.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"카테고리\")')\u001b[22m\n\n\n\u001b[0m \u001b[90m 191 |\u001b[39m\n \u001b[90m 192 |\u001b[39m     \u001b[90m// 바텀시트 열기\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 193 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'button:has-text(\"카테고리\")'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 194 |\u001b[39m\n \u001b[90m 195 |\u001b[39m     \u001b[36mconst\u001b[39m bottomSheet \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[role=\"dialog\"], .bottom-sheet'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n \u001b[90m 196 |\u001b[39m     \u001b[36mawait\u001b[39m expect(bottomSheet)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/expense-record-registration.spec.ts:193:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:33.459Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-바텀시트-외부-클릭으로-닫기-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-바텀시트-외부-클릭으로-닫기-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-바텀시트-외부-클릭으로-닫기-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/expense-record-registration-지출-기록-등록-바텀시트-외부-클릭으로-닫기-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c07fb193aca127ed8845-b52c74a34f65ea0cd82f",
+              "file": "expense-record-registration.spec.ts",
+              "line": 189,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "monthly-report-and-review.spec.ts",
+      "file": "monthly-report-and-review.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "월별 소비 리포트 조회",
+          "file": "monthly-report-and-review.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "월별 소비 흐름을 카테고리 기준으로 확인",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 608,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts:30:19",
+                        "location": {
+                          "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts",
+                          "column": 19,
+                          "line": 30
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 28 |\u001b[39m     \u001b[36mconst\u001b[39m categoryItems \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"category-item\"]'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 29 |\u001b[39m     \u001b[36mconst\u001b[39m count \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m categoryItems\u001b[33m.\u001b[39mcount()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 30 |\u001b[39m     expect(count)\u001b[33m.\u001b[39mtoBeGreaterThan(\u001b[35m0\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 31 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 32 |\u001b[39m\n \u001b[90m 33 |\u001b[39m   test(\u001b[32m'월별 총 지출 확인'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts",
+                            "column": 19,
+                            "line": 30
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n\n\u001b[0m \u001b[90m 28 |\u001b[39m     \u001b[36mconst\u001b[39m categoryItems \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"category-item\"]'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 29 |\u001b[39m     \u001b[36mconst\u001b[39m count \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m categoryItems\u001b[33m.\u001b[39mcount()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 30 |\u001b[39m     expect(count)\u001b[33m.\u001b[39mtoBeGreaterThan(\u001b[35m0\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 31 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 32 |\u001b[39m\n \u001b[90m 33 |\u001b[39m   test(\u001b[32m'월별 총 지출 확인'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts:30:19\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:39.859Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review--72766-트-조회-월별-소비-흐름을-카테고리-기준으로-확인-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review--72766-트-조회-월별-소비-흐름을-카테고리-기준으로-확인-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review--72766-트-조회-월별-소비-흐름을-카테고리-기준으로-확인-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review--72766-트-조회-월별-소비-흐름을-카테고리-기준으로-확인-chromium/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts",
+                        "column": 19,
+                        "line": 30
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ecdd035ac66e27034fdd-0e34f4307fa65f286b8d",
+              "file": "monthly-report-and-review.spec.ts",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "월별 총 지출 확인",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 542,
+                      "error": {
+                        "message": "Error: locator.isVisible: Unexpected token \"=\" while parsing css selector \"[data-testid=\"total-expense\"], text=/총 지출|전체 지출/\". Did you mean to CSS.escape it?\nCall log:\n\u001b[2m    - checking visibility of [data-testid=\"total-expense\"], text=/총 지출|전체 지출/ >> nth=0\u001b[22m\n",
+                        "stack": "Error: locator.isVisible: Unexpected token \"=\" while parsing css selector \"[data-testid=\"total-expense\"], text=/총 지출|전체 지출/\". Did you mean to CSS.escape it?\nCall log:\n\u001b[2m    - checking visibility of [data-testid=\"total-expense\"], text=/총 지출|전체 지출/ >> nth=0\u001b[22m\n\n    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts:42:28",
+                        "location": {
+                          "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts",
+                          "column": 28,
+                          "line": 42
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 40 |\u001b[39m     \u001b[90m// 총 지출액 확인\u001b[39m\n \u001b[90m 41 |\u001b[39m     \u001b[36mconst\u001b[39m totalExpense \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"total-expense\"], text=/총 지출|전체 지출/'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 42 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[36mawait\u001b[39m totalExpense\u001b[33m.\u001b[39misVisible()) {\n \u001b[90m    |\u001b[39m                            \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 43 |\u001b[39m       \u001b[36mconst\u001b[39m amount \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m totalExpense\u001b[33m.\u001b[39mtextContent()\u001b[33m;\u001b[39m\n \u001b[90m 44 |\u001b[39m       expect(amount)\u001b[33m.\u001b[39mtoMatch(\u001b[35m/\\d+,?\\d*원/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 45 |\u001b[39m     }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts",
+                            "column": 28,
+                            "line": 42
+                          },
+                          "message": "Error: locator.isVisible: Unexpected token \"=\" while parsing css selector \"[data-testid=\"total-expense\"], text=/총 지출|전체 지출/\". Did you mean to CSS.escape it?\nCall log:\n\u001b[2m    - checking visibility of [data-testid=\"total-expense\"], text=/총 지출|전체 지출/ >> nth=0\u001b[22m\n\n\n\u001b[0m \u001b[90m 40 |\u001b[39m     \u001b[90m// 총 지출액 확인\u001b[39m\n \u001b[90m 41 |\u001b[39m     \u001b[36mconst\u001b[39m totalExpense \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"total-expense\"], text=/총 지출|전체 지출/'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 42 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[36mawait\u001b[39m totalExpense\u001b[33m.\u001b[39misVisible()) {\n \u001b[90m    |\u001b[39m                            \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 43 |\u001b[39m       \u001b[36mconst\u001b[39m amount \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m totalExpense\u001b[33m.\u001b[39mtextContent()\u001b[33m;\u001b[39m\n \u001b[90m 44 |\u001b[39m       expect(amount)\u001b[33m.\u001b[39mtoMatch(\u001b[35m/\\d+,?\\d*원/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 45 |\u001b[39m     }\u001b[0m\n\u001b[2m    at /Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts:42:28\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:40.957Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review-월별-소비-리포트-조회-월별-총-지출-확인-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review-월별-소비-리포트-조회-월별-총-지출-확인-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review-월별-소비-리포트-조회-월별-총-지출-확인-chromium/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review-월별-소비-리포트-조회-월별-총-지출-확인-chromium/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/tests/e2e/monthly-report-and-review.spec.ts",
+                        "column": 28,
+                        "line": 42
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ecdd035ac66e27034fdd-4071e8a1fc1b7c4c192b",
+              "file": "monthly-report-and-review.spec.ts",
+              "line": 33,
+              "column": 7
+            },
+            {
+              "title": "감정 기준 월별 소비 흐름 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 533,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:42.000Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review-월별-소비-리포트-조회-감정-기준-월별-소비-흐름-확인-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ecdd035ac66e27034fdd-d996d40e4b052a6ba6f5",
+              "file": "monthly-report-and-review.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "월 선택으로 다른 월 리포트 조회",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 500,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:42.749Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review-월별-소비-리포트-조회-월-선택으로-다른-월-리포트-조회-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ecdd035ac66e27034fdd-24e7fc4b0cfffbc96606",
+              "file": "monthly-report-and-review.spec.ts",
+              "line": 71,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "회고 설문 및 결과 제공",
+          "file": "monthly-report-and-review.spec.ts",
+          "line": 93,
+          "column": 6,
+          "specs": [
+            {
+              "title": "소비 회고 시작 - 하루 소비 요약 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 473,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:43.364Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review--c7dff-과-제공-소비-회고-시작---하루-소비-요약-확인-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ecdd035ac66e27034fdd-1b364e44727c7435adb5",
+              "file": "monthly-report-and-review.spec.ts",
+              "line": 103,
+              "column": 7
+            },
+            {
+              "title": "회고 설문 항목 응답 - 만족도 및 내일 소비 의도 선택",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 489,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:43.948Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review--6fec6-문-항목-응답---만족도-및-내일-소비-의도-선택-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ecdd035ac66e27034fdd-63538f6f4bb62634347b",
+              "file": "monthly-report-and-review.spec.ts",
+              "line": 128,
+              "column": 7
+            },
+            {
+              "title": "회고 설문 제출 후 결과 피드백 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 465,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:44.550Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review-회고-설문-및-결과-제공-회고-설문-제출-후-결과-피드백-확인-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ecdd035ac66e27034fdd-616d69e036cb2458ad2b",
+              "file": "monthly-report-and-review.spec.ts",
+              "line": 161,
+              "column": 7
+            },
+            {
+              "title": "회고 설문 결과 유형별 피드백 제공",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 476,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:45.123Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review-회고-설문-및-결과-제공-회고-설문-결과-유형별-피드백-제공-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ecdd035ac66e27034fdd-b395239532bfc02eeac4",
+              "file": "monthly-report-and-review.spec.ts",
+              "line": 207,
+              "column": 7
+            },
+            {
+              "title": "소비 데이터, 상황/감정 태그, 설문 응답 조합한 결과 제공",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 481,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-14T05:11:45.705Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/sejoongkim/Desktop/private-project/Team_Projects/feel-log-front/test-results/monthly-report-and-review--b2057-이터-상황-감정-태그-설문-응답-조합한-결과-제공-chromium/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ecdd035ac66e27034fdd-4cb32f85746c2df2c5c0",
+              "file": "monthly-report-and-review.spec.ts",
+              "line": 225,
               "column": 7
             }
           ]
@@ -224,11 +2076,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-05-13T00:16:33.964Z",
-    "duration": 31291.687000000005,
-    "expected": 0,
+    "startTime": "2026-05-14T05:10:50.349Z",
+    "duration": 74102.571,
+    "expected": 13,
     "skipped": 0,
-    "unexpected": 1,
+    "unexpected": 18,
     "flaky": 0
   }
 }
