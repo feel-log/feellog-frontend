@@ -53,11 +53,11 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
                 }
                 {
                     currentIndex === 1 &&
-                    <TextBallon text={"일간, 주간, 월간 지출을 확인할 수 있어요"} type={"TOP"} place={70} width={253} />
+                    <TextBallon text={"일간, 주간, 월간 지출을 확인할 수 있어요"} type={"TOP"} place={150} width={253} />
                 }
                 {
                     currentIndex === 2 &&
-                    <TextBallon text={"회고를 통해 오늘의 소비를 되돌아보세요"} type={"BOTTOM"} place={260} width={253} />
+                    <TextBallon text={"회고를 통해 오늘의 소비를 되돌아보세요"} type={"BOTTOM"} place={290} width={253} />
                 }
                 {
                 currentIndex! > 0 && typeof(currentIndex) === 'number' &&

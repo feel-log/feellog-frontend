@@ -39,6 +39,7 @@ export function AuthGuard({ children }: IAuthGuard) {
 
     if (!accessToken || !refreshToken) {
       clearTokens();
+      localStorage.removeItem('isDimShowed');
       router.replace('/login');
     } else if (pathname === '/login') {
       router.replace('/');
