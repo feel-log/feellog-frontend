@@ -154,6 +154,14 @@ function FooterIcon({ icon, color }: { icon: string; color: string }) {
   }
 }
 
+/**
+ * Renders the app's fixed bottom footer navigation bar with navigation items and a central add-record button.
+ *
+ * The component highlights the active item based on the current pathname and routes client-side when items are tapped.
+ * Navigation to "/record" is blocked and instead triggers the error box when the user state is loaded and the user has no `id` or a `nickname` that starts with "guest".
+ *
+ * @returns The footer's JSX element containing navigation buttons and the floating add-record action button.
+ */
 export default function Footer() {
   let router: ReturnType<typeof useRouter> | null = null;
   let pathname = '/';

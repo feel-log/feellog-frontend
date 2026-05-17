@@ -25,6 +25,13 @@ const getRandomNumberByDate = (): number => {
   return Math.abs(hash) % 4;
 };
 
+/**
+ * Renders the household box column containing a daily greeting, this-week expense summary, today's expense input, and a link to the daily retrospective; handles login gating and navigation for protected sections.
+ *
+ * @param isBoxOn - Toggles the "on" visual state for the primary boxes (used by the weekly expense box and TodayExpenseBox)
+ * @param secondBoxOn - Toggles the "on" visual state for the secondary retrospective box
+ * @returns The rendered React element for the household box wrapper
+ */
 export default function HouseHoldBoxWrapper({ isBoxOn, secondBoxOn } : { isBoxOn: boolean, secondBoxOn: boolean }) {
   const router = useRouter();
   const { getAccessToken, isLoaded } = useToken();
