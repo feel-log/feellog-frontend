@@ -3,7 +3,7 @@ import HouseHoldBoxWrapper from '@/widgets/house-hold/HouseHoldBoxWrapper';
 import { ClientOnly } from '@/shared/ui';
 import { DateDisplay } from './DateDisplay';
 
-export default function HouseHoldWrapper() {
+export default function HouseHoldWrapper({ isBoxOn, secondBoxOn } : { isBoxOn: boolean; secondBoxOn: boolean}) {
   return (
     <div className={"house__hold__wrapper relative px-4"}>
       <div className="absolute right-20 top-0">
@@ -38,7 +38,7 @@ export default function HouseHoldWrapper() {
           <DateDisplay />
         </ClientOnly>
       </h2>
-      <HouseHoldBoxWrapper />
+      <HouseHoldBoxWrapper isBoxOn={isBoxOn} secondBoxOn={secondBoxOn} />
     </div>
   );
 }

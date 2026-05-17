@@ -15,9 +15,10 @@ import ExpenseCategoryItem from './ExpenseCategoryItem';
 interface TodayExpenseBoxProps {
   emotions: any[];
   expenseCategories: any[];
+  isBoxOn: boolean;
 }
 
-export default function TodayExpenseBox({ emotions, expenseCategories }: TodayExpenseBoxProps) {
+export default function TodayExpenseBox({ emotions, expenseCategories, isBoxOn }: TodayExpenseBoxProps) {
   const router = useRouter();
   const [TODAY] = useState(() => new Date());
   const MIN_DATE = useMemo(() => {
@@ -115,7 +116,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories }: TodayEx
 
 
   return (
-    <div className="relative mb-2 w-full rounded-[12px] bg-white px-4 pt-4 pb-5.5 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)]">
+    <div className={`relative mb-2 w-full rounded-[12px] bg-white px-4 pt-4 pb-5.5 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)] ${isBoxOn ? 'z-[120] pointer-events-none': ''}`}>
       <div className="mb-5 flex items-center justify-between">
         <div className="flex flex-col">
           <span className="text-[16px] font-medium tracking-[-0.025em] text-[#73787e]">

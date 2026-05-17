@@ -8,8 +8,8 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig: NextConfig = {
   experimental: {
     staleTimes: {
-      dynamic: 0,
-      static: 0,
+      dynamic: 60,
+      static: 60,
     },
   },
   async headers() {

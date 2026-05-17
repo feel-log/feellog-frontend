@@ -7,18 +7,25 @@ export default function HouseHoldBox({
   isAnchor,
   anchor,
   className,
-  onClick
+  onClick,
+  isBoxOn,
+  secondBoxOn
 } : {
   children: React.ReactNode,
   isAnchor?: boolean,
   anchor?: string,
   className?: string,
   onClick?: () => void
+  isBoxOn?: boolean,
+  secondBoxOn?: boolean
 }) {
+  console.log(isBoxOn);
+
   return (
     <div
       className={cn(
-        'house__hold__box mb-2 relative z-5 w-full rounded-[12px] bg-white px-4 py-4 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)]'
+        'house__hold__box mb-2 relative w-full rounded-[12px] bg-white px-4 py-4 shadow-[0px_0px_8px_0px_rgba(19,39,138,0.15)]',
+        (isBoxOn || secondBoxOn) ? 'z-[120] pointer-events-none' : 'z-5'
         ,className
       )}
     >
