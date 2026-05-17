@@ -159,9 +159,9 @@ export default function ExportContent() {
       <ConfirmModal
         isOpen={deleteTargetId !== null}
         type="deleteCheck"
-        title="지출을 삭제하시겠어요?"
-        secondary="이 작업은 되돌릴 수 없습니다."
-        confirmText="삭제"
+        title="삭제하시겠어요?"
+        secondary="삭제한 항목은 되돌릴 수 없어요."
+        confirmText="확인"
         cancelText="취소"
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteTargetId(null)}
