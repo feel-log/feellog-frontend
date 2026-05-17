@@ -10,7 +10,7 @@ import { LogoutModal } from '@/features/logout/ui/LogoutModal';
 import Footer from '@/shared/ui/Footer';
 
 
-export default function MyPage() {
+function MyPageContent() {
   const { getUser } = useUser();
   const user = getUser();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -29,4 +29,8 @@ export default function MyPage() {
       <Footer />
     </AuthGuard>
   );
+}
+
+export default function MyPage() {
+  return <MyPageContent />;
 }

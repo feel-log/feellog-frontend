@@ -16,6 +16,7 @@ export function AuthGuard({ children }: IAuthGuard) {
   const router = useRouter();
   const pathname = usePathname();
   const { getAccessToken, getRefreshToken, errorBox, setErrorBox, clearTokens } = useToken();
+  const { clearUser } = useUser();
   const { mutate: refreshMutate } = useRefreshToken();
   const notificationTestCalled = useRef(false);
 
@@ -39,12 +40,13 @@ export function AuthGuard({ children }: IAuthGuard) {
 
     if (!accessToken || !refreshToken) {
       clearTokens();
+      clearUser();
       localStorage.removeItem('isDimShowed');
       router.replace('/login');
     } else if (pathname === '/login') {
       router.replace('/');
     }
-  }, [hasHydrated, accessToken, refreshToken, pathname]);
+  }, [hasHydrated, accessToken, refreshToken, pathname, clearTokens, clearUser]);
 
   // 테스트 API는 '/' 라우트에서만 한 번 호출
   useEffect(() => {
@@ -80,7 +82,7 @@ export function AuthGuard({ children }: IAuthGuard) {
 
   return (
     <>
-      <ConfirmModal type={"loginCheck"} isOpen={errorBox} title={"로그인 후 이용 가능합니다."} secondary={"로그인 하시겠습니까?"} onCancel={() => { setErrorBox(false)}} onConfirm={() => { setErrorBox(false); router.push('/login'); clearTokens(); }} />
+      <ConfirmModal type={"loginCheck"} isOpen={errorBox} title={"로그인 후 이용 가능합니다."} secondary={"로그인 하시겠습니까?"} onCancel={() => { setErrorBox(false)}} onConfirm={() => { setErrorBox(false); clearTokens(); clearUser(); localStorage.removeItem('isDimShowed'); router.push('/login'); }} />
       {children}
     </>
   )
