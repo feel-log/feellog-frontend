@@ -18,6 +18,17 @@ const HouseHoldWrapper = dynamic(() => import('@/widgets/house-hold/HouseHoldWra
   loading: () => <HouseHoldBoxSkeleton />,
 });
 
+/**
+ * Render the household home page and manage dim/box UI state.
+ *
+ * Controls whether an initial dim overlay is shown (reads/writes `localStorage:isDimShowed`
+ * and removes the `hiddens` class from `document.documentElement` when appropriate),
+ * tracks two box states used by the UI, and gates interactive content behind a
+ * full-screen loader derived from token and mount readiness hooks.
+ *
+ * @returns The page's React element tree containing the full-screen loader, dim overlay controller,
+ * header, household wrapper (receiving `isBoxOn` and `secondBoxOn`), and footer.
+ */
 function HomeContent() {
   const [isDimmed, setIsDimmed] = useState<boolean>(false);
   const [isBoxOn, setIsBoxOn] = useState<boolean>(false);

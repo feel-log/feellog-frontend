@@ -18,6 +18,17 @@ interface TodayExpenseBoxProps {
   isBoxOn: boolean;
 }
 
+/**
+ * Render a daily expense summary box with date navigation, per-day expense items, and export/login gating.
+ *
+ * Shows the total amount for the selected date, allows stepping backward/forward within allowed bounds,
+ * lists up to three expense items for the day, and provides an export action that prompts login for unauthenticated or guest users.
+ *
+ * @param emotions - Emotion groups (each with `items`) used to resolve emotion metadata for each expense's `emotionIds`
+ * @param expenseCategories - Category groups (each with `items`) used to resolve category labels for expenses; falls back to `"기타"` when not found
+ * @param isBoxOn - When true, applies elevated stacking and disables pointer events on the container for overlay behavior
+ * @returns A React element rendering the today's expense box UI
+ */
 export default function TodayExpenseBox({ emotions, expenseCategories, isBoxOn }: TodayExpenseBoxProps) {
   const router = useRouter();
   const [TODAY] = useState(() => new Date());

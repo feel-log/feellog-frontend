@@ -4,6 +4,19 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { TextBallon } from "@/shared/ui/TextBallon";
 
+/**
+ * Renders a step-based fullscreen instructional dim overlay and navigation controls for the household onboarding flow.
+ *
+ * The overlay blocks page interaction, synchronizes external box visibility and scroll position with the current step, and provides skip/previous/next/complete actions to advance or exit the flow.
+ *
+ * @param isRendered - Whether the overlay should be rendered; when false nothing is rendered
+ * @param changeFalse - Callback invoked to end the dim flow (used by Skip and Complete actions)
+ * @param boxOn - Callback to enable the primary target box when entering the corresponding step
+ * @param boxOff - Callback to disable the primary target box
+ * @param secondBoxOn - Callback to enable the secondary target box when entering the corresponding step
+ * @param secondBoxOff - Callback to disable the secondary target box
+ * @returns The fullscreen dim overlay with step-specific content and navigation buttons, or `null` when `isRendered` is false
+ */
 export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBoxOn, secondBoxOff } : { isRendered: boolean, changeFalse: () => void, boxOn: () => void, boxOff: () => void, secondBoxOn: () => void, secondBoxOff: () => void }) {
     const [currentIndex, setCurrentIndex] = useState<number | null>(0);
     const htmlElement = document.documentElement;
