@@ -3,6 +3,13 @@ import HouseHoldBoxWrapper from '@/widgets/house-hold/HouseHoldBoxWrapper';
 import { ClientOnly } from '@/shared/ui';
 import { DateDisplay } from './DateDisplay';
 
+/**
+ * Render the household widget with decorative images, a client-only date display, and a controlled box wrapper.
+ *
+ * @param isBoxOn - Whether the primary household box is shown
+ * @param secondBoxOn - Whether the secondary household box is shown
+ * @returns The component tree containing decorative images, a DateDisplay (client-only), and a HouseHoldBoxWrapper controlled by the props
+ */
 export default function HouseHoldWrapper({ isBoxOn, secondBoxOn } : { isBoxOn: boolean; secondBoxOn: boolean}) {
   return (
     <div className={"house__hold__wrapper relative px-4"}>

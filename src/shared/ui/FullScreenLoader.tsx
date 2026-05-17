@@ -2,6 +2,14 @@
 
 import { useEffect } from 'react';
 
+/**
+ * Display a full-screen loading overlay and toggle the `hiddens` class on the root `<html>` element while loading.
+ *
+ * While `isLoading` is true the component renders a centered spinner overlay and adds the `hiddens` class to `document.documentElement`; when `isLoading` is false the class is removed. The `hiddens` class is also removed on unmount to avoid leaving it set.
+ *
+ * @param isLoading - If `true`, show the overlay and add the `hiddens` class to the `<html>` element; if `false`, hide the overlay and remove the class
+ * @returns A full-screen overlay element when `isLoading` is true, otherwise `null`
+ */
 export default function FullScreenLoader({ isLoading }: { isLoading: boolean }) {
   useEffect(() => {
     const htmlElement = document.documentElement;
