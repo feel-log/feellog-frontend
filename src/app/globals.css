@@ -209,7 +209,11 @@ html {
 }
 
 html.hiddens {
-  overflow-y: hidden;
+  overflow: hidden !important;
+}
+
+html.hiddens body {
+  overflow: hidden !important;
 }
 
 /* 이미지 드래그 방지 */

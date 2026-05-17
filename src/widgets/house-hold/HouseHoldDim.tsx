@@ -25,14 +25,17 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
 
         if (isRendered) {
             htmlElement.classList.add('hiddens');
+            htmlElement.style.overflow = 'hidden';
             document.body.style.overflow = 'hidden';
         } else {
             htmlElement.classList.remove('hiddens');
+            htmlElement.style.overflow = '';
             document.body.style.overflow = '';
         }
 
         return () => {
             htmlElement.classList.remove('hiddens');
+            htmlElement.style.overflow = '';
             document.body.style.overflow = '';
         }
     }, [isRendered])
