@@ -5,7 +5,6 @@ import BackgroundProvider from './BackgroundProvider';
 import { QueryProvider } from '@/shared/lib/QueryProvider';
 import { KakaoScript } from '@/shared/lib/KakaoScript';
 import { GoogleScript } from '@/shared/lib/GoogleScript';
-import { Header } from '@/shared/ui';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,6 +26,11 @@ export const metadata: Metadata = {
     siteName: "Feel-Log",
     locale: "ko_KR",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image.png",
+      }
+    ]
   },
   twitter: {
     card: "summary_large_image",

@@ -4,22 +4,14 @@ import { useEffect } from 'react';
 
 export default function FullScreenLoader({ isLoading }: { isLoading: boolean }) {
   useEffect(() => {
+    const htmlElement = document.documentElement;
     if (isLoading) {
-      document.documentElement.style.height = '100vh';
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.height = '100vh';
-      document.body.style.overflow = 'hidden';
+      htmlElement.classList.add('hiddens');
     } else {
-      document.documentElement.style.height = '';
-      document.documentElement.style.overflow = '';
-      document.body.style.height = '';
-      document.body.style.overflow = '';
+      htmlElement.classList.remove('hiddens');
     }
     return () => {
-      document.documentElement.style.height = '';
-      document.documentElement.style.overflow = '';
-      document.body.style.height = '';
-      document.body.style.overflow = '';
+      htmlElement.classList.remove('hiddens');
     };
   }, [isLoading]);
 

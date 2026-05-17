@@ -25,7 +25,7 @@ const getRandomNumberByDate = (): number => {
   return Math.abs(hash) % 4;
 };
 
-export default function HouseHoldBoxWrapper() {
+export default function HouseHoldBoxWrapper({ isBoxOn, secondBoxOn } : { isBoxOn: boolean, secondBoxOn: boolean }) {
   const router = useRouter();
   const { getAccessToken, isLoaded } = useToken();
   const { getUser } = useUser();
@@ -76,7 +76,7 @@ export default function HouseHoldBoxWrapper() {
             </div>
           </HouseHoldBox>
           {query.data && (
-            <HouseHoldBox isAnchor onClick={handleWeekBoxClick}>
+            <HouseHoldBox isAnchor onClick={handleWeekBoxClick} isBoxOn={isBoxOn}>
               <div className={'mb-4.5 flex items-center justify-between'}>
                 <div className={'flex flex-col'}>
                   <span className={'text-[16px] font-medium tracking-[-0.025em] text-[#73787e]'}>이번 주 지출 비용</span>
@@ -87,8 +87,8 @@ export default function HouseHoldBoxWrapper() {
               {query.data && <ThisWeekBox data={query.data} />}
             </HouseHoldBox>
           )}
-          <TodayExpenseBox emotions={emotions} expenseCategories={expenseCategories} />
-          <HouseHoldBox className={'mb-36 px-4 py-2 shadow-none'} isAnchor anchor={'/retro'}>
+          <TodayExpenseBox emotions={emotions} expenseCategories={expenseCategories} isBoxOn={isBoxOn} />
+          <HouseHoldBox className={'mb-36 px-4 py-2 shadow-none'} isAnchor anchor={'/retro'} secondBoxOn={secondBoxOn}>
             <div className={'flex w-full items-center'}>
               <div className={'flex flex-1 flex-col gap-0.5'}>
                 <h2 className={'text-[18px] font-semibold tracking-[-0.025em] text-[#030303]'}>오늘 지출 회고하기</h2>
