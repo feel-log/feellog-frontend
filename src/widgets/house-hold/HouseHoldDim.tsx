@@ -19,16 +19,23 @@ import { TextBallon } from "@/shared/ui/TextBallon";
  */
 export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBoxOn, secondBoxOff } : { isRendered: boolean, changeFalse: () => void, boxOn: () => void, boxOff: () => void, secondBoxOn: () => void, secondBoxOff: () => void }) {
     const [currentIndex, setCurrentIndex] = useState<number | null>(0);
-    const htmlElement = document.documentElement;
 
     useEffect(() => {
+        const htmlElement = document.documentElement;
 
-        htmlElement.classList.add('hiddens');
+        if (isRendered) {
+            htmlElement.classList.add('hiddens');
+            document.body.style.overflow = 'hidden';
+        } else {
+            htmlElement.classList.remove('hiddens');
+            document.body.style.overflow = '';
+        }
 
         return () => {
             htmlElement.classList.remove('hiddens');
+            document.body.style.overflow = '';
         }
-    },[])
+    }, [isRendered])
 
     useEffect(() => {
         if(currentIndex === 1) {
@@ -54,7 +61,7 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
         <>
             <div className="fixed max-w-md inset-0 mx-auto bg-black z-[100] opacity-45"></div>
             <div className="dim__info fixed z-[120] max-w-md inset-0 mx-auto flex flex-col absolute h-screen max-w-md">
-                <button onClick={() => {changeFalse(); htmlElement.classList.remove('hiddens'); boxOff(); secondBoxOff(); }} className={`text-white cursor-pointer absolute z-[120] self-end mr-4 top-[101.52px]`}>건너뛰기</button>
+                <button onClick={() => {changeFalse(); document.documentElement.classList.remove('hiddens'); document.body.style.overflow = ''; boxOff(); secondBoxOff(); }} className={`text-white cursor-pointer absolute z-[120] self-end mr-4 top-[101.52px]`}>건너뛰기</button>
                 {
                     currentIndex === 0 &&
                     <>
@@ -88,7 +95,7 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
                 }
                 {
                     currentIndex === 2 && typeof(currentIndex) === 'number' &&
-                    <button onClick={() => {changeFalse(); htmlElement.classList.remove('hiddens'); boxOff(); secondBoxOff(); }} className="absolute z-[120] text-white flex gap-3 items-center right-4 bottom-[37px]">
+                    <button onClick={() => {changeFalse(); document.documentElement.classList.remove('hiddens'); document.body.style.overflow = ''; boxOff(); secondBoxOff(); }} className="absolute z-[120] text-white flex gap-3 items-center right-4 bottom-[37px]">
                         <span>완료</span>
                         <Image src={"/svg/right.svg"} alt="left" width={8} height={8} />
                     </button>

@@ -31,7 +31,6 @@ export default function HouseHoldBox({
   isBoxOn?: boolean,
   secondBoxOn?: boolean
 }) {
-  console.log(isBoxOn);
 
   return (
     <div
