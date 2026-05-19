@@ -61,3 +61,17 @@ export interface ReviewUpsertRequest {
   satisfactionOptionId: number;
   nextActionOptionId: number;
 }
+
+const ReviewMonthlyDaySchema = z.object({
+  date: z.string(),
+  written: z.boolean(),
+});
+
+export const ReviewMonthlyResponseSchema = z.object({
+  year: z.number(),
+  month: z.number(),
+  days: z.array(ReviewMonthlyDaySchema),
+});
+
+export type ReviewMonthlyDay = z.infer<typeof ReviewMonthlyDaySchema>;
+export type ReviewMonthlyResponse = z.infer<typeof ReviewMonthlyResponseSchema>;

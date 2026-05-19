@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToken } from '@/shared/store';
 import { reviewQueries, upsertReviewApi } from '@/entities/review';
 import ChipSelect from '@/widgets/retro/ChipSelect';
@@ -15,10 +15,16 @@ function todayDateString(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
 export default function RetroSurveyPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const dateParam = searchParams?.get('date');
+  const reviewDate = dateParam && DATE_PATTERN.test(dateParam) ? dateParam : todayDateString();
   const { getAccessToken } = useToken();
   const token = getAccessToken();
+  const queryClient = useQueryClient();
 
   const { data: options, isLoading } = useQuery({
     ...reviewQueries.options(token || ''),
@@ -41,7 +47,7 @@ export default function RetroSurveyPage() {
   const { mutate: submitReview, isPending } = useMutation({
     mutationFn: () =>
       upsertReviewApi({
-        reviewDate: todayDateString(),
+        reviewDate,
         token: token || '',
         body: {
           emotionId: selectedEmotionId!,
@@ -50,8 +56,12 @@ export default function RetroSurveyPage() {
           nextActionOptionId: selectedNextActionId!,
         },
       }),
-    onSuccess: () => {
-      router.push(`/retro/result?date=${todayDateString()}`);
+    onSuccess: async (data) => {
+      queryClient.setQueryData([...reviewQueries.all(), 'date', reviewDate], data);
+      await queryClient.invalidateQueries({
+        queryKey: [...reviewQueries.all(), 'monthly'],
+      });
+      router.push(`/retro/result?date=${reviewDate}`);
     },
     onError: (error) => {
       console.error('회고 저장 실패', error);

@@ -1,5 +1,6 @@
 import { apiClient } from '@/shared/api/api-instance';
 import {
+  ReviewMonthlyResponse,
   ReviewOptions,
   ReviewResponse,
   ReviewUpsertRequest,
@@ -21,6 +22,21 @@ export function getReviewByDateApi({
   return apiClient<ReviewResponse>(`/api/v1/reviews/${reviewDate}`, {
     method: 'GET',
   });
+}
+
+export function getReviewMonthlyApi({
+  year,
+  month,
+  token,
+}: {
+  year: number;
+  month: number;
+  token: string;
+}): Promise<ReviewMonthlyResponse> {
+  return apiClient<ReviewMonthlyResponse>(
+    `/api/v1/reviews/monthly?year=${year}&month=${month}`,
+    { method: 'GET' }
+  );
 }
 
 export function upsertReviewApi({

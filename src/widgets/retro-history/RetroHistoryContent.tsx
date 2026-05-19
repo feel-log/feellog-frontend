@@ -1,10 +1,14 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import PageHeader from '@/shared/ui/PageHeader';
 import MonthPickerBottomSheet, { type YearMonth } from '@/widgets/report/MonthPickerBottomSheet';
-import { getRetroHistoryDates } from '@/shared/constants/retroHistoryMock';
+import { apiClient } from '@/shared/api/api-instance';
+import type { ReviewMonthlyResponse } from '@/entities/review/model/review-schema';
+import { useToken } from '@/shared/store';
+import RetroHistorySkeleton from './RetroHistorySkeleton';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const;
 
@@ -64,6 +68,8 @@ function buildCalendar(year: number, month: number): CalendarCell[] {
 
 export default function RetroHistoryContent() {
   const router = useRouter();
+  const { getAccessToken } = useToken();
+  const token = getAccessToken();
   const today = useMemo(() => new Date(), []);
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1);
@@ -71,8 +77,24 @@ export default function RetroHistoryContent() {
   const [pendingYear, setPendingYear] = useState(year);
   const [pendingMonth, setPendingMonth] = useState(month);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const cells = useMemo(() => buildCalendar(year, month), [year, month]);
-  const historySet = useMemo(() => new Set(getRetroHistoryDates()), []);
+  const { data: monthlyData, isLoading, isError } = useQuery({
+    queryKey: ['review', 'monthly', token ?? '', year, month],
+    queryFn: () =>
+      apiClient<ReviewMonthlyResponse>(
+        `/api/v1/reviews/monthly?year=${year}&month=${month}`,
+        { method: 'GET' }
+      ),
+    staleTime: 1000 * 60,
+    enabled: mounted && !!token,
+  });
+  const historySet = useMemo(
+    () => new Set(monthlyData?.days.filter((d) => d.written).map((d) => d.date) ?? []),
+    [monthlyData]
+  );
 
   const currentSystemYear = new Date().getFullYear();
   const monthLabel = year === currentSystemYear ? `${month}월` : `${year}년 ${month}월`;
@@ -99,6 +121,21 @@ export default function RetroHistoryContent() {
     if (!historySet.has(cell.date)) return;
     router.push(`/retro/history/${cell.date}`);
   };
+
+  if (!mounted || isLoading) return <RetroHistorySkeleton />;
+
+  if (isError) {
+    return (
+      <div className="flex min-h-dvh flex-col bg-white">
+        <PageHeader title="회고록" />
+        <div className="flex flex-1 items-center justify-center px-4">
+          <p className="text-[14px] text-[#9FA4A8]">
+            회고를 불러오지 못했어요. 잠시 후 다시 시도해주세요.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-dvh flex-col bg-white">
