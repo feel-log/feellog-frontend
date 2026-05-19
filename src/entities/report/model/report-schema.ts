@@ -16,10 +16,19 @@ const CommentSchema = z.object({
   message: z.string(),
 });
 
+const ConsecutiveCommentSchema = z.object({
+  months: z.number(),
+  names: z.array(z.string()),
+  message: z.string(),
+});
+
 const CommentsSchema = z.object({
   categoryChange: CommentSchema,
   emotionTrend: CommentSchema,
   situationTrend: CommentSchema,
+  categoryConsecutive: ConsecutiveCommentSchema.optional(),
+  emotionConsecutive: ConsecutiveCommentSchema.optional(),
+  situationConsecutive: ConsecutiveCommentSchema.optional(),
 });
 
 const CategoryItemSchema = z.object({
