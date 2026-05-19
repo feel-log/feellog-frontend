@@ -1,10 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import PageHeader from '@/shared/ui/PageHeader';
 import MonthPickerBottomSheet, { type YearMonth } from '@/widgets/report/MonthPickerBottomSheet';
-import { getRetroHistoryDates } from '@/shared/constants/retroHistoryMock';
+import { getReviewMonthlyApi } from '@/entities/review/api/review-api';
+import RetroHistorySkeleton from './RetroHistorySkeleton';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const;
 
@@ -71,8 +73,20 @@ export default function RetroHistoryContent() {
   const [pendingYear, setPendingYear] = useState(year);
   const [pendingMonth, setPendingMonth] = useState(month);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const cells = useMemo(() => buildCalendar(year, month), [year, month]);
-  const historySet = useMemo(() => new Set(getRetroHistoryDates()), []);
+  const { data: monthlyData, isLoading } = useQuery({
+    queryKey: ['review', 'monthly', year, month],
+    queryFn: () => getReviewMonthlyApi({ year, month }),
+    staleTime: 1000 * 60,
+    enabled: mounted,
+  });
+  const historySet = useMemo(
+    () => new Set(monthlyData?.days.filter((d) => d.written).map((d) => d.date) ?? []),
+    [monthlyData]
+  );
 
   const currentSystemYear = new Date().getFullYear();
   const monthLabel = year === currentSystemYear ? `${month}월` : `${year}년 ${month}월`;
@@ -99,6 +113,8 @@ export default function RetroHistoryContent() {
     if (!historySet.has(cell.date)) return;
     router.push(`/retro/history/${cell.date}`);
   };
+
+  if (!mounted || isLoading) return <RetroHistorySkeleton />;
 
   return (
     <div className="flex min-h-dvh flex-col bg-white">

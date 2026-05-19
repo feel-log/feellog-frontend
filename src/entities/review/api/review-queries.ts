@@ -1,6 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import {
   getReviewByDateApi,
+  getReviewMonthlyApi,
   getReviewOptionsApi,
 } from '@/entities/review/api/review-api';
 
@@ -16,6 +17,12 @@ export const reviewQueries = {
     queryOptions({
       queryKey: [...reviewQueries.all(), 'date', reviewDate],
       queryFn: () => getReviewByDateApi({ reviewDate, token }),
+      staleTime: 1000 * 60,
+    }),
+  monthly: (year: number, month: number) =>
+    queryOptions({
+      queryKey: [...reviewQueries.all(), 'monthly', year, month],
+      queryFn: () => getReviewMonthlyApi({ year, month }),
       staleTime: 1000 * 60,
     }),
 };

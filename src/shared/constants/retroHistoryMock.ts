@@ -20,7 +20,7 @@ export interface RetroHistoryItem {
 
 export interface RetroHistoryEntry {
   date: string;
-  items: RetroHistoryItem[];
+  item: RetroHistoryItem;
 }
 
 const SAMPLE_ITEM: RetroHistoryItem = {
@@ -49,28 +49,22 @@ const SAMPLE_ITEM: RetroHistoryItem = {
 };
 
 export const RETRO_HISTORY_MOCK: RetroHistoryEntry[] = [
-  { date: '2026-05-01', items: [{ ...SAMPLE_ITEM, id: 11 }] },
-  { date: '2026-05-09', items: [{ ...SAMPLE_ITEM, id: 21 }] },
-  { date: '2026-05-14', items: [{ ...SAMPLE_ITEM, id: 31 }] },
-  {
-    date: '2026-05-17',
-    items: [
-      { ...SAMPLE_ITEM, id: 41 },
-      { ...SAMPLE_ITEM, id: 42, options: { ...SAMPLE_ITEM.options, satisfactionScore: 4 } },
-      { ...SAMPLE_ITEM, id: 43, options: { ...SAMPLE_ITEM.options, satisfactionScore: 5 } },
-    ],
-  },
+  { date: '2026-05-01', item: { ...SAMPLE_ITEM, id: 11 } },
+  { date: '2026-05-09', item: { ...SAMPLE_ITEM, id: 21 } },
+  { date: '2026-05-14', item: { ...SAMPLE_ITEM, id: 31 } },
+  { date: '2026-05-17', item: { ...SAMPLE_ITEM, id: 41 } },
   {
     date: '2026-05-24',
-    items: [
-      { ...SAMPLE_ITEM, id: 51 },
-      { ...SAMPLE_ITEM, id: 52, options: { ...SAMPLE_ITEM.options, satisfactionScore: 3 } },
-    ],
+    item: {
+      ...SAMPLE_ITEM,
+      id: 51,
+      options: { ...SAMPLE_ITEM.options, satisfactionScore: 3 },
+    },
   },
 ];
 
-export function getRetroHistoryByDate(date: string): RetroHistoryItem[] {
-  return RETRO_HISTORY_MOCK.find((entry) => entry.date === date)?.items ?? [];
+export function getRetroHistoryByDate(date: string): RetroHistoryItem | undefined {
+  return RETRO_HISTORY_MOCK.find((entry) => entry.date === date)?.item;
 }
 
 export function getRetroHistoryDates(): string[] {
