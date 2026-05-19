@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import PageHeader from '@/shared/ui/PageHeader';
 import MonthPickerBottomSheet, { type YearMonth } from '@/widgets/report/MonthPickerBottomSheet';
-import { getReviewMonthlyApi } from '@/entities/review/api/review-api';
+import { apiClient } from '@/shared/api/api-instance';
+import type { ReviewMonthlyResponse } from '@/entities/review/model/review-schema';
 import { useToken } from '@/shared/store';
 import RetroHistorySkeleton from './RetroHistorySkeleton';
 
@@ -82,7 +83,11 @@ export default function RetroHistoryContent() {
   const cells = useMemo(() => buildCalendar(year, month), [year, month]);
   const { data: monthlyData, isLoading, isError } = useQuery({
     queryKey: ['review', 'monthly', token ?? '', year, month],
-    queryFn: () => getReviewMonthlyApi({ year, month, token: token ?? '' }),
+    queryFn: () =>
+      apiClient<ReviewMonthlyResponse>(
+        `/api/v1/reviews/monthly?year=${year}&month=${month}`,
+        { method: 'GET' }
+      ),
     staleTime: 1000 * 60,
     enabled: mounted && !!token,
   });
