@@ -351,11 +351,11 @@ export default function DateBottomSheet({
 
       <ConfirmModal
         isOpen={deleteTarget !== null}
+        type="deleteCheck"
         title="삭제하시겠어요?"
         secondary="삭제한 항목은 되돌릴 수 없어요."
         confirmText="확인"
         cancelText="취소"
-        isDangerous
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteTarget(null)}
       />

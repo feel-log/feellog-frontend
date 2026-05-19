@@ -56,13 +56,15 @@ export default function ConfirmModal({
           >
             {confirmText}
           </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="mt-[7px] cursor-pointer text-[16px] font-medium leading-normal tracking-[-0.025em] text-[#73787E]"
-          >
-            {cancelText}
-          </button>
+          {!noCancel && onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="mt-[7px] cursor-pointer text-[16px] font-medium leading-normal tracking-[-0.025em] text-[#73787E]"
+            >
+              {cancelText}
+            </button>
+          )}
         </div>
       ) : type === 'loginCheck' || type === 'logoutCheck' ? (
         <div

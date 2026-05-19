@@ -12,9 +12,12 @@ import { LogoutModal } from '@/features/logout/ui/LogoutModal';
 
 function MyPageContent() {
   const router = useRouter();
-  const { clearTokens } = useToken();
-  const { getUser, clearUser } = useUser();
-  const user = getUser();
+  const { clearTokens, setErrorBox } = useToken();
+  const isLoaded = useUser((s) => s.isLoaded);
+  const id = useUser((s) => s.id);
+  const nickname = useUser((s) => s.nickname);
+  const provider = useUser((s) => s.provider);
+  const clearUser = useUser((s) => s.clearUser);
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isPushNotificationEnabled, setIsPushNotificationEnabled] = useState(false);
@@ -33,7 +36,7 @@ function MyPageContent() {
     localStorage.setItem('isPushNotificationEnabled', 'false');
   };
 
-  const isGuest = user?.nickname?.startsWith('guest');
+  const isGuest = isLoaded && (!id || nickname.startsWith('guest'));
 
   const handleAccountClick = () => {
     if (isGuest) {
@@ -45,12 +48,21 @@ function MyPageContent() {
     setIsLogoutModalOpen(true);
   };
 
-  const providerLabel =
-    user?.provider === 'GOOGLE'
+  const handleRetroHistoryClick = () => {
+    if (isGuest) {
+      setErrorBox(true);
+      return;
+    }
+    router.push('/retro/history');
+  };
+
+  const providerLabel = isGuest
+    ? '게스트로 로그인'
+    : provider === 'GOOGLE'
       ? '구글로 로그인'
-      : user?.provider === 'KAKAO'
+      : provider === 'KAKAO'
         ? '카카오로 로그인'
-        : '게스트로 로그인';
+        : '';
 
   return (
     <div className="flex min-h-dvh flex-col bg-white pb-30">
@@ -65,10 +77,10 @@ function MyPageContent() {
             </div>
             <div className="flex flex-col gap-0.5">
               <span className="text-[18px] font-semibold leading-normal tracking-[-0.025em] text-[#030303]">
-                {user?.nickname ?? '손님'}
+                {isLoaded ? nickname : '로딩 중...'}
               </span>
               <span className="text-[14px] font-medium leading-normal tracking-[-0.025em] text-[#353535]">
-                {providerLabel}
+                {isLoaded ? providerLabel : ''}
               </span>
             </div>
           </div>
@@ -85,11 +97,13 @@ function MyPageContent() {
             </span>
             <button
               type="button"
+              role="switch"
+              aria-checked={isPushNotificationEnabled}
               onClick={handleTogglePush}
               className={`flex h-[32px] w-[58px] cursor-pointer items-center rounded-full p-[5px] transition-colors ${
                 isPushNotificationEnabled ? 'justify-end bg-[#13278a]' : 'justify-start bg-[#CACDD2]'
               }`}
-              aria-label="푸시 알림 토글"
+              aria-label="푸시 알림"
             >
               <span className="h-[22px] w-[22px] rounded-full bg-white" />
             </button>
@@ -122,7 +136,7 @@ function MyPageContent() {
           </h2>
           <button
             type="button"
-            onClick={() => router.push('/retro/history')}
+            onClick={handleRetroHistoryClick}
             className="flex cursor-pointer items-center justify-between"
           >
             <span className="text-[18px] font-semibold leading-normal tracking-[-0.025em] text-[#1C1D1F]">

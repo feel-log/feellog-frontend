@@ -20,6 +20,10 @@ export default function RetroHistoryDetailContent({ date }: RetroHistoryDetailCo
   const touchStartX = useRef(0);
 
   useEffect(() => {
+    setCurrentIndex((prev) => Math.min(prev, Math.max(items.length - 1, 0)));
+  }, [items.length]);
+
+  useEffect(() => {
     if (!isMenuOpen) return;
     const handler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -63,7 +67,7 @@ export default function RetroHistoryDetailContent({ date }: RetroHistoryDetailCo
 
   const handleDeleteConfirm = () => {
     setIsDeleteModalOpen(false);
-    router.back();
+    router.replace('/retro/history');
   };
 
   if (!item) {
