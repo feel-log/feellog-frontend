@@ -19,10 +19,10 @@ export const reviewQueries = {
       queryFn: () => getReviewByDateApi({ reviewDate, token }),
       staleTime: 1000 * 60,
     }),
-  monthly: (year: number, month: number) =>
+  monthly: (token: string, year: number, month: number) =>
     queryOptions({
-      queryKey: [...reviewQueries.all(), 'monthly', year, month],
-      queryFn: () => getReviewMonthlyApi({ year, month }),
+      queryKey: [...reviewQueries.all(), 'monthly', token, year, month],
+      queryFn: () => getReviewMonthlyApi({ year, month, token }),
       staleTime: 1000 * 60,
     }),
 };

@@ -15,10 +15,13 @@ function todayDateString(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
 export default function RetroSurveyPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const reviewDate = searchParams?.get('date') || todayDateString();
+  const dateParam = searchParams?.get('date');
+  const reviewDate = dateParam && DATE_PATTERN.test(dateParam) ? dateParam : todayDateString();
   const { getAccessToken } = useToken();
   const token = getAccessToken();
   const queryClient = useQueryClient();
