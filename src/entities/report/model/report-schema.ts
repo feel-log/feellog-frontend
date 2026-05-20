@@ -17,7 +17,7 @@ const CommentSchema = z.object({
 });
 
 const ConsecutiveCommentSchema = z.object({
-  months: z.number(),
+  months: z.number().int().positive(),
   names: z.array(z.string()),
   message: z.string(),
 });

@@ -125,7 +125,6 @@ export default function CategoryChart({ categories, year, month, consecutiveMess
         {consecutiveMessage && (
           <AutoFitText
             className="whitespace-nowrap font-medium leading-normal tracking-[-0.025em] text-[#73787E]"
-            deps={[consecutiveMessage]}
           >
             {consecutiveMessage}
           </AutoFitText>

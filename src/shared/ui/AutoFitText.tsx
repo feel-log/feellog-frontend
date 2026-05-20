@@ -8,10 +8,9 @@ const MIN_FONT = 10;
 interface AutoFitTextProps {
   children: ReactNode;
   className?: string;
-  deps?: unknown[];
 }
 
-export default function AutoFitText({ children, className, deps = [] }: AutoFitTextProps) {
+export default function AutoFitText({ children, className }: AutoFitTextProps) {
   const ref = useRef<HTMLParagraphElement>(null);
   const [fontSize, setFontSize] = useState(MAX_FONT);
 
@@ -19,17 +18,22 @@ export default function AutoFitText({ children, className, deps = [] }: AutoFitT
     const el = ref.current;
     if (!el) return;
 
-    let size = MAX_FONT;
-    el.style.fontSize = `${size}px`;
-
-    while (el.scrollWidth > el.clientWidth && size > MIN_FONT) {
-      size -= 0.5;
+    const recalc = () => {
+      let size = MAX_FONT;
       el.style.fontSize = `${size}px`;
-    }
+      while (el.scrollWidth > el.clientWidth && size > MIN_FONT) {
+        size -= 0.5;
+        el.style.fontSize = `${size}px`;
+      }
+      setFontSize(size);
+    };
 
-    setFontSize(size);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+    recalc();
+
+    const observer = new ResizeObserver(recalc);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [children]);
 
   return (
     <p ref={ref} style={{ fontSize: `${fontSize}px` }} className={className}>
