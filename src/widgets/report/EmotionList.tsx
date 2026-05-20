@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import AutoFitText from '@/shared/ui/AutoFitText';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
 import type { EmotionItem } from '@/shared/constants/reportMockData';
 
@@ -11,9 +12,10 @@ interface EmotionListProps {
   emotions: EmotionListItem[];
   year?: number;
   month?: number;
+  consecutiveMessage?: string;
 }
 
-export default function EmotionList({ emotions, year, month }: EmotionListProps) {
+export default function EmotionList({ emotions, year, month, consecutiveMessage }: EmotionListProps) {
   const [expanded, setExpanded] = useState(false);
   const visibleEmotions = expanded ? emotions.slice(0, 5) : emotions.slice(0, 3);
 
@@ -37,9 +39,18 @@ export default function EmotionList({ emotions, year, month }: EmotionListProps)
 
   return (
     <div className="flex flex-col gap-7.5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
-      <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
-        감정별 지출 항목
-      </h2>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#1C1D1F]">
+          감정별 지출 항목
+        </h2>
+        {consecutiveMessage && (
+          <AutoFitText
+            className="whitespace-nowrap font-medium leading-normal tracking-[-0.025em] text-[#73787E]"
+          >
+            {consecutiveMessage}
+          </AutoFitText>
+        )}
+      </div>
 
       <div className="flex flex-col gap-3.75">
         {visibleEmotions.map((item, index) => (

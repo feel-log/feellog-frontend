@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import AutoFitText from '@/shared/ui/AutoFitText';
 import type { CategoryItem } from '@/shared/constants/reportMockData';
 
 type CategoryChartCategory = CategoryItem & { id?: number };
@@ -10,6 +11,7 @@ interface CategoryChartProps {
   categories: CategoryChartCategory[];
   year?: number;
   month?: number;
+  consecutiveMessage?: string;
 }
 
 function DonutChart({ categories }: { categories: CategoryChartCategory[] }) {
@@ -107,7 +109,7 @@ function DonutChart({ categories }: { categories: CategoryChartCategory[] }) {
   );
 }
 
-export default function CategoryChart({ categories, year, month }: CategoryChartProps) {
+export default function CategoryChart({ categories, year, month, consecutiveMessage }: CategoryChartProps) {
   const [expanded, setExpanded] = useState(false);
 
   if (categories.length === 0) return null;
@@ -116,9 +118,18 @@ export default function CategoryChart({ categories, year, month }: CategoryChart
 
   return (
     <div className="flex flex-col gap-5 rounded-[12px] bg-[#F7F8FA] py-5 px-4">
-      <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
-        카테고리별 지출 항목
-      </h2>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-[20px] font-semibold leading-normal tracking-[-0.5px] text-[#030303]">
+          카테고리별 지출 항목
+        </h2>
+        {consecutiveMessage && (
+          <AutoFitText
+            className="whitespace-nowrap font-medium leading-normal tracking-[-0.025em] text-[#73787E]"
+          >
+            {consecutiveMessage}
+          </AutoFitText>
+        )}
+      </div>
 
 
       <DonutChart categories={categories} />

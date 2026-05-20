@@ -21,6 +21,13 @@ import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
 
 const CATEGORY_COLORS = ['#13278A', '#1BC590', '#FFDB72', '#E5E5E5', '#FFFFFF'];
 
+function withColon(comment?: { names: string[]; message: string }): string | undefined {
+  if (!comment) return undefined;
+  const first = comment.names[0];
+  if (!first) return comment.message;
+  return comment.message.replace(` ${first}`, `: ${first}`);
+}
+
 export default function ReportContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -166,9 +173,22 @@ export default function ReportContent() {
           {hasData ? (
             <>
               <ReportInsights userName={userName} insights={insights} />
-              <CategoryChart categories={categories} year={year} month={month} />
-              <EmotionList emotions={emotions} year={year} month={month} />
-              <SituationTags situations={situations} />
+              <CategoryChart
+                categories={categories}
+                year={year}
+                month={month}
+                consecutiveMessage={withColon(data?.comments.categoryConsecutive)}
+              />
+              <EmotionList
+                emotions={emotions}
+                year={year}
+                month={month}
+                consecutiveMessage={withColon(data?.comments.emotionConsecutive)}
+              />
+              <SituationTags
+                situations={situations}
+                consecutiveMessage={withColon(data?.comments.situationConsecutive)}
+              />
             </>
           ) : (
             <ReportEmpty />
