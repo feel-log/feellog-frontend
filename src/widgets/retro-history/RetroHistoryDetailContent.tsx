@@ -233,6 +233,7 @@ export default function RetroHistoryDetailContent({ date }: RetroHistoryDetailCo
 
       <RetroDeleteModal
         isOpen={isDeleteModalOpen}
+        description="삭제 후 복구할 수 없어요"
         onConfirm={handleDeleteConfirm}
         onClose={() => setIsDeleteModalOpen(false)}
       />

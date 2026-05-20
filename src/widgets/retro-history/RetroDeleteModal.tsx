@@ -6,9 +6,17 @@ interface RetroDeleteModalProps {
   isOpen: boolean;
   onConfirm: () => void;
   onClose: () => void;
+  title?: string;
+  description?: string;
 }
 
-export default function RetroDeleteModal({ isOpen, onConfirm, onClose }: RetroDeleteModalProps) {
+export default function RetroDeleteModal({
+  isOpen,
+  onConfirm,
+  onClose,
+  title = '삭제하시겠어요?',
+  description,
+}: RetroDeleteModalProps) {
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e: KeyboardEvent) => {
@@ -41,14 +49,16 @@ export default function RetroDeleteModal({ isOpen, onConfirm, onClose }: RetroDe
             id="retro-delete-title"
             className="text-[18px] font-semibold leading-normal tracking-[-0.025em] text-black"
           >
-            삭제하시겠어요?
+            {title}
           </h2>
-          <p
-            id="retro-delete-desc"
-            className="text-[14px] font-medium leading-normal tracking-[-0.025em] text-[#474C52]"
-          >
-            삭제 후 복구할 수 없어요
-          </p>
+          {description && (
+            <p
+              id="retro-delete-desc"
+              className="text-[14px] font-medium leading-normal tracking-[-0.025em] text-[#474C52]"
+            >
+              {description}
+            </p>
+          )}
         </div>
         <button
           type="button"

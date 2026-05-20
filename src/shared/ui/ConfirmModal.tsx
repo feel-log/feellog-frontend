@@ -45,9 +45,11 @@ export default function ConfirmModal({
             <span className="text-center text-[16px] font-semibold leading-normal tracking-[-0.025em] text-black">
               {title}
             </span>
-            <span className="text-center text-[14px] font-medium leading-normal tracking-[-0.025em] text-[#474C52]">
-              {secondary ?? message}
-            </span>
+            {(secondary ?? message) && (
+              <span className="text-center text-[14px] font-medium leading-normal tracking-[-0.025em] text-[#474C52]">
+                {secondary ?? message}
+              </span>
+            )}
           </div>
           <button
             type="button"
