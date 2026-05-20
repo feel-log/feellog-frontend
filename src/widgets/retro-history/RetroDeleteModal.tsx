@@ -40,7 +40,7 @@ export default function RetroDeleteModal({
         aria-modal="true"
         aria-labelledby="retro-delete-title"
         aria-describedby={description ? 'retro-delete-desc' : undefined}
-        className={`fixed top-1/2 right-0 left-0 z-60 mx-auto flex h-[180px] w-[300px] -translate-y-1/2 flex-col items-center justify-between rounded-[10px] bg-white px-4 py-[30px] transition-opacity duration-200 ${
+        className={`fixed top-1/2 right-0 left-0 z-60 mx-auto flex h-[180px] w-[300px] -translate-y-1/2 flex-col items-center justify-center gap-[29px] rounded-[10px] bg-white px-4 py-[30px] transition-opacity duration-200 ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >

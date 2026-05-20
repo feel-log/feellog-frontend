@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/shared/lib/utils';
 import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
@@ -14,6 +14,8 @@ import {
 } from '@/entities/notification/api/notification-api';
 import type { Notification } from '@/entities/notification/model/notification-schema';
 
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const;
+
 function formatRelativeTime(createdAt: string): string {
   const created = new Date(createdAt);
   if (Number.isNaN(created.getTime())) return '';
@@ -25,12 +27,26 @@ function formatRelativeTime(createdAt: string): string {
   if (diffMin < 1) return '방금 전';
   if (diffMin < 60) return `${diffMin}분 전`;
   if (diffHour < 24) return `${diffHour}시간 전`;
-  return `${created.getMonth() + 1}월 ${created.getDate()}일`;
+  return `${created.getMonth() + 1}월 ${created.getDate()}일 ${WEEKDAYS[created.getDay()]}요일`;
 }
 
 export default function NotiPage() {
   const queryClient = useQueryClient();
   const { data: notifications = [], isLoading, isError } = useQuery(notificationQueries.list());
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    if (!notifications.length) return;
+    const now = Date.now();
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    const hasRecent = notifications.some(
+      (n) => now - new Date(n.createdAt).getTime() < DAY_MS,
+    );
+    if (!hasRecent) return;
+
+    const id = window.setInterval(() => setTick((t) => t + 1), 60_000);
+    return () => window.clearInterval(id);
+  }, [notifications]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const deleteAllMutation = useMutation({
