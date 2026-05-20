@@ -16,6 +16,7 @@ import type { Notification } from '@/entities/notification/model/notification-sc
 
 function formatRelativeTime(createdAt: string): string {
   const created = new Date(createdAt);
+  if (Number.isNaN(created.getTime())) return '';
   const now = new Date();
   const diffMs = now.getTime() - created.getTime();
   const diffMin = Math.floor(diffMs / (1000 * 60));
@@ -29,7 +30,7 @@ function formatRelativeTime(createdAt: string): string {
 
 export default function NotiPage() {
   const queryClient = useQueryClient();
-  const { data: notifications = [], isLoading } = useQuery(notificationQueries.list());
+  const { data: notifications = [], isLoading, isError } = useQuery(notificationQueries.list());
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const deleteAllMutation = useMutation({
@@ -87,6 +88,15 @@ export default function NotiPage() {
               </div>
             ))}
           </>
+        ) : isError ? (
+          <div className="flex h-full flex-col items-center justify-center">
+            <span className="text-[18px] font-semibold leading-normal tracking-[-0.025em] text-[#474C52]">
+              알림을 불러오지 못했어요
+            </span>
+            <span className="text-[14px] font-medium leading-normal tracking-[-0.025em] text-[#9FA4A8]">
+              잠시 후 다시 시도해주세요
+            </span>
+          </div>
         ) : notifications.length === 0 ? (
           <div className="not__noti flex h-full flex-col items-center justify-center">
             <span className="text-[18px] font-semibold leading-normal tracking-[-0.025em] text-[#474C52]">

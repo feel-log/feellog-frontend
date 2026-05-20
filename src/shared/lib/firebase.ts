@@ -31,15 +31,20 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
 }
 
 export async function getFcmToken(): Promise<string | null> {
-  const messaging = getMessagingInstance();
-  if (!messaging || !VAPID_KEY) return null;
+  try {
+    const messaging = getMessagingInstance();
+    if (!messaging || !VAPID_KEY) return null;
 
-  const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-  const token = await getToken(messaging, {
-    vapidKey: VAPID_KEY,
-    serviceWorkerRegistration: registration,
-  });
-  return token || null;
+    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    const token = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: registration,
+    });
+    return token || null;
+  } catch (error) {
+    console.error('FCM token 발급 실패:', error);
+    return null;
+  }
 }
 
 export function subscribeForegroundMessage(handler: (payload: unknown) => void) {

@@ -1,11 +1,14 @@
 import { apiClient } from '@/shared/api/api-instance';
-import type {
-  Notification,
-  NotificationSettings,
+import {
+  NotificationListSchema,
+  NotificationSettingsSchema,
+  type Notification,
+  type NotificationSettings,
 } from '@/entities/notification/model/notification-schema';
 
-export function getNotificationsApi(): Promise<Notification[]> {
-  return apiClient<Notification[]>('/api/v1/notifications', { method: 'GET' });
+export async function getNotificationsApi(): Promise<Notification[]> {
+  const data = await apiClient<unknown>('/api/v1/notifications', { method: 'GET' });
+  return NotificationListSchema.parse(data);
 }
 
 export function readAllNotificationsApi(): Promise<void> {
@@ -24,15 +27,17 @@ export function deleteNotificationApi(notificationId: number): Promise<void> {
   return apiClient<void>(`/api/v1/notifications/${notificationId}`, { method: 'DELETE' });
 }
 
-export function getNotificationSettingsApi(): Promise<NotificationSettings> {
-  return apiClient<NotificationSettings>('/api/v1/notification-settings', { method: 'GET' });
+export async function getNotificationSettingsApi(): Promise<NotificationSettings> {
+  const data = await apiClient<unknown>('/api/v1/notification-settings', { method: 'GET' });
+  return NotificationSettingsSchema.parse(data);
 }
 
-export function updateNotificationSettingsApi(
+export async function updateNotificationSettingsApi(
   body: NotificationSettings,
 ): Promise<NotificationSettings> {
-  return apiClient<NotificationSettings>('/api/v1/notification-settings', {
+  const data = await apiClient<unknown>('/api/v1/notification-settings', {
     method: 'PATCH',
     body: JSON.stringify(body),
   });
+  return NotificationSettingsSchema.parse(data);
 }
