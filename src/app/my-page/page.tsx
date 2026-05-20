@@ -79,7 +79,7 @@ function MyPageContent() {
           localStorage.removeItem('fcmToken');
         }
       }
-      updateSettingsMutation.mutate({ pushEnabled: next });
+      await updateSettingsMutation.mutateAsync({ pushEnabled: next });
     } catch (error) {
       console.error('푸시 알림 토글 실패:', error);
       alert('알림 설정 변경에 실패했어요. 잠시 후 다시 시도해주세요.');
