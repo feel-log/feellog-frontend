@@ -1,14 +1,18 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import PageHeader from '@/shared/ui/PageHeader';
 import Footer from '@/shared/ui/Footer';
-import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
 import { useToken, useUser } from '@/shared/store';
 import { LogoutModal } from '@/features/logout/ui/LogoutModal';
+import { notificationQueries } from '@/entities/notification/api/notification-queries';
+import { updateNotificationSettingsApi } from '@/entities/notification/api/notification-api';
+import { postDeviceTokenApi, deleteDeviceTokenApi } from '@/features/post-device-token';
+import { getFcmToken, requestNotificationPermission } from '@/shared/lib/firebase';
 
 function MyPageContent() {
   const router = useRouter();
@@ -20,20 +24,68 @@ function MyPageContent() {
   const clearUser = useUser((s) => s.clearUser);
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isPushNotificationEnabled, setIsPushNotificationEnabled] = useState(false);
-  const [isPushModalOpen, setIsPushModalOpen] = useState(false);
 
-  useEffect(() => {
-    setIsPushNotificationEnabled(localStorage.getItem('isPushNotificationEnabled') === 'true');
-  }, []);
+  const queryClient = useQueryClient();
+  const { data: settings } = useQuery(notificationQueries.settings());
+  const isPushNotificationEnabled = settings?.pushEnabled ?? false;
 
-  const handleTogglePush = () => {
-    if (!isPushNotificationEnabled) {
-      setIsPushModalOpen(true);
-      return;
+  const updateSettingsMutation = useMutation({
+    mutationFn: updateNotificationSettingsApi,
+    onMutate: async (next) => {
+      await queryClient.cancelQueries({ queryKey: notificationQueries.settings().queryKey });
+      const prev = queryClient.getQueryData(notificationQueries.settings().queryKey);
+      queryClient.setQueryData(notificationQueries.settings().queryKey, next);
+      return { prev };
+    },
+    onError: (_err, _next, context) => {
+      if (context?.prev) {
+        queryClient.setQueryData(notificationQueries.settings().queryKey, context.prev);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: notificationQueries.settings().queryKey });
+    },
+  });
+
+  const [isToggleProcessing, setIsToggleProcessing] = useState(false);
+
+  const handleTogglePush = async () => {
+    if (isToggleProcessing || updateSettingsMutation.isPending) return;
+    const next = !isPushNotificationEnabled;
+    setIsToggleProcessing(true);
+
+    try {
+      if (next) {
+        const permission = await requestNotificationPermission();
+        if (permission !== 'granted') {
+          alert('알림 권한을 허용해주세요. (브라우저 설정에서 변경 가능)');
+          return;
+        }
+        const fcmToken = await getFcmToken();
+        if (!fcmToken) {
+          alert('알림 토큰 발급에 실패했어요. 브라우저 알림이 차단되어 있지 않은지 확인해주세요.');
+          return;
+        }
+        await postDeviceTokenApi({ token: fcmToken, deviceType: 'WEB' });
+        localStorage.setItem('fcmToken', fcmToken);
+      } else {
+        const fcmToken = localStorage.getItem('fcmToken');
+        if (fcmToken) {
+          try {
+            await deleteDeviceTokenApi(fcmToken);
+          } catch (error) {
+            console.error('디바이스 토큰 삭제 실패:', error);
+          }
+          localStorage.removeItem('fcmToken');
+        }
+      }
+      await updateSettingsMutation.mutateAsync({ pushEnabled: next });
+    } catch (error) {
+      console.error('푸시 알림 토글 실패:', error);
+      alert('알림 설정 변경에 실패했어요. 잠시 후 다시 시도해주세요.');
+    } finally {
+      setIsToggleProcessing(false);
     }
-    setIsPushNotificationEnabled(false);
-    localStorage.setItem('isPushNotificationEnabled', 'false');
   };
 
   const isGuest = isLoaded && (!id || nickname.startsWith('guest'));
@@ -99,10 +151,12 @@ function MyPageContent() {
               type="button"
               role="switch"
               aria-checked={isPushNotificationEnabled}
+              aria-disabled={isToggleProcessing || updateSettingsMutation.isPending}
+              disabled={isToggleProcessing || updateSettingsMutation.isPending}
               onClick={handleTogglePush}
-              className={`flex h-[32px] w-[58px] cursor-pointer items-center rounded-full p-[5px] transition-colors ${
+              className={`flex h-[32px] w-[58px] items-center rounded-full p-[5px] transition-colors ${
                 isPushNotificationEnabled ? 'justify-end bg-[#13278a]' : 'justify-start bg-[#CACDD2]'
-              }`}
+              } ${isToggleProcessing || updateSettingsMutation.isPending ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
               aria-label="푸시 알림"
             >
               <span className="h-[22px] w-[22px] rounded-full bg-white" />
@@ -150,15 +204,6 @@ function MyPageContent() {
       </div>
 
       <LogoutModal isOpen={isLogoutModalOpen} onClose={setIsLogoutModalOpen} />
-
-      <ConfirmModal
-        isOpen={isPushModalOpen}
-        title="준비중인 기능입니다"
-        message="푸시 알림 기능은 곧 서비스될 예정입니다."
-        confirmText="확인"
-        onConfirm={() => setIsPushModalOpen(false)}
-        noCancel
-      />
 
       <Footer />
     </div>
