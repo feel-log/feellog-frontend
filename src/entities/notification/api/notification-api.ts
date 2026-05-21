@@ -34,10 +34,9 @@ export async function getNotificationSettingsApi(): Promise<NotificationSettings
 
 export async function updateNotificationSettingsApi(
   body: NotificationSettings,
-): Promise<NotificationSettings> {
-  const data = await apiClient<unknown>('/api/v1/notification-settings', {
+): Promise<void> {
+  await apiClient<unknown>('/api/v1/notification-settings', {
     method: 'PATCH',
     body: JSON.stringify(body),
   });
-  return NotificationSettingsSchema.parse(data);
 }
