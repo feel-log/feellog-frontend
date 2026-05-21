@@ -19,6 +19,22 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Feel-Log",
   description: "감정에 따른 소비 패턴을 분석하고 추적하는 웹 앱",
+  manifest: "/manifest.json",
+  applicationName: "Feel-Log",
+  appleWebApp: {
+    capable: true,
+    title: "Feel-Log",
+    statusBarStyle: "default",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   openGraph: {
     title: "Feel-Log",
     description: "감정에 따른 소비 패턴을 분석하고 추적하는 웹 앱",
@@ -44,6 +60,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   colorScheme: "light",
+  themeColor: "#13278A",
 };
 
 export default function RootLayout({
