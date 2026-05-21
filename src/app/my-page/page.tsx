@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -48,6 +48,27 @@ function MyPageContent() {
   });
 
   const [isToggleProcessing, setIsToggleProcessing] = useState(false);
+  const autoRegisterTriedRef = useRef(false);
+
+  useEffect(() => {
+    if (!settings?.pushEnabled) return;
+    if (autoRegisterTriedRef.current) return;
+    if (typeof window === 'undefined') return;
+    if (localStorage.getItem('fcmToken')) return;
+    if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+
+    autoRegisterTriedRef.current = true;
+    (async () => {
+      try {
+        const fcmToken = await getFcmToken();
+        if (!fcmToken) return;
+        await postDeviceTokenApi({ token: fcmToken, deviceType: 'WEB' });
+        localStorage.setItem('fcmToken', fcmToken);
+      } catch (error) {
+        console.error('FCM 토큰 자동 등록 실패:', error);
+      }
+    })();
+  }, [settings?.pushEnabled]);
 
   const handleTogglePush = async () => {
     if (isToggleProcessing || updateSettingsMutation.isPending) return;
