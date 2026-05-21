@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const NotificationSchema = z.object({
   notificationId: z.number(),
   type: z.string(),
+  title: z.string().nullable(),
   body: z.string(),
   isRead: z.boolean(),
   createdAt: z.string(),

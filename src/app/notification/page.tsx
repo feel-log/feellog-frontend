@@ -138,14 +138,26 @@ export default function NotiPage() {
                 type="button"
                 onClick={() => handleNotificationClick(noti)}
                 className={cn(
-                  'flex h-[87px] w-full flex-col justify-center gap-2.5 border-b border-solid border-[#CACDD2] px-4 text-left',
+                  'flex w-full flex-col justify-center gap-1.5 border-b border-solid border-[#CACDD2] px-4 py-4 text-left',
                   !noti.isRead ? 'bg-[#ECF2FB] cursor-pointer' : 'cursor-default bg-white',
                 )}
               >
                 <span className="text-[14px] font-medium leading-normal tracking-[-0.025em] text-[#73787E]">
                   {formatRelativeTime(noti.createdAt)}
                 </span>
-                <span className="text-[16px] font-semibold leading-normal tracking-[-0.025em] text-[#1C1D1F]">
+                {noti.title && (
+                  <span className="text-[16px] font-semibold leading-normal tracking-[-0.025em] text-[#1C1D1F]">
+                    {noti.title}
+                  </span>
+                )}
+                <span
+                  className={cn(
+                    'leading-normal tracking-[-0.025em]',
+                    noti.title
+                      ? 'text-[14px] font-medium text-[#474C52]'
+                      : 'text-[16px] font-semibold text-[#1C1D1F]',
+                  )}
+                >
                   {noti.body}
                 </span>
               </button>

@@ -1,6 +1,6 @@
 {
-  "name": "Feel-Log",
-  "short_name": "Feel-Log",
+  "name": "FeelLog",
+  "short_name": "FeelLog",
   "description": "감정에 따른 소비 패턴을 분석하고 추적하는 웹 앱",
   "start_url": "/",
   "scope": "/",
