@@ -91,6 +91,11 @@ html {
   -moz-osx-font-smoothing: grayscale;
   overflow-y: scroll;
   color-scheme: light only;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
