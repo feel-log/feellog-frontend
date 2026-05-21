@@ -11,6 +11,18 @@ type FcmPayload = {
   data?: { url?: string };
 };
 
+const FALLBACK_URL = '/notification';
+
+function toSafeInternalPath(rawUrl?: string) {
+  try {
+    const parsed = new URL(rawUrl ?? FALLBACK_URL, window.location.origin);
+    if (parsed.origin !== window.location.origin) return FALLBACK_URL;
+    return `${parsed.pathname}${parsed.search}${parsed.hash}` || FALLBACK_URL;
+  } catch {
+    return FALLBACK_URL;
+  }
+}
+
 export function ForegroundMessageHandler() {
   const router = useRouter();
 
@@ -25,7 +37,7 @@ export function ForegroundMessageHandler() {
       const body = notification?.body;
       if (!title && !body) return;
 
-      const targetUrl = data?.url ?? '/notification';
+      const targetUrl = toSafeInternalPath(data?.url);
       toast.custom(
         (id) => (
           <div
