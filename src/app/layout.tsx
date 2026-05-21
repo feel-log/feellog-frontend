@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from 'sonner';
 import "./globals.css";
 import BackgroundProvider from './BackgroundProvider';
 import { QueryProvider } from '@/shared/lib/QueryProvider';
 import { KakaoScript } from '@/shared/lib/KakaoScript';
 import { GoogleScript } from '@/shared/lib/GoogleScript';
+import { ForegroundMessageHandler } from '@/shared/lib/ForegroundMessageHandler';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -78,9 +80,11 @@ export default function RootLayout({
         <body className="bg-gray-50 select-none" suppressHydrationWarning>
         <KakaoScript />
         <GoogleScript />
+        <ForegroundMessageHandler />
         <BackgroundProvider>
           {children}
         </BackgroundProvider>
+        <Toaster position="top-center" richColors />
         </body>
       </html>
     </QueryProvider>
