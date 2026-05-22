@@ -7,6 +7,7 @@ import { QueryProvider } from '@/shared/lib/QueryProvider';
 import { KakaoScript } from '@/shared/lib/KakaoScript';
 import { GoogleScript } from '@/shared/lib/GoogleScript';
 import { ForegroundMessageHandler } from '@/shared/lib/ForegroundMessageHandler';
+import { AutoRequestNotificationPermission } from '@/shared/lib/AutoRequestNotificationPermission';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -81,6 +82,7 @@ export default function RootLayout({
         <KakaoScript />
         <GoogleScript />
         <ForegroundMessageHandler />
+        <AutoRequestNotificationPermission />
         <BackgroundProvider>
           {children}
         </BackgroundProvider>

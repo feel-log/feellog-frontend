@@ -10,7 +10,7 @@ firebase.initializeApp({
   appId: '1:955303189262:web:291a97797f6c4a9cc3955f',
 });
 
-const messaging = firebase.messaging();
+firebase.messaging();
 
 const FALLBACK_URL = '/notification';
 
@@ -23,16 +23,6 @@ function toSafeInternalUrl(rawUrl) {
     return FALLBACK_URL;
   }
 }
-
-messaging.onBackgroundMessage((payload) => {
-  const title = payload.notification?.title || '알림';
-  const options = {
-    body: payload.notification?.body || '',
-    icon: '/svg/icon_bell.svg',
-    data: { url: toSafeInternalUrl(payload.data?.url) },
-  };
-  self.registration.showNotification(title, options);
-});
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
