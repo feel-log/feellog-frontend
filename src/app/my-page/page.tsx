@@ -30,7 +30,7 @@ function MyPageContent() {
   const queryClient = useQueryClient();
   const { data: settings } = useQuery({
     ...notificationQueries.settings(),
-    enabled: !isGuest,
+    enabled: isLoaded && !isGuest,
   });
   const [notificationPermission, setNotificationPermission] =
     useState<NotificationPermission | null>(null);
