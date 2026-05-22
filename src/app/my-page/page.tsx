@@ -32,7 +32,21 @@ function MyPageContent() {
     ...notificationQueries.settings(),
     enabled: !isGuest,
   });
-  const isPushNotificationEnabled = !isGuest && (settings?.pushEnabled ?? false);
+  const [notificationPermission, setNotificationPermission] =
+    useState<NotificationPermission | null>(null);
+
+  useEffect(() => {
+    if (typeof Notification === 'undefined') return;
+    setNotificationPermission(Notification.permission);
+    const handler = () => setNotificationPermission(Notification.permission);
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, []);
+
+  const isPushNotificationEnabled =
+    !isGuest &&
+    (settings?.pushEnabled ?? false) &&
+    notificationPermission === 'granted';
 
   const updateSettingsMutation = useMutation({
     mutationFn: updateNotificationSettingsApi,
