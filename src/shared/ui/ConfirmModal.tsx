@@ -9,7 +9,6 @@ interface ConfirmModalProps {
   noCancel?: boolean;
   onConfirm: () => void;
   onCancel?: () => void;
-  isDangerous?: boolean;
 }
 
 export default function ConfirmModal({
@@ -23,7 +22,6 @@ export default function ConfirmModal({
   noCancel = false,
   onConfirm,
   onCancel,
-  isDangerous = false,
 }: ConfirmModalProps) {
   const visibilityClass = isOpen
     ? 'opacity-100 pointer-events-auto'
@@ -54,7 +52,7 @@ export default function ConfirmModal({
           <button
             type="button"
             onClick={onConfirm}
-            className="mt-8 flex h-10 w-[241px] cursor-pointer items-center justify-center rounded-[8px] bg-[#EB1C1C] text-[16px] font-medium leading-normal tracking-[-0.025em] text-white"
+            className="mt-8 flex h-10 w-[241px] cursor-pointer items-center justify-center rounded-[8px] bg-[#13278A] text-[16px] font-medium leading-normal tracking-[-0.025em] text-white"
           >
             {confirmText}
           </button>
@@ -68,20 +66,60 @@ export default function ConfirmModal({
             </button>
           )}
         </div>
-      ) : type === 'loginCheck' || type === 'logoutCheck' ? (
+      ) : type === 'logoutCheck' ? (
         <div
-          className={`box__container__2 fixed top-1/2 right-0 left-0 z-60 mx-auto h-auto w-70.75 -translate-y-1/2 rounded-[10px] bg-white px-5.25 pt-12.25 pb-5 transition-opacity duration-200 ${visibilityClass}`}
+          className={`fixed top-1/2 right-0 left-0 z-60 mx-auto flex h-[202px] w-[283px] -translate-y-1/2 flex-col items-center rounded-[10px] bg-white px-[21px] pt-[44px] pb-5 transition-opacity duration-200 ${visibilityClass}`}
         >
-          <span className={'mb-1 block text-center text-[14px] font-bold'}>{title}</span>
-          <span className={'text-ray-600 mb-8 block text-center text-[14px]'}>{secondary}</span>
-          <div className={'button__wrapper flex flex-col gap-2'}>
-            <button className="rounded-[8px] py-2 text-[14px] text-white bg-[#13278a] hover:bg-[#0f1f66]" onClick={onConfirm}>
-              {confirmText}
-            </button>
-            <button className={'text-[14px] py-2 text-black rounded-[8px]'} onClick={onCancel}>
+          <span className="text-center text-[16px] font-semibold leading-normal tracking-[-0.025em] text-black">
+            {title}
+          </span>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className="mt-[43px] flex h-10 w-[241px] cursor-pointer items-center justify-center rounded-[8px] bg-[#13278A] text-[16px] font-medium leading-normal tracking-[-0.025em] text-white"
+          >
+            {confirmText}
+          </button>
+          {!noCancel && onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="mt-[7px] cursor-pointer text-[16px] font-medium leading-normal tracking-[-0.025em] text-[#73787E]"
+            >
               {cancelText}
             </button>
+          )}
+        </div>
+      ) : type === 'loginCheck' ? (
+        <div
+          className={`fixed top-1/2 right-0 left-0 z-60 mx-auto flex h-[222px] w-[283px] -translate-y-1/2 flex-col items-center rounded-[10px] bg-white px-[21px] pt-[49px] pb-5 transition-opacity duration-200 ${visibilityClass}`}
+        >
+          <div className="flex flex-col items-center gap-[5px]">
+            <span className="text-center text-[16px] font-semibold leading-normal tracking-[-0.025em] text-black">
+              {title}
+            </span>
+            {(secondary ?? message) && (
+              <span className="text-center text-[14px] font-medium leading-normal tracking-[-0.025em] text-[#474C52]">
+                {secondary ?? message}
+              </span>
+            )}
           </div>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className="mt-8 flex h-10 w-[241px] cursor-pointer items-center justify-center rounded-[8px] bg-[#13278A] text-[16px] font-medium leading-normal tracking-[-0.025em] text-white"
+          >
+            {confirmText}
+          </button>
+          {!noCancel && onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="mt-[7px] cursor-pointer text-[16px] font-medium leading-normal tracking-[-0.025em] text-[#73787E]"
+            >
+              {cancelText}
+            </button>
+          )}
         </div>
       ) : (
         <div
@@ -109,9 +147,7 @@ export default function ConfirmModal({
               </button>
             )}
             <button
-              className={`flex-1 rounded-[8px] py-2.5 text-[14px] font-medium text-white transition-colors ${
-                isDangerous ? 'bg-[#eb1c1c] hover:bg-[#d41a1a]' : 'bg-[#13278a] hover:bg-[#0f1f66]'
-              }`}
+              className="flex-1 rounded-[8px] bg-[#13278a] py-2.5 text-[14px] font-medium text-white transition-colors hover:bg-[#0f1f66]"
               onClick={onConfirm}
             >
               {confirmText}

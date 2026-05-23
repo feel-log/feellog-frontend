@@ -16,7 +16,7 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
     <ConfirmModal
       type={"logoutCheck"}
       isOpen={isOpen}
-      title="로그아웃하시겠어요?"
+      title="로그아웃 하시겠어요?"
       confirmText="확인"
       cancelText="취소"
       onConfirm={() => logoutUser(accessToken!)}
