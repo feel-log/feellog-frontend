@@ -25,9 +25,28 @@ function MyPageContent() {
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
+  const isGuest = isLoaded && (!id || nickname.startsWith('guest'));
+
   const queryClient = useQueryClient();
-  const { data: settings } = useQuery(notificationQueries.settings());
-  const isPushNotificationEnabled = settings?.pushEnabled ?? false;
+  const { data: settings } = useQuery({
+    ...notificationQueries.settings(),
+    enabled: isLoaded && !isGuest,
+  });
+  const [notificationPermission, setNotificationPermission] =
+    useState<NotificationPermission | null>(null);
+
+  useEffect(() => {
+    if (typeof Notification === 'undefined') return;
+    setNotificationPermission(Notification.permission);
+    const handler = () => setNotificationPermission(Notification.permission);
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, []);
+
+  const isPushNotificationEnabled =
+    !isGuest &&
+    (settings?.pushEnabled ?? false) &&
+    notificationPermission === 'granted';
 
   const updateSettingsMutation = useMutation({
     mutationFn: updateNotificationSettingsApi,
@@ -71,6 +90,10 @@ function MyPageContent() {
   }, [settings?.pushEnabled]);
 
   const handleTogglePush = async () => {
+    if (isGuest) {
+      setErrorBox(true);
+      return;
+    }
     if (isToggleProcessing || updateSettingsMutation.isPending) return;
     const next = !isPushNotificationEnabled;
     setIsToggleProcessing(true);
@@ -108,8 +131,6 @@ function MyPageContent() {
       setIsToggleProcessing(false);
     }
   };
-
-  const isGuest = isLoaded && (!id || nickname.startsWith('guest'));
 
   const handleAccountClick = () => {
     if (isGuest) {
