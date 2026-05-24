@@ -12,6 +12,14 @@ firebase.initializeApp({
 
 firebase.messaging();
 
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
 const FALLBACK_URL = '/notification';
 
 function toSafeInternalUrl(rawUrl) {
