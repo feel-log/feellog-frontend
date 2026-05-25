@@ -1,4 +1,5 @@
 import { evaluate } from 'mathjs';
+import { formatDateString } from './date';
 
 export const DAY_OF_WEEK = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -35,15 +36,7 @@ export function calculateExpression(expression: string): number {
 }
 
 export function getDisplayAmount(amountInput: string): number {
-  if (!amountInput) return 0;
-  try {
-    const normalized = amountInput.replace(/,00/g, '.00').replace(/,000/g, '.000');
-    const result = evaluate(normalized);
-    return Math.round((result || 0) * 100) / 100;
-  } catch {
-    const numbers = amountInput.match(/\d+/g);
-    return numbers ? parseInt(numbers[numbers.length - 1]) : 0;
-  }
+  return calculateExpression(amountInput);
 }
 
 export function getCalendarDays(year: number, month: number, today: string) {
@@ -60,7 +53,7 @@ export function getCalendarDays(year: number, month: number, today: string) {
   for (let i = startingDayOfWeek - 1; i >= 0; i--) {
     const date = new Date(year, month - 2, daysInPrevMonth - i);
     days.push({
-      date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
+      date: formatDateString(date),
       day: daysInPrevMonth - i,
       isCurrentMonth: false,
     });
@@ -69,7 +62,7 @@ export function getCalendarDays(year: number, month: number, today: string) {
   for (let i = 1; i <= daysInMonth; i++) {
     const date = new Date(year, month - 1, i);
     days.push({
-      date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
+      date: formatDateString(date),
       day: i,
       isCurrentMonth: true,
     });
@@ -79,7 +72,7 @@ export function getCalendarDays(year: number, month: number, today: string) {
   for (let i = 1; i <= remainingDays; i++) {
     const date = new Date(year, month, i);
     days.push({
-      date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
+      date: formatDateString(date),
       day: i,
       isCurrentMonth: false,
     });

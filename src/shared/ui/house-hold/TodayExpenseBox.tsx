@@ -11,6 +11,7 @@ import ConfirmModal from '@/shared/ui/ConfirmModal';
 import DateNavigator from './DateNavigator';
 import EmptyExpenseState from './EmptyExpenseState';
 import ExpenseCategoryItem from './ExpenseCategoryItem';
+import { formatDateString } from '@/shared/utils/date';
 
 interface TodayExpenseBoxProps {
   emotions: any[];
@@ -69,7 +70,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories, isBoxOn }
   };
 
   const { data: monthData } = useMonthExpendStore();
-  const dateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
+  const dateString = formatDateString(selectedDate);
 
   const handleExportClick = () => {
     if (!accessToken || user?.nickname?.startsWith('guest')) {

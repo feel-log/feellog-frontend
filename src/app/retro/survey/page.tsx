@@ -9,11 +9,7 @@ import ChipSelect from '@/widgets/retro/ChipSelect';
 import ListSelect from '@/widgets/retro/ListSelect';
 import PageHeader from '@/shared/ui/PageHeader';
 import Skeleton from '@/shared/ui/Skeleton';
-
-function todayDateString(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
+import { todayKST } from '@/shared/utils/date';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -21,7 +17,7 @@ export default function RetroSurveyPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dateParam = searchParams?.get('date');
-  const reviewDate = dateParam && DATE_PATTERN.test(dateParam) ? dateParam : todayDateString();
+  const reviewDate = dateParam && DATE_PATTERN.test(dateParam) ? dateParam : todayKST();
   const { getAccessToken } = useToken();
   const token = getAccessToken();
   const queryClient = useQueryClient();
