@@ -12,8 +12,9 @@ import { useToken, useUser } from '@/shared/store';
 import { LogoutModal } from '@/features/logout/ui/LogoutModal';
 import { notificationQueries } from '@/entities/notification/api/notification-queries';
 import { updateNotificationSettingsApi } from '@/entities/notification/api/notification-api';
-import { postDeviceTokenApi, deleteDeviceTokenApi } from '@/features/post-device-token';
-import { getFcmToken, requestNotificationPermission } from '@/shared/lib/firebase';
+import { registerDeviceToken, unregisterDeviceToken } from '@/features/post-device-token';
+import { requestNotificationPermission } from '@/shared/lib/firebase';
+import { FCM_TOKEN_KEY } from '@/shared/constants/storage';
 
 function MyPageContent() {
   const router = useRouter();
@@ -74,16 +75,14 @@ function MyPageContent() {
     if (!settings?.pushEnabled) return;
     if (autoRegisterTriedRef.current) return;
     if (typeof window === 'undefined') return;
-    if (localStorage.getItem('fcmToken')) return;
+    if (localStorage.getItem(FCM_TOKEN_KEY)) return;
     if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
 
     autoRegisterTriedRef.current = true;
     (async () => {
       try {
-        const fcmToken = await getFcmToken();
+        const fcmToken = await registerDeviceToken();
         if (!fcmToken) return;
-        await postDeviceTokenApi({ token: fcmToken, deviceType: 'WEB' });
-        localStorage.setItem('fcmToken', fcmToken);
       } catch (error) {
         console.error('FCM 토큰 자동 등록 실패:', error);
       }
@@ -106,23 +105,13 @@ function MyPageContent() {
           toast.warning('알림 권한을 허용해주세요. (브라우저 설정에서 변경 가능)');
           return;
         }
-        const fcmToken = await getFcmToken();
+        const fcmToken = await registerDeviceToken();
         if (!fcmToken) {
           toast.error('알림 토큰 발급에 실패했어요. 브라우저 알림이 차단되어 있지 않은지 확인해주세요.');
           return;
         }
-        await postDeviceTokenApi({ token: fcmToken, deviceType: 'WEB' });
-        localStorage.setItem('fcmToken', fcmToken);
       } else {
-        const fcmToken = localStorage.getItem('fcmToken');
-        if (fcmToken) {
-          try {
-            await deleteDeviceTokenApi(fcmToken);
-          } catch (error) {
-            console.error('디바이스 토큰 삭제 실패:', error);
-          }
-          localStorage.removeItem('fcmToken');
-        }
+        await unregisterDeviceToken();
       }
       await updateSettingsMutation.mutateAsync({ pushEnabled: next });
     } catch (error) {
