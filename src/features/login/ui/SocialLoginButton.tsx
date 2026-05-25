@@ -36,7 +36,6 @@ export function SocialLoginButton({ social, imageUrl, text, isPriority = false }
       });
     } else if (social === 'google') {
       if (!window.google || !window.google.accounts || !window.google.accounts.id) {
-        console.log('Google SDK not initialized');
         return;
       }
       window.google.accounts.id.initialize({

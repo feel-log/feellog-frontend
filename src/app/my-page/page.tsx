@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -102,12 +103,12 @@ function MyPageContent() {
       if (next) {
         const permission = await requestNotificationPermission();
         if (permission !== 'granted') {
-          alert('알림 권한을 허용해주세요. (브라우저 설정에서 변경 가능)');
+          toast.warning('알림 권한을 허용해주세요. (브라우저 설정에서 변경 가능)');
           return;
         }
         const fcmToken = await getFcmToken();
         if (!fcmToken) {
-          alert('알림 토큰 발급에 실패했어요. 브라우저 알림이 차단되어 있지 않은지 확인해주세요.');
+          toast.error('알림 토큰 발급에 실패했어요. 브라우저 알림이 차단되어 있지 않은지 확인해주세요.');
           return;
         }
         await postDeviceTokenApi({ token: fcmToken, deviceType: 'WEB' });
@@ -126,7 +127,7 @@ function MyPageContent() {
       await updateSettingsMutation.mutateAsync({ pushEnabled: next });
     } catch (error) {
       console.error('푸시 알림 토글 실패:', error);
-      alert('알림 설정 변경에 실패했어요. 잠시 후 다시 시도해주세요.');
+      toast.error('알림 설정 변경에 실패했어요. 잠시 후 다시 시도해주세요.');
     } finally {
       setIsToggleProcessing(false);
     }
