@@ -92,7 +92,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
       setSwipedId(null);
       await queryClient.invalidateQueries({ refetchType: 'all' });
     } catch (error) {
-      toast.error('삭제 중 오류가 발생했습니다.');
+      toast.error('삭제에 실패했어요. 잠시 후 다시 시도해주세요.');
       setIsDeleting(false);
     }
   };

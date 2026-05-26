@@ -26,7 +26,10 @@ function toSafeInternalPath(rawUrl?: string) {
 export function ForegroundMessageHandler() {
   const router = useRouter();
   const routerRef = useRef(router);
-  routerRef.current = router;
+
+  useEffect(() => {
+    routerRef.current = router;
+  }, [router]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

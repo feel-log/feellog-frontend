@@ -11,7 +11,8 @@ import { todayKST } from '@/shared/utils/date';
 
 export default function RetroResultContent() {
   const searchParams = useSearchParams();
-  const date = searchParams?.get('date') ?? todayKST();
+  const dateParam = searchParams?.get('date');
+  const date = dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) ? dateParam : todayKST();
 
   const { getAccessToken } = useToken();
   const token = getAccessToken();
