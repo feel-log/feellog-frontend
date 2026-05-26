@@ -13,9 +13,20 @@ import EmptyExpenseState from './EmptyExpenseState';
 import ExpenseCategoryItem from './ExpenseCategoryItem';
 import { formatDateString } from '@/shared/utils/date';
 
+interface MasterItem {
+  id: number;
+  label: string;
+  emoji: string;
+}
+
+interface MasterGroup {
+  group: string;
+  items: MasterItem[];
+}
+
 interface TodayExpenseBoxProps {
-  emotions: any[];
-  expenseCategories: any[];
+  emotions: MasterGroup[];
+  expenseCategories: MasterGroup[];
   isBoxOn: boolean;
 }
 
@@ -92,7 +103,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories, isBoxOn }
         ? expenseCategories.flatMap((g) => g.items).find((item) => item.id === expense.categoryId)?.label || '기타'
         : '기타';
 
-      const expenseEmotions: any[] = [];
+      const expenseEmotions: MasterItem[] = [];
       if (expense.emotionIds && expense.emotionIds.length > 0) {
         expense.emotionIds.forEach((emotionId) => {
           const emotion = emotions && Array.isArray(emotions)
