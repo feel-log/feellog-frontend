@@ -62,9 +62,11 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
 
     return (
         <>
-            <div className="fixed max-w-md inset-0 mx-auto bg-black z-[100] opacity-45"></div>
+            <div className="fixed inset-0 bg-black z-[100] opacity-45"></div>
             <div className="dim__info fixed z-[120] max-w-md inset-0 mx-auto flex flex-col absolute h-screen max-w-md">
-                <button onClick={() => {changeFalse(); document.documentElement.classList.remove('hiddens'); document.body.style.overflow = ''; boxOff(); secondBoxOff(); }} className={`text-white cursor-pointer absolute z-[120] self-end mr-4 top-[101.52px]`}>건너뛰기</button>
+                {currentIndex !== 2 && (
+                    <button onClick={() => {changeFalse(); document.documentElement.classList.remove('hiddens'); document.body.style.overflow = ''; boxOff(); secondBoxOff(); }} className={`text-white cursor-pointer absolute z-[120] self-end mr-4 top-[101.52px]`}>건너뛰기</button>
+                )}
                 {
                     currentIndex === 0 &&
                     <>
@@ -76,11 +78,11 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
                 }
                 {
                     currentIndex === 1 &&
-                    <TextBallon text={"일간, 주간, 월간 지출을 확인할 수 있어요"} type={"TOP"} place={70} width={253} />
+                    <TextBallon text={"일간, 주간, 월간 지출을 확인할 수 있어요"} type={"TOP"} place={78} width={253} />
                 }
                 {
                     currentIndex === 2 &&
-                    <TextBallon text={"회고를 통해 오늘의 소비를 되돌아보세요"} type={"BOTTOM"} place={270} width={253} />
+                    <TextBallon text={"회고를 통해 오늘의 소비를 되돌아보세요"} type={"BOTTOM"} place={265} width={253} />
                 }
                 {
                 currentIndex! > 0 && typeof(currentIndex) === 'number' &&
