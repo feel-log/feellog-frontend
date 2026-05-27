@@ -34,9 +34,9 @@ export function ForegroundMessageHandler() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (typeof Notification === 'undefined') return;
-    if (Notification.permission !== 'granted') return;
 
-    const unsubscribe = subscribeForegroundMessage((payload) => {
+    try {
+      const unsubscribe = subscribeForegroundMessage((payload) => {
       const { notification, data } = payload as FcmPayload;
       const title = notification?.title;
       const body = notification?.body;
@@ -87,9 +87,14 @@ export function ForegroundMessageHandler() {
         ),
         { duration: 5000 },
       );
-    });
+      });
 
-    return unsubscribe;
+      if (Notification.permission === 'granted') {
+        return unsubscribe;
+      }
+    } catch (error) {
+      console.error('ForegroundMessageHandler error:', error);
+    }
   }, []);
 
   return null;
