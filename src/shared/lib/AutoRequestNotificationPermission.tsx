@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from 'react';
 import { useUser } from '@/shared/store';
-import { postDeviceTokenApi } from '@/features/post-device-token';
+import { registerDeviceToken } from '@/features/post-device-token';
 import { updateNotificationSettingsApi } from '@/entities/notification/api/notification-api';
-import { getFcmToken, requestNotificationPermission } from '@/shared/lib/firebase';
+import { requestNotificationPermission } from '@/shared/lib/firebase';
 
 export function AutoRequestNotificationPermission() {
   const isLoaded = useUser((s) => s.isLoaded);
@@ -26,10 +26,8 @@ export function AutoRequestNotificationPermission() {
       try {
         const permission = await requestNotificationPermission();
         if (permission !== 'granted') return;
-        const fcmToken = await getFcmToken();
+        const fcmToken = await registerDeviceToken();
         if (!fcmToken) return;
-        await postDeviceTokenApi({ token: fcmToken, deviceType: 'WEB' });
-        localStorage.setItem('fcmToken', fcmToken);
         await updateNotificationSettingsApi({ pushEnabled: true });
       } catch (error) {
         console.error('알림 자동 권한 요청 실패:', error);

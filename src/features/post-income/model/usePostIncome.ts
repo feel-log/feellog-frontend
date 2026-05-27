@@ -1,6 +1,7 @@
 import { PostIncomeRequest, postIncomeApi } from '@/features/post-income/api/post-income-api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export function usePostIncome() {
   const router = useRouter();
@@ -13,9 +14,8 @@ export function usePostIncome() {
       router.push('/');
       router.refresh();
     },
-    onError: (error: unknown) => {
-      console.error('수입 추가 실패');
-      console.log(error);
+    onError: () => {
+      toast.error('수입 저장에 실패했어요. 잠시 후 다시 시도해주세요.');
     },
   });
 

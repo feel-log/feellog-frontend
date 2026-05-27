@@ -8,6 +8,7 @@ import { useToken } from '@/shared/store';
 import { useDeleteReview } from '@/features/delete-review/model/useDeleteReview';
 import RetroDeleteModal from './RetroDeleteModal';
 import RetroHistoryDetailSkeleton from './RetroHistoryDetailSkeleton';
+import { toast } from 'sonner';
 
 interface RetroHistoryDetailContentProps {
   date: string;
@@ -66,7 +67,7 @@ export default function RetroHistoryDetailContent({ date }: RetroHistoryDetailCo
       },
       onError: () => {
         setIsDeleteModalOpen(false);
-        alert('삭제에 실패했어요. 잠시 후 다시 시도해주세요.');
+        toast.error('삭제에 실패했어요. 잠시 후 다시 시도해주세요.');
       },
     });
   };

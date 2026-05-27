@@ -11,10 +11,22 @@ import ConfirmModal from '@/shared/ui/ConfirmModal';
 import DateNavigator from './DateNavigator';
 import EmptyExpenseState from './EmptyExpenseState';
 import ExpenseCategoryItem from './ExpenseCategoryItem';
+import { formatDateString } from '@/shared/utils/date';
+
+interface MasterItem {
+  id: number;
+  label: string;
+  emoji: string;
+}
+
+interface MasterGroup {
+  group: string;
+  items: MasterItem[];
+}
 
 interface TodayExpenseBoxProps {
-  emotions: any[];
-  expenseCategories: any[];
+  emotions: MasterGroup[];
+  expenseCategories: MasterGroup[];
   isBoxOn: boolean;
 }
 
@@ -69,7 +81,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories, isBoxOn }
   };
 
   const { data: monthData } = useMonthExpendStore();
-  const dateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
+  const dateString = formatDateString(selectedDate);
 
   const handleExportClick = () => {
     if (!accessToken || user?.nickname?.startsWith('guest')) {
@@ -91,7 +103,7 @@ export default function TodayExpenseBox({ emotions, expenseCategories, isBoxOn }
         ? expenseCategories.flatMap((g) => g.items).find((item) => item.id === expense.categoryId)?.label || '기타'
         : '기타';
 
-      const expenseEmotions: any[] = [];
+      const expenseEmotions: MasterItem[] = [];
       if (expense.emotionIds && expense.emotionIds.length > 0) {
         expense.emotionIds.forEach((emotionId) => {
           const emotion = emotions && Array.isArray(emotions)

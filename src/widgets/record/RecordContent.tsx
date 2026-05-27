@@ -24,6 +24,7 @@ import {
   getDisplayAmount,
   RecordState
 } from '@/shared/utils/record';
+import { formatDateString } from '@/shared/utils/date';
 import { useAmountInput } from '@/shared/hooks/useAmountInput';
 import DatePickerBottomSheet from './DatePickerBottomSheet';
 import CategoryBottomSheet from './CategoryBottomSheet';
@@ -39,7 +40,7 @@ export default function RecordContent() {
   const searchParams = useSearchParams();
 
   const now = new Date();
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const today = formatDateString(now);
   const selectedDate = searchParams?.get('date') || today;
   const typeParam = searchParams?.get('type');
   const expenseIdParam = searchParams?.get('expenseId');

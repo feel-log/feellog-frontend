@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -25,6 +25,11 @@ function toSafeInternalPath(rawUrl?: string) {
 
 export function ForegroundMessageHandler() {
   const router = useRouter();
+  const routerRef = useRef(router);
+
+  useEffect(() => {
+    routerRef.current = router;
+  }, [router]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -42,7 +47,7 @@ export function ForegroundMessageHandler() {
         (id) => (
           <div
             onClick={() => {
-              router.push(targetUrl);
+              routerRef.current.push(targetUrl);
               toast.dismiss(id);
             }}
             className="group flex w-89 cursor-pointer items-start gap-3 overflow-hidden rounded-[14px] bg-white p-3.5 shadow-[0_10px_30px_-8px_rgba(19,39,138,0.25)] ring-1 ring-[#ECF2FB] transition-all hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-8px_rgba(19,39,138,0.32)]"
@@ -85,7 +90,7 @@ export function ForegroundMessageHandler() {
     });
 
     return unsubscribe;
-  }, [router]);
+  }, []);
 
   return null;
 }

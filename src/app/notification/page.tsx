@@ -6,6 +6,7 @@ import { cn } from '@/shared/lib/utils';
 import { AuthGuard } from '@/shared/ui/guard/AuthGuard';
 import PageHeader from '@/shared/ui/PageHeader';
 import Skeleton from '@/shared/ui/Skeleton';
+import { toast } from 'sonner';
 import RetroDeleteModal from '@/widgets/retro-history/RetroDeleteModal';
 import { notificationQueries } from '@/entities/notification/api/notification-queries';
 import {
@@ -57,7 +58,7 @@ export default function NotiPage() {
     },
     onError: () => {
       setIsDeleteModalOpen(false);
-      alert('삭제에 실패했어요. 잠시 후 다시 시도해주세요.');
+      toast.error('삭제에 실패했어요. 잠시 후 다시 시도해주세요.');
     },
   });
 

@@ -7,15 +7,12 @@ import { useToken } from '@/shared/store';
 import { reviewQueries } from '@/entities/review';
 import PageHeader from '@/shared/ui/PageHeader';
 import Skeleton from '@/shared/ui/Skeleton';
-
-function todayDateString(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
+import { todayKST } from '@/shared/utils/date';
 
 export default function RetroResultContent() {
   const searchParams = useSearchParams();
-  const date = searchParams?.get('date') ?? todayDateString();
+  const dateParam = searchParams?.get('date');
+  const date = dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) ? dateParam : todayKST();
 
   const { getAccessToken } = useToken();
   const token = getAccessToken();

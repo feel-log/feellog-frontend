@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import useEmblaCarousel from 'embla-carousel-react';
 import EmotionIcon from '@/shared/ui/EmotionIcon';
 import type { DailyEmotionItem, DailyReport } from '@/entities/report';
+import { formatDateString } from '@/shared/utils/date';
 
 type ExpenseGraph = DailyReport['expenseGraph'];
 
@@ -63,7 +64,7 @@ export default function RetroMain({
 
   const handleDetailClick = () => {
     const today = new Date();
-    const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const dateString = formatDateString(today);
     router.push(`/export?date=${dateString}`);
   };
 
