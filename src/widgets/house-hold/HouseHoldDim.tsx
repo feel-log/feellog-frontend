@@ -19,6 +19,28 @@ import { TextBallon } from "@/shared/ui/TextBallon";
  */
 export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBoxOn, secondBoxOff } : { isRendered: boolean, changeFalse: () => void, boxOn: () => void, boxOff: () => void, secondBoxOn: () => void, secondBoxOff: () => void }) {
     const [currentIndex, setCurrentIndex] = useState<number | null>(0);
+    const [balloonPlace, setBalloonPlace] = useState({ step0: 142, step1: 78, step2: 265 });
+
+    useEffect(() => {
+        const updateBalloonPlacement = () => {
+            const viewportHeight = window.innerHeight;
+            // 모바일 화면 높이에 따라 풍선 위치 조정
+            if (viewportHeight < 700) {
+                // 작은 화면 (모바일)
+                setBalloonPlace({ step0: 120, step1: 65, step2: 240 });
+            } else if (viewportHeight < 900) {
+                // 중간 화면
+                setBalloonPlace({ step0: 130, step1: 70, step2: 250 });
+            } else {
+                // 큰 화면
+                setBalloonPlace({ step0: 142, step1: 78, step2: 265 });
+            }
+        };
+
+        updateBalloonPlacement();
+        window.addEventListener("resize", updateBalloonPlacement);
+        return () => window.removeEventListener("resize", updateBalloonPlacement);
+    }, []);
 
     useEffect(() => {
         const htmlElement = document.documentElement;
@@ -45,12 +67,12 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
             boxOn();
             secondBoxOff();
             window.scrollTo(0, 80);
-        } 
+        }
         else if (currentIndex === 2) {
             boxOff();
             secondBoxOn();
             window.scrollTo(0, 200)
-        } 
+        }
         else {
             secondBoxOff();
             boxOff();
@@ -70,19 +92,19 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
                 {
                     currentIndex === 0 &&
                     <>
-                        <div role="button__dimmed" className="w-[60px] h-[60px] bg-[#13278a] rounded-full absolute z-[120] bottom-1/2 left-0 right-0 mx-auto translate-y-1/2 flex justify-center items-center border-dashed border-white" style={{ borderWidth: '2px'}}>
+                        <div role="button__dimmed" className="w-[60px] h-[60px] bg-[#13278a] rounded-full absolute z-[120] bottom-[180px] sm:bottom-[220px] left-0 right-0 mx-auto flex justify-center items-center border-dashed border-white" style={{ borderWidth: '2px'}}>
                             <Image src={"/svg/icon_plus.svg"} alt="plus" width={30} height={30} />
                         </div>
-                        <TextBallon text={"오늘의 지출을 기록해 보세요"} type={"BOTTOM"} place={142} width={188} />
+                        <TextBallon text={"오늘의 지출을 기록해 보세요"} type={"BOTTOM"} place={balloonPlace.step0} width={188} />
                     </>
                 }
                 {
                     currentIndex === 1 &&
-                    <TextBallon text={"일간, 주간, 월간 지출을 확인할 수 있어요"} type={"TOP"} place={78} width={253} />
+                    <TextBallon text={"일간, 주간, 월간 지출을 확인할 수 있어요"} type={"TOP"} place={balloonPlace.step1} width={253} />
                 }
                 {
                     currentIndex === 2 &&
-                    <TextBallon text={"회고를 통해 오늘의 소비를 되돌아보세요"} type={"BOTTOM"} place={265} width={253} />
+                    <TextBallon text={"회고를 통해 오늘의 소비를 되돌아보세요"} type={"BOTTOM"} place={balloonPlace.step2} width={253} />
                 }
                 {
                 currentIndex! > 0 && typeof(currentIndex) === 'number' &&
