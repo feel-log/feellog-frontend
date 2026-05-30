@@ -35,9 +35,14 @@ function HomeContent() {
   const [isSecondBoxOn, setIsSecondBoxOn] = useState<boolean>(false);
 
   useEffect(() => {
-    // 온보딩 항상 표시
-    localStorage.removeItem('isDimShowed');
-    setIsDimmed(true);
+    const isDimShowed = localStorage.getItem('isDimShowed');
+    if (!isDimShowed) {
+      setIsDimmed(true);
+      localStorage.setItem('isDimShowed', 'true');
+    } else {
+      const htmlElement = document.documentElement;
+      htmlElement.classList.remove('hiddens');
+    }
   },[])
 
   const { isLoaded } = useToken();
