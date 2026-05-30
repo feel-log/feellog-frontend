@@ -87,7 +87,14 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
             <div className="fixed inset-0 bg-black z-[100] opacity-45"></div>
             <div className="dim__info fixed z-[120] inset-0 flex flex-col items-center justify-center w-full min-h-dvh px-4">
                 {currentIndex !== 2 && (
-                    <button onClick={() => { changeFalse(); document.documentElement.classList.remove('hiddens'); document.body.style.overflow = ''; boxOff(); secondBoxOff(); }} className={`text-white cursor-pointer absolute z-[120] right-4 top-[101.52px] text-sm`}>건너뛰기</button>
+                    <button onClick={() => {
+                        localStorage.setItem('isDimShowed', 'true');
+                        changeFalse();
+                        document.documentElement.classList.remove('hiddens');
+                        document.body.style.overflow = '';
+                        boxOff();
+                        secondBoxOff();
+                    }} className={`text-white cursor-pointer absolute z-[120] right-4 top-[101.52px] text-sm`}>건너뛰기</button>
                 )}
                 {
                     currentIndex === 0 &&
@@ -122,7 +129,14 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
                 }
                 {
                     currentIndex === 2 && typeof (currentIndex) === 'number' &&
-                    <button onClick={() => { changeFalse(); document.documentElement.classList.remove('hiddens'); document.body.style.overflow = ''; boxOff(); secondBoxOff(); }} className="absolute z-[120] text-white flex gap-2 items-center right-4 bottom-[37px] sm:gap-3">
+                    <button onClick={() => {
+                        localStorage.setItem('isDimShowed', 'true');
+                        changeFalse();
+                        document.documentElement.classList.remove('hiddens');
+                        document.body.style.overflow = '';
+                        boxOff();
+                        secondBoxOff();
+                    }} className="absolute z-[120] text-white flex gap-2 items-center right-4 bottom-[37px] sm:gap-3">
                         <span className="text-sm sm:text-[18px]">완료</span>
                         <Image src={"/svg/right.svg"} alt="left" width={8} height={8} />
                     </button>
