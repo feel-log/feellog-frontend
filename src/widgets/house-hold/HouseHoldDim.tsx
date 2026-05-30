@@ -27,7 +27,7 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
             // 모바일 화면 높이에 따라 풍선 위치 조정
             if (viewportHeight < 700) {
                 // 작은 화면 (모바일)
-                setBalloonPlace({ step0: 120, step1: 65, step2: 240 });
+                setBalloonPlace({ step0: 151, step1: 65, step2: 240 });
             } else if (viewportHeight < 900) {
                 // 중간 화면
                 setBalloonPlace({ step0: 130, step1: 70, step2: 250 });
