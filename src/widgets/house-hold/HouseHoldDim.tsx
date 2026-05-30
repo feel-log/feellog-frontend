@@ -85,7 +85,7 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
     return (
         <>
             <div className="fixed inset-0 bg-black z-[100] opacity-45"></div>
-            <div className="dim__info fixed z-[120] inset-0 flex flex-col items-center justify-center w-full h-screen px-4">
+            <div className="dim__info fixed z-[120] inset-0 flex flex-col items-center justify-center w-full min-h-dvh px-4">
                 {currentIndex !== 2 && (
                     <button onClick={() => {changeFalse(); document.documentElement.classList.remove('hiddens'); document.body.style.overflow = ''; boxOff(); secondBoxOff(); }} className={`text-white cursor-pointer absolute z-[120] right-4 top-[101.52px] text-sm`}>건너뛰기</button>
                 )}

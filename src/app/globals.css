@@ -92,6 +92,7 @@ html {
   overflow-y: scroll;
   color-scheme: light only;
   scrollbar-width: none;
+  padding: max(0px, env(safe-area-inset-top)) 0 0 0;
 }
 
 html::-webkit-scrollbar {
@@ -103,6 +104,9 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  min-height: 100dvh;
+  min-height: 100vh;
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
 }
 
 /* 모든 요소의 box-sizing을 border-box로 설정 */
