@@ -14,13 +14,14 @@ async function refreshAccessToken(): Promise<string> {
   isRefreshing = true;
   refreshPromise = (async () => {
     const tokenStore = useToken.getState();
-    const refreshToken = tokenStore.getRefreshToken();
-
-    if (!refreshToken) {
-      throw new Error('No refresh token');
-    }
 
     try {
+      const refreshToken = tokenStore.getRefreshToken();
+
+      if (!refreshToken) {
+        throw new Error('No refresh token');
+      }
+
       const response = await refreshApi(refreshToken);
       tokenStore.setTokens({
         accessToken: response.accessToken,
@@ -29,9 +30,6 @@ async function refreshAccessToken(): Promise<string> {
       return response.accessToken;
     } catch (error) {
       tokenStore.clearTokens();
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
       throw new Error('Token refresh failed');
     } finally {
       isRefreshing = false;

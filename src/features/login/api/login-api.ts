@@ -9,22 +9,36 @@ export interface LoginResponse {
   refreshToken: string
 }
 
-export function loginKakaoApi(body: LoginRequest) : Promise<LoginResponse> {
-  return apiClient<LoginResponse>("/api/v1/auth/kakao", {
-    method: "POST",
-    body: JSON.stringify(body)
-  })
+function ensureValidLoginResponse(response: LoginResponse): LoginResponse {
+  if (!response?.accessToken || !response?.refreshToken) {
+    throw new Error('Login response does not contain both tokens');
+  }
+
+  return response;
 }
 
-export function loginGoogleApi(body: LoginRequest): Promise<LoginResponse> {
-  return apiClient<LoginResponse>("/api/v1/auth/google", {
+export async function loginKakaoApi(body: LoginRequest): Promise<LoginResponse> {
+  const response = await apiClient<LoginResponse>("/api/v1/auth/kakao", {
     method: "POST",
     body: JSON.stringify(body)
-  })
+  });
+
+  return ensureValidLoginResponse(response);
 }
 
-export function loginGuestApi(): Promise<LoginResponse> {
-  return apiClient<LoginResponse>("/api/v1/auth/guest", {
+export async function loginGoogleApi(body: LoginRequest): Promise<LoginResponse> {
+  const response = await apiClient<LoginResponse>("/api/v1/auth/google", {
+    method: "POST",
+    body: JSON.stringify(body)
+  });
+
+  return ensureValidLoginResponse(response);
+}
+
+export async function loginGuestApi(): Promise<LoginResponse> {
+  const response = await apiClient<LoginResponse>("/api/v1/auth/guest", {
     method: "POST"
   });
+
+  return ensureValidLoginResponse(response);
 }

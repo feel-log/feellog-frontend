@@ -35,7 +35,7 @@ export const useUser = create<UserState>()(
           birthDate: '',
           gender: 'male',
           provider: '',
-          isLoaded: false,
+          isLoaded: true,
         });
       },
 

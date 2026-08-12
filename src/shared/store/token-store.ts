@@ -34,8 +34,8 @@ export const useToken = create<tokenState>()(
         set({
           accessToken: '',
           refreshToken: '',
-          isLoaded: false,
-
+          isLoaded: true,
+          errorBox: false,
         });
       },
 

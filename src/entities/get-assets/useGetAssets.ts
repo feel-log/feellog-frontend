@@ -20,6 +20,9 @@ export function useGetAssets(params: GetAssetsParams, enabled = true) {
   return useQuery({
     queryKey: ['assets', params],
     enabled,
+    throwOnError: false,
+    retry: (failureCount, error) =>
+      !(error instanceof Error && error.message === 'Session expired') && failureCount < 2,
     queryFn: async (): Promise<MergedAssetsResponse> => {
       // 특정 카테고리만 조회하는 경우
       if (params.categoryId) {
