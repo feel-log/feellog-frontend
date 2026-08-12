@@ -49,7 +49,11 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
   const clearUser = useUser((state) => state.clearUser);
   const accessToken = getAccessToken();
   const category = ASSET_CATEGORIES.find(cat => cat.id === categoryId);
-  const apiCategoryId = CATEGORY_ID_MAP[categoryId];
+  const numericCategoryId = Number(categoryId);
+  const apiCategoryId =
+    Number.isInteger(numericCategoryId) && numericCategoryId > 0
+      ? numericCategoryId
+      : CATEGORY_ID_MAP[categoryId];
   const [sortType, setSortType] = useState<SortType>('latest');
   const [swipedId, setSwipedId] = useState<number | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
@@ -114,7 +118,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
     router.replace('/login');
   };
 
-  if (!category) {
+  if (!apiCategoryId) {
     return (
       <div className="flex min-h-dvh items-center justify-center">
         <p className="text-[14px] text-[#9FA4A8]">
@@ -126,6 +130,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
 
   const records = assetsData?.data ?? [];
   const totalAmount = assetsData?.totalAmount ?? 0;
+  const categoryLabel = assetsData?.categoryName || category?.label || '자산';
 
   if (!isLoaded || isLoading) {
     return (
@@ -168,7 +173,7 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
       {/* 카테고리 합계 */}
       <div className="flex flex-col gap-1.25 border-b-[5px] border-[#F7F8FA] px-4 pb-3.75">
         <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#27282C]">
-          {category.label}
+          {categoryLabel}
         </p>
         <p className="text-[28px] font-semibold leading-normal tracking-[-0.7px] text-[#030303]">
           {totalAmount.toLocaleString()}원

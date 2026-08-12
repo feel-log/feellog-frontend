@@ -28,7 +28,12 @@ export function SocialLoginButton({ social, imageUrl, text, isPriority = false }
         console.error('카카오 SDK가 초기화되지 않았습니다');
         return;
       }
+      const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
       window.Kakao.Auth.login({
+        // 모바일에서는 카카오톡 간편 로그인을 유지하고, 데스크톱에서는
+        // 처리할 수 없는 KakaoTalk intent 대신 카카오계정 팝업을 사용한다.
+        throughTalk: isMobileDevice,
         success: (authObj: { access_token: string }) => {
           logAuthDebug(
             'Kakao SDK access token callback received',

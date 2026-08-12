@@ -24,6 +24,17 @@ export interface AssetsResponse {
   size: number;
 }
 
+export interface AssetCategorySummary {
+  assetCategoryId: number;
+  categoryName: string;
+  totalAmount: number;
+}
+
+export interface AssetsSummaryResponse {
+  categories: AssetCategorySummary[];
+  totalAssetAmount: number;
+}
+
 export async function getAssetsApi(params: GetAssetsParams): Promise<AssetsResponse> {
   const queryParams = new URLSearchParams();
   if (params.categoryId) queryParams.append('categoryId', params.categoryId.toString());
@@ -35,6 +46,12 @@ export async function getAssetsApi(params: GetAssetsParams): Promise<AssetsRespo
   const url = `/api/v1/assets${query ? `?${query}` : ''}`;
 
   return apiClient(url, {
+    method: 'GET',
+  });
+}
+
+export async function getAssetsSummaryApi(): Promise<AssetsSummaryResponse> {
+  return apiClient('/api/v1/assets/summary', {
     method: 'GET',
   });
 }

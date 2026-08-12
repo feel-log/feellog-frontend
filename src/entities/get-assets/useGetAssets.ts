@@ -1,5 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAssetsApi, GetAssetsParams, AssetItem } from '@/entities/get-assets/get-assets-api';
+import {
+  getAssetsApi,
+  getAssetsSummaryApi,
+  GetAssetsParams,
+  AssetItem,
+} from '@/entities/get-assets/get-assets-api';
 import { ASSET_CATEGORIES } from '@/shared/constants/assetData';
 
 interface CategoryAsset {
@@ -14,6 +19,7 @@ interface MergedAssetsResponse {
   total: number;
   totalAmount: number;
   categories: CategoryAsset[];
+  categoryName?: string;
 }
 
 export function useGetAssets(params: GetAssetsParams, enabled = true) {
@@ -37,31 +43,33 @@ export function useGetAssets(params: GetAssetsParams, enabled = true) {
           total: assetsWithCategory.length,
           totalAmount,
           categories: [],
+          categoryName: response.categoryName,
         };
       }
 
-      // 모든 카테고리 조회
-      const categoryIds = [1, 2, 3, 4, 5, 6];
+      // 서버에 실제로 존재하는 카테고리만 조회한다.
+      const summary = await getAssetsSummaryApi();
+      const categorySummaries = summary.categories ?? [];
       const allAssets: AssetItem[] = [];
-      const categoryTotals: Record<number, number> = {};
 
       const responses = await Promise.all(
-        categoryIds.map(categoryId =>
+        categorySummaries.map(({ assetCategoryId }) =>
           getAssetsApi({
             ...params,
-            categoryId,
+            categoryId: assetCategoryId,
+            page: 0,
+            size: 1000,
           })
         )
       );
 
       responses.forEach((response, idx) => {
-        const categoryId = categoryIds[idx];
+        const categoryId = categorySummaries[idx].assetCategoryId;
         const assetsWithCategory = (response.assets || []).map(asset => ({
           ...asset,
           assetCategoryId: categoryId,
         })) as AssetItem[];
         allAssets.push(...assetsWithCategory);
-        categoryTotals[categoryId] = response.categoryTotalAmount || 0;
       });
 
       // 정렬 적용
@@ -74,18 +82,17 @@ export function useGetAssets(params: GetAssetsParams, enabled = true) {
       const end = start + size;
       const paginatedAssets = sortedAssets.slice(start, end);
 
-      const totalAmount = allAssets.reduce((sum, asset) => sum + asset.amount, 0);
-
-      // 카테고리별 정보 구성 (메인 페이지: 0원 포함, 정의 순서 유지)
-      const categories = ASSET_CATEGORIES.map((cat, idx) => ({
-        ...cat,
-        total: categoryTotals[idx + 1] || 0,
+      const categories = categorySummaries.map((category, idx) => ({
+        id: String(category.assetCategoryId),
+        label: category.categoryName,
+        color: ASSET_CATEGORIES[idx % ASSET_CATEGORIES.length]?.color ?? '#CACDD2',
+        total: category.totalAmount ?? 0,
       }));
 
       return {
         data: paginatedAssets,
         total: allAssets.length,
-        totalAmount,
+        totalAmount: summary.totalAssetAmount ?? 0,
         categories,
       };
     },
