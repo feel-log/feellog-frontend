@@ -47,7 +47,7 @@ export function useGetAssets(params: GetAssetsParams, enabled = true) {
           getAssetsApi({
             ...params,
             categoryId,
-          }).catch(() => ({ assets: [], categoryName: '', categoryTotalAmount: 0, hasNext: false, page: 0, size: 100 }))
+          })
         )
       );
 

@@ -10,16 +10,23 @@ import { useToken, useUser } from '@/shared/store';
 
 export default function AssetContent() {
   const router = useRouter();
-  const { getUser } = useUser();
-  const { getAccessToken } = useToken();
+  const { getUser, clearUser } = useUser();
+  const { getAccessToken, clearTokens, isLoaded } = useToken();
   const user = getUser();
   const accessToken = getAccessToken();
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  const { data: assetsData, isLoading } = useGetAssets({
-    page: 0,
-    size: 100,
-  });
+  const { data: assetsData, isLoading, error } = useGetAssets(
+    {
+      page: 0,
+      size: 100,
+    },
+    isLoaded && Boolean(accessToken),
+  );
+
+  const isTokenUnavailable =
+    isLoaded &&
+    (!accessToken || (error instanceof Error && error.message === 'Session expired'));
 
   const totalAsset = assetsData?.totalAmount ?? 0;
   const groupedAssets = assetsData?.categories ?? [];
@@ -32,7 +39,13 @@ export default function AssetContent() {
     router.push('/record?type=asset');
   };
 
-  if (isLoading) {
+  const handleTokenErrorConfirm = () => {
+    clearTokens();
+    clearUser();
+    router.replace('/login');
+  };
+
+  if (!isLoaded || isLoading) {
     return (
       <div className="flex min-h-dvh flex-col bg-white pb-30">
         <PageHeader title="자산" showBack={false} />
@@ -62,6 +75,15 @@ export default function AssetContent() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-white pb-30">
+      <ConfirmModal
+        isOpen={isTokenUnavailable}
+        noCancel
+        title="토큰을 불러오지 못했습니다."
+        message="다시 로그인한 후 이용해 주세요."
+        confirmText="로그인하기"
+        onConfirm={handleTokenErrorConfirm}
+      />
+
       <PageHeader
         title="자산"
         showBack={false}
