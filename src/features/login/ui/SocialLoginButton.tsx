@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useKakaoLogin, useGoogleLogin } from '@/features/login';
+import { logAuthDebug, logAuthError, summarizeTokens } from '@/shared/utils/auth-debug';
 
 declare global {
   interface Window {
@@ -23,24 +24,35 @@ export function SocialLoginButton({ social, imageUrl, text, isPriority = false }
   const handleLoginButton = () => {
     if (social === 'kakao') {
       if (!window.Kakao || !window.Kakao.isInitialized()) {
+        logAuthError('Kakao SDK is not initialized', new Error('Kakao SDK unavailable'));
         console.error('카카오 SDK가 초기화되지 않았습니다');
         return;
       }
       window.Kakao.Auth.login({
         success: (authObj: { access_token: string }) => {
+          logAuthDebug(
+            'Kakao SDK access token callback received',
+            summarizeTokens({ accessToken: authObj.access_token }),
+          );
           loginKakao(authObj.access_token);
         },
         fail: (error: unknown) => {
+          logAuthError('Kakao SDK login failed', error);
           console.error('카카오 로그인 실패', error);
         },
       });
     } else if (social === 'google') {
       if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+        logAuthError('Google SDK is not initialized', new Error('Google Identity Services unavailable'));
         return;
       }
       window.google.accounts.id.initialize({
         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
         callback: (response) => {
+          logAuthDebug(
+            'Google SDK credential callback received',
+            summarizeTokens({ accessToken: response.credential }),
+          );
           loginGoogle(response.credential);
         }
       })

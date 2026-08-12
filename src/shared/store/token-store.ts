@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { LoginResponse } from '@/features/login/api/login-api';
+import { logAuthDebug, summarizeTokens } from '@/shared/utils/auth-debug';
 
 interface tokenState extends LoginResponse {
   isLoaded: boolean;
@@ -22,15 +23,34 @@ export const useToken = create<tokenState>()(
       errorBox: false,
 
       setTokens: (tokens: LoginResponse) => {
+        logAuthDebug('token store setTokens called', summarizeTokens(tokens));
+
         set({
           accessToken: tokens.accessToken,
           refreshToken: tokens.refreshToken,
           isLoaded: true,
           errorBox: false
         });
+
+        logAuthDebug('token store state updated', summarizeTokens(get()));
+
+        if (typeof window !== 'undefined') {
+          setTimeout(() => {
+            try {
+              const persisted = JSON.parse(localStorage.getItem('token-storage') ?? '{}');
+              logAuthDebug(
+                'localStorage persistence checked',
+                summarizeTokens(persisted?.state),
+              );
+            } catch (error) {
+              console.error('[Auth Debug] localStorage persistence parse failed', error);
+            }
+          }, 0);
+        }
       },
 
       clearTokens: () => {
+        console.warn('[Auth Debug] clearTokens called');
         set({
           accessToken: '',
           refreshToken: '',
@@ -64,7 +84,12 @@ export const useToken = create<tokenState>()(
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
       }),
-      onRehydrateStorage: () => () => {
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error('[Auth Debug] token store rehydration failed', error);
+        } else {
+          logAuthDebug('token store rehydrated', summarizeTokens(state));
+        }
         setTimeout(() => useToken.setState({ isLoaded: true }), 0);
       },
     }

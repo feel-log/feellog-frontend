@@ -1,5 +1,6 @@
 import { useToken } from '@/shared/store/token-store';
 import { refreshApi } from '@/features/refresh/api/refresh-api';
+import { logAuthDebug, logAuthError, summarizeTokens } from '@/shared/utils/auth-debug';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
@@ -18,6 +19,8 @@ async function refreshAccessToken(): Promise<string> {
     try {
       const refreshToken = tokenStore.getRefreshToken();
 
+      logAuthDebug('access token refresh started', summarizeTokens({ refreshToken }));
+
       if (!refreshToken) {
         throw new Error('No refresh token');
       }
@@ -27,8 +30,10 @@ async function refreshAccessToken(): Promise<string> {
         accessToken: response.accessToken,
         refreshToken: response.refreshToken,
       });
+      logAuthDebug('access token refresh succeeded', summarizeTokens(response));
       return response.accessToken;
     } catch (error) {
+      logAuthError('access token refresh failed', error);
       tokenStore.clearTokens();
       throw new Error('Token refresh failed');
     } finally {
@@ -58,9 +63,23 @@ async function performRequest<T>(
     ...options?.headers,
   };
 
+  logAuthDebug('API request', {
+    method: options?.method ?? 'GET',
+    endpoint,
+    hasAuthorization: Boolean(accessToken),
+    token: summarizeTokens({ accessToken }).accessToken,
+  });
+
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers,
+  });
+
+  logAuthDebug('API response', {
+    method: options?.method ?? 'GET',
+    endpoint,
+    status: res.status,
+    ok: res.ok,
   });
 
   let data: T;
@@ -97,14 +116,20 @@ export async function apiClient<T>(
     // 401 Unauthorized or 403 Forbidden - try to refresh token
     // (403 can occur when token is expired)
     if (error?.status === 401 || error?.status === 403) {
+      logAuthDebug('protected API rejected token; attempting refresh', {
+        endpoint,
+        status: error.status,
+      });
       try {
         accessToken = await refreshAccessToken();
         const result = await performRequest<T>(endpoint, options, accessToken);
         return result.data;
       } catch (refreshError) {
+        logAuthError(`API retry failed for ${endpoint}`, refreshError);
         throw new Error('Session expired');
       }
     }
+    logAuthError(`API request failed for ${endpoint}`, error);
     throw error;
   }
 }
