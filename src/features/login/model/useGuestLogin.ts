@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { loginGuestApi } from '@/features/login';
 import { getUserByTokenApi } from '@/entities/user/api/user-api';
+import { HOME_DIM_AFTER_LOGIN_KEY } from '@/shared/constants/storage';
 
 export function useGuestLogin() {
   const { setTokens, setErrorBox } = useToken();
@@ -16,6 +17,7 @@ export function useGuestLogin() {
     mutationFn: () =>
       loginGuestApi(),
     onSuccess: async (data) => {
+      sessionStorage.setItem(HOME_DIM_AFTER_LOGIN_KEY, 'true');
       setTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,

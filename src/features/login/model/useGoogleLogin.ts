@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { loginGoogleApi } from '@/features/login/api/login-api';
 import { getUserByTokenApi } from '@/entities/user/api/user-api';
+import { HOME_DIM_AFTER_LOGIN_KEY } from '@/shared/constants/storage';
 
 export function useGoogleLogin() {
   const { setTokens, setErrorBox } = useToken();
@@ -17,9 +18,10 @@ export function useGoogleLogin() {
     mutationFn: (accessToken: string) =>
       loginGoogleApi({
         accessToken,
-      }),
+    }),
     onSuccess: async (data) => {
       queryClient.clear();
+      sessionStorage.setItem(HOME_DIM_AFTER_LOGIN_KEY, 'true');
       setTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,

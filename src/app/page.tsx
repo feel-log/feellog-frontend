@@ -10,6 +10,7 @@ import HouseHoldBoxSkeleton from '@/widgets/house-hold/HouseHoldBoxSkeleton';
 import { HouseHoldDim } from '@/widgets/house-hold/HouseHoldDim';
 import { useToken } from '@/shared/store';
 import { useIsMounted } from '@/shared/hooks';
+import { HOME_DIM_AFTER_LOGIN_KEY } from '@/shared/constants/storage';
 
 
 
@@ -21,8 +22,7 @@ const HouseHoldWrapper = dynamic(() => import('@/widgets/house-hold/HouseHoldWra
 /**
  * Render the household home page and manage dim/box UI state.
  *
- * Controls whether an initial dim overlay is shown (reads/writes `localStorage:isDimShowed`
- * and removes the `hiddens` class from `document.documentElement` when appropriate),
+ * Shows the initial dim overlay only when arriving immediately after a successful login,
  * tracks two box states used by the UI, and gates interactive content behind a
  * full-screen loader derived from token and mount readiness hooks.
  *
@@ -35,14 +35,9 @@ function HomeContent() {
   const [isSecondBoxOn, setIsSecondBoxOn] = useState<boolean>(false);
 
   useEffect(() => {
-    const isDimShowed = localStorage.getItem('isDimShowed');
-    if (!isDimShowed) {
-      setIsDimmed(true);
-      localStorage.setItem('isDimShowed', 'true');
-    } else {
-      const htmlElement = document.documentElement;
-      htmlElement.classList.remove('hiddens');
-    }
+    const shouldShowDim = sessionStorage.getItem(HOME_DIM_AFTER_LOGIN_KEY) === 'true';
+    sessionStorage.removeItem(HOME_DIM_AFTER_LOGIN_KEY);
+    setIsDimmed(shouldShowDim);
   },[])
 
   const { isLoaded } = useToken();

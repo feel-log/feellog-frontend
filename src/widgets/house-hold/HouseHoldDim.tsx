@@ -88,7 +88,6 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
             <div className="dim__info fixed z-[120] inset-0 flex flex-col items-center justify-center w-full min-h-dvh px-4">
                 {currentIndex !== 2 && (
                     <button onClick={() => {
-                        localStorage.setItem('isDimShowed', 'true');
                         changeFalse();
                         document.documentElement.classList.remove('hiddens');
                         document.body.style.overflow = '';
@@ -99,11 +98,7 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
                 {
                     currentIndex === 0 &&
                     <>
-<<<<<<< HEAD
-                        <div role="button__dimmed" className="w-[60px] h-[60px] bg-[#13278a] rounded-full absolute z-[120] bottom-[60px] left-0 right-0 mx-auto flex justify-center items-center border-dashed border-white" style={{ borderWidth: '2px' }}>
-=======
                         <div role="button__dimmed" className="absolute bottom-[60px] left-1/2 z-[120] flex h-[60px] w-[60px] -translate-x-1/2 items-center justify-center rounded-full border-dashed border-white bg-[#13278a]" style={{ borderWidth: '2px'}}>
->>>>>>> main
                             <Image src={"/svg/icon_plus.svg"} alt="plus" width={30} height={30} />
                         </div>
                         <TextBallon text={"오늘의 지출을 기록해 보세요"} type={"BOTTOM"} place={balloonPlace.step0} width={188} />
@@ -134,7 +129,6 @@ export function HouseHoldDim({ isRendered, changeFalse, boxOn, boxOff, secondBox
                 {
                     currentIndex === 2 && typeof (currentIndex) === 'number' &&
                     <button onClick={() => {
-                        localStorage.setItem('isDimShowed', 'true');
                         changeFalse();
                         document.documentElement.classList.remove('hiddens');
                         document.body.style.overflow = '';

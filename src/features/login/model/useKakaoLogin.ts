@@ -6,6 +6,7 @@ import { useToken } from '@/shared/store';
 import { useUser } from '@/shared/store';
 import { useRouter } from 'next/navigation';
 import { getUserByTokenApi } from '@/entities/user/api/user-api';
+import { HOME_DIM_AFTER_LOGIN_KEY } from '@/shared/constants/storage';
 
 export function useKakaoLogin() {
   const { setTokens, setErrorBox } = useToken();
@@ -19,6 +20,7 @@ export function useKakaoLogin() {
     }),
     onSuccess: async (data) => {
       queryClient.clear();
+      sessionStorage.setItem(HOME_DIM_AFTER_LOGIN_KEY, 'true');
       setTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken

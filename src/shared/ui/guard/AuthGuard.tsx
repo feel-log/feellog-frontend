@@ -41,7 +41,6 @@ export function AuthGuard({ children }: IAuthGuard) {
     if (!accessToken || !refreshToken) {
       clearTokens();
       clearUser();
-      localStorage.removeItem('isDimShowed');
       router.replace('/login');
     } else if (pathname === '/login') {
       router.replace('/');
@@ -82,7 +81,7 @@ export function AuthGuard({ children }: IAuthGuard) {
 
   return (
     <>
-      <ConfirmModal type={"loginCheck"} isOpen={errorBox} title={"로그인 후 이용 가능합니다."} secondary={"로그인 하시겠습니까?"} onCancel={() => { setErrorBox(false)}} onConfirm={() => { setErrorBox(false); clearTokens(); clearUser(); localStorage.removeItem('isDimShowed'); router.push('/login'); }} />
+      <ConfirmModal type={"loginCheck"} isOpen={errorBox} title={"로그인 후 이용 가능합니다."} secondary={"로그인 하시겠습니까?"} onCancel={() => { setErrorBox(false)}} onConfirm={() => { setErrorBox(false); clearTokens(); clearUser(); router.push('/login'); }} />
       {children}
     </>
   )
