@@ -1,3 +1,7 @@
+<img width="5760" height="3240" alt="Feellog_Thumnail" src="https://github.com/user-attachments/assets/5f6b7dcc-1f8f-4990-bb1e-1d2687bca6d2" />
+
+
+
 # Feel-Log Frontend
 
 감정에 따라 소비 결과를 분석하는 가계부 웹 애플리케이션
