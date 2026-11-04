@@ -12,6 +12,7 @@ import { useGetAssets } from '@/entities/get-assets/useGetAssets';
 import { deleteAssetApi } from '@/features/post-asset/api/post-asset-api';
 import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useToken, useUser } from '@/shared/store';
 
 interface AssetDetailContentProps {
   categoryId: string;
@@ -44,20 +45,34 @@ function formatRecordDate(date: string): string {
 export default function AssetDetailContent({ categoryId }: AssetDetailContentProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { getAccessToken, clearTokens, isLoaded } = useToken();
+  const clearUser = useUser((state) => state.clearUser);
+  const accessToken = getAccessToken();
   const category = ASSET_CATEGORIES.find(cat => cat.id === categoryId);
-  const apiCategoryId = CATEGORY_ID_MAP[categoryId];
+  const numericCategoryId = Number(categoryId);
+  const apiCategoryId =
+    Number.isInteger(numericCategoryId) && numericCategoryId > 0
+      ? numericCategoryId
+      : CATEGORY_ID_MAP[categoryId];
   const [sortType, setSortType] = useState<SortType>('latest');
   const [swipedId, setSwipedId] = useState<number | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const touchStartX = useRef(0);
 
-  const { data: assetsData, isLoading } = useGetAssets({
-    categoryId: apiCategoryId,
-    sort: SORT_MAPPING[sortType],
-    page: 0,
-    size: 100,
-  });
+  const { data: assetsData, isLoading, error } = useGetAssets(
+    {
+      categoryId: apiCategoryId,
+      sort: SORT_MAPPING[sortType],
+      page: 0,
+      size: 100,
+    },
+    isLoaded && Boolean(accessToken) && Boolean(apiCategoryId),
+  );
+
+  const isTokenUnavailable =
+    isLoaded &&
+    (!accessToken || (error instanceof Error && error.message === 'Session expired'));
 
   const handlePointerDown = (e: React.PointerEvent) => {
     touchStartX.current = e.clientX;
@@ -97,7 +112,13 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
     }
   };
 
-  if (!category) {
+  const handleTokenErrorConfirm = () => {
+    clearTokens();
+    clearUser();
+    router.replace('/login');
+  };
+
+  if (!apiCategoryId) {
     return (
       <div className="flex min-h-dvh items-center justify-center">
         <p className="text-[14px] text-[#9FA4A8]">
@@ -109,8 +130,9 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
 
   const records = assetsData?.data ?? [];
   const totalAmount = assetsData?.totalAmount ?? 0;
+  const categoryLabel = assetsData?.categoryName || category?.label || '자산';
 
-  if (isLoading) {
+  if (!isLoaded || isLoading) {
     return (
       <div className="flex min-h-dvh flex-col bg-white pb-30">
         <PageHeader title="자산" backHref="/asset" />
@@ -137,12 +159,21 @@ export default function AssetDetailContent({ categoryId }: AssetDetailContentPro
 
   return (
     <div className="flex min-h-dvh flex-col bg-white pb-30">
+      <ConfirmModal
+        isOpen={isTokenUnavailable}
+        noCancel
+        title="토큰을 불러오지 못했습니다."
+        message="다시 로그인한 후 이용해 주세요."
+        confirmText="로그인하기"
+        onConfirm={handleTokenErrorConfirm}
+      />
+
       <PageHeader title="자산" backHref="/asset" />
 
       {/* 카테고리 합계 */}
       <div className="flex flex-col gap-1.25 border-b-[5px] border-[#F7F8FA] px-4 pb-3.75">
         <p className="text-[18px] font-semibold leading-normal tracking-[-0.45px] text-[#27282C]">
-          {category.label}
+          {categoryLabel}
         </p>
         <p className="text-[28px] font-semibold leading-normal tracking-[-0.7px] text-[#030303]">
           {totalAmount.toLocaleString()}원

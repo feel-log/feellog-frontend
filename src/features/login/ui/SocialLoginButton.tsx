@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useKakaoLogin, useGoogleLogin } from '@/features/login';
+import { logAuthDebug, logAuthError, summarizeTokens } from '@/shared/utils/auth-debug';
 
 declare global {
   interface Window {
@@ -23,24 +24,40 @@ export function SocialLoginButton({ social, imageUrl, text, isPriority = false }
   const handleLoginButton = () => {
     if (social === 'kakao') {
       if (!window.Kakao || !window.Kakao.isInitialized()) {
+        logAuthError('Kakao SDK is not initialized', new Error('Kakao SDK unavailable'));
         console.error('카카오 SDK가 초기화되지 않았습니다');
         return;
       }
+      const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
       window.Kakao.Auth.login({
+        // 모바일에서는 카카오톡 간편 로그인을 유지하고, 데스크톱에서는
+        // 처리할 수 없는 KakaoTalk intent 대신 카카오계정 팝업을 사용한다.
+        throughTalk: isMobileDevice,
         success: (authObj: { access_token: string }) => {
+          logAuthDebug(
+            'Kakao SDK access token callback received',
+            summarizeTokens({ accessToken: authObj.access_token }),
+          );
           loginKakao(authObj.access_token);
         },
         fail: (error: unknown) => {
+          logAuthError('Kakao SDK login failed', error);
           console.error('카카오 로그인 실패', error);
         },
       });
     } else if (social === 'google') {
       if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+        logAuthError('Google SDK is not initialized', new Error('Google Identity Services unavailable'));
         return;
       }
       window.google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+        client_id: process.env.GOOGLE_CLIENT_ID!,
         callback: (response) => {
+          logAuthDebug(
+            'Google SDK credential callback received',
+            summarizeTokens({ accessToken: response.credential }),
+          );
           loginGoogle(response.credential);
         }
       })
