@@ -5,7 +5,7 @@ import Script from 'next/script';
 export function KakaoScript() {
   const handleLoad = () => {
     if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY);
+      window.Kakao.init(process.env.KAKAO_APP_KEY);
     }
   };
 

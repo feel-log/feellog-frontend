@@ -3,7 +3,7 @@ export interface TokenResponse {
   refreshToken: string;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+const BASE_URL = process.env.API_BASE_URL || 'http://localhost:8080';
 
 export async function refreshApi(refreshToken: string): Promise<TokenResponse> {
   const res = await fetch(`${BASE_URL}/api/v1/auth/refresh`, {

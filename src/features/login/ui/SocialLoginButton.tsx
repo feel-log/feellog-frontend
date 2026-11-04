@@ -52,7 +52,7 @@ export function SocialLoginButton({ social, imageUrl, text, isPriority = false }
         return;
       }
       window.google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+        client_id: process.env.GOOGLE_CLIENT_ID!,
         callback: (response) => {
           logAuthDebug(
             'Google SDK credential callback received',
