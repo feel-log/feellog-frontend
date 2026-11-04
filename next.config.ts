@@ -24,7 +24,14 @@ const nextConfig: NextConfig = {
   env: Object.fromEntries(
     clientEnv
       .filter((key) => process.env[key] !== undefined)
-      .map((key) => [key, process.env[key] as string]),
+      .map((key) => [
+        key,
+        // API_BASE_URL 끝의 '/' 는 제거한다. (`${BASE_URL}/api/...` 가 '//api/...' 가 되면
+        // 서버 방화벽이 요청을 거부하고, 브라우저에는 CORS 오류로 보인다.)
+        key === "API_BASE_URL"
+          ? (process.env[key] as string).trim().replace(/\/+$/, "")
+          : (process.env[key] as string),
+      ]),
   ),
   experimental: {
     staleTimes: {
